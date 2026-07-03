@@ -148,10 +148,13 @@
     margin:0 auto;
     padding:20px clamp(20px,5vw,64px) 90px;
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
     gap:28px;
   }
-  @media (max-width:760px){
+  @media (max-width:900px){
+    .shelf{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:600px){
     .shelf{grid-template-columns:1fr;}
   }
 
@@ -210,6 +213,11 @@
     background:
       linear-gradient(155deg, rgba(11,20,36,0.15), rgba(11,20,36,0.5)),
       var(--mint-deep);
+  }
+  .cartridge.vier{
+    background:
+      linear-gradient(155deg, rgba(11,20,36,0.18), rgba(11,20,36,0.55)),
+      var(--oker);
   }
 
   .cartridge .status{
@@ -303,7 +311,7 @@
     <h1>Pauze, maar dan <em>op z'n Next Standard.</em></h1>
     <p>Een groeiende verzameling browserspellen in de Next Standard huisstijl. Geen installatie, geen account — gewoon een cartridge kiezen en spelen.</p>
     <div class="hero-count">
-      <div><span class="num">02</span><span class="lbl">Spellen live</span></div>
+      <div><span class="num">03</span><span class="lbl">Spellen live</span></div>
       <div><span class="num">∞</span><span class="lbl">Potjes gespeeld</span></div>
     </div>
   </section>
@@ -349,6 +357,30 @@
       </div>
       <h2>Kamertje verhuren</h2>
       <p>Trek lijntjes, claim vakjes, en pas op voor de dubbele kruis. Speel tegen een collega of tegen de ingebouwde AI.</p>
+      <span class="cta">Speel nu →</span>
+    </a>
+
+    <a class="cartridge vier" href="https://nickpraas.github.io/nextgames/vieropeenrij.html" target="_blank" rel="noopener">
+      <div class="notch"></div>
+      <div class="top-row">
+        <div class="glyph">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#F4F1EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="1"/>
+            <circle cx="7.5" cy="8.5" r="1.4" fill="#F4F1EB" stroke="none"/>
+            <circle cx="12" cy="8.5" r="1.4" fill="#F4F1EB" stroke="none"/>
+            <circle cx="7.5" cy="13" r="1.4" fill="#F4F1EB" stroke="none"/>
+            <circle cx="16.5" cy="13" r="1.4" fill="#F4F1EB" stroke="none"/>
+            <circle cx="12" cy="17" r="1.4" fill="#F4F1EB" stroke="none"/>
+          </svg>
+        </div>
+        <span class="status">Live</span>
+      </div>
+      <div class="meta">
+        <span>2 spelers</span>
+        <span>Strategie</span>
+      </div>
+      <h2>Vier op een rij</h2>
+      <p>Laat schijven zakken, denk drie zetten vooruit, en zorg dat jij als eerste vier op een rij hebt — horizontaal, verticaal of diagonaal.</p>
       <span class="cta">Speel nu →</span>
     </a>
 
