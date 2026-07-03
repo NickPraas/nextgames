@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vier op een rij — Next Standard editie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF2F5;
+    --card:#FFFFFF;
+    --ink:#11263B;
+    --ink-soft:#5A6B7A;
+    --ink-faint:#9AA8B4;
+    --line:rgba(17,38,59,0.08);
+    --line-strong:rgba(17,38,59,0.16);
+
+    --accent:#15B49A;        /* mint */
+    --accent-dark:#0C6E5E;
+    --navy:#152A4E;          /* navy bord */
+    --navy-dark:#0D1B34;
+
+    /* speler-kleuren — mint tegen bordeauxrood */
+    --p-mint:#15B49A;   --p-mint-dark:#0C6E5E;
+    --p-red:#B8283C;    --p-red-dark:#7A1424;
+
+    --radius:16px;
+    --radius-sm:10px;
+
+    --cur:var(--p-mint);
+    --cur-dark:var(--p-mint-dark);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Manrope',sans-serif;min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  body{display:flex;flex-direction:column;align-items:center;padding:24px 16px 36px}
+  .app{width:100%;max-width:640px;display:flex;flex-direction:column;gap:18px}
+
+  /* ---------- topbar ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand-mark{
+    width:38px;height:38px;background:var(--ink);color:var(--accent);
+    border-radius:11px;display:grid;place-items:center;
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;
+  }
+  .brand-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .brand-name span{color:var(--ink-faint);font-weight:500;display:block;font-size:11.5px;margin-top:-2px}
+  .topbar-right{display:flex;align-items:center;gap:12px}
+  .tagline{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:13px;color:var(--accent-dark)}
+  .btn-ghost{
+    border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+    font-family:'Manrope',sans-serif;font-weight:600;font-size:13px;
+    padding:8px 13px;border-radius:999px;cursor:pointer;transition:.15s;
+  }
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent-dark)}
+
+  /* ---------- hero ---------- */
+  .hero{text-align:center;padding:6px 0 2px}
+  .slash{
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+    font-size:clamp(30px,7vw,46px);line-height:1.02;letter-spacing:-.02em;
+    display:inline-block;color:var(--ink);
+  }
+  .slash em{color:var(--accent);font-style:normal}
+  .slash .s{color:var(--accent);font-weight:800;padding:0 .12em}
+  .hero-sub{color:var(--ink-soft);font-size:14.5px;margin-top:8px}
+
+  /* ---------- cards ---------- */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px;box-shadow:0 1px 2px rgba(17,38,59,.04);
+  }
+
+  /* ---------- setup ---------- */
+  .setup{display:flex;flex-direction:column;gap:20px}
+  .field-label{
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;
+    color:var(--ink-soft);letter-spacing:.01em;margin-bottom:9px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .field-label .s{color:var(--accent)}
+  .seg{display:flex;gap:8px;flex-wrap:wrap}
+  .seg button{
+    flex:1;min-width:96px;border:1px solid var(--line-strong);background:var(--bg);
+    color:var(--ink-soft);font-family:'Manrope',sans-serif;font-weight:600;font-size:13.5px;
+    padding:11px 10px;border-radius:var(--radius-sm);cursor:pointer;transition:.15s;
+    display:flex;flex-direction:column;align-items:center;gap:2px;
+  }
+  .seg button small{font-weight:500;font-size:11px;color:var(--ink-faint)}
+  .seg button:hover{border-color:var(--accent)}
+  .seg button.active{
+    background:var(--ink);color:#fff;border-color:var(--ink);
+  }
+  .seg button.active small{color:rgba(255,255,255,.62)}
+
+  .players{display:flex;flex-direction:column;gap:10px}
+  .prow{display:flex;align-items:center;gap:12px}
+  .pdot{width:26px;height:26px;border-radius:50%;flex:none;box-shadow:inset 0 -2px 3px rgba(0,0,0,.18)}
+  .prow input{
+    flex:1;border:1px solid var(--line-strong);background:var(--bg);
+    color:var(--ink);font-family:'Manrope',sans-serif;font-weight:600;font-size:14.5px;
+    padding:11px 13px;border-radius:var(--radius-sm);
+  }
+  .prow input:focus{outline:none;border-color:var(--accent);background:#fff}
+  .prow .tag{font-size:12px;color:var(--ink-faint);font-weight:600;flex:none;width:64px}
+
+  .btn-primary{
+    width:100%;border:none;cursor:pointer;
+    background:var(--accent);color:#04231d;
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px;
+    padding:15px;border-radius:var(--radius-sm);transition:.15s;
+    box-shadow:0 6px 18px rgba(21,180,154,.32);
+  }
+  .btn-primary:hover{background:#12a189;transform:translateY(-1px)}
+  .btn-primary:active{transform:translateY(0)}
+
+  /* ---------- game ---------- */
+  .gamewrap{display:none;flex-direction:column;gap:16px}
+  .gamewrap.on{display:flex}
+  .setupwrap.off{display:none}
+
+  .statusbar{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:13px 16px;
+  }
+  .turn{display:flex;align-items:center;gap:11px;min-width:0}
+  .turn .pdot{width:22px;height:22px}
+  .turn-txt{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .turn-sub{font-size:12px;color:var(--ink-faint);font-weight:600}
+  .score{display:flex;gap:14px;flex:none}
+  .score .sc{display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px;color:var(--ink-soft)}
+  .score .sc .pdot{width:15px;height:15px;box-shadow:none}
+
+  .board-frame{
+    background:linear-gradient(155deg,var(--navy),var(--navy-dark));
+    border-radius:20px;padding:14px;position:relative;
+    box-shadow:0 14px 34px rgba(22,51,107,.30), inset 0 2px 0 rgba(255,255,255,.12);
+    user-select:none;
+  }
+  .board-grid{display:grid;gap:0;position:relative;z-index:1}
+  .cell{aspect-ratio:1;position:relative;display:grid;place-items:center}
+  .hole{
+    width:78%;height:78%;border-radius:50%;
+    background:var(--bg);
+    box-shadow:inset 0 3px 6px rgba(0,0,0,.32), inset 0 -1px 1px rgba(255,255,255,.4);
+  }
+  .disc{
+    position:absolute;width:78%;height:78%;border-radius:50%;
+    box-shadow:inset 0 -3px 5px rgba(0,0,0,.28), inset 0 3px 4px rgba(255,255,255,.35), 0 1px 2px rgba(0,0,0,.2);
+    animation:drop .5s cubic-bezier(.34,1.24,.5,1) both;
+  }
+  .disc.mint{background:radial-gradient(circle at 38% 32%,#3fd4ba,var(--p-mint) 62%,var(--p-mint-dark))}
+  .disc.red{background:radial-gradient(circle at 38% 32%,#e05266,var(--p-red) 60%,var(--p-red-dark))}
+  .disc.win{animation:drop .5s cubic-bezier(.34,1.24,.5,1) both, pulse 1s ease-in-out .5s infinite}
+  @keyframes drop{
+    0%{transform:translateY(var(--fall,-420px));opacity:.85}
+    100%{transform:translateY(0);opacity:1}
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:inset 0 -3px 5px rgba(0,0,0,.28), inset 0 3px 4px rgba(255,255,255,.35), 0 0 0 rgba(255,255,255,0)}
+    50%{box-shadow:inset 0 -3px 5px rgba(0,0,0,.28), inset 0 3px 4px rgba(255,255,255,.55), 0 0 0 5px rgba(255,255,255,.55)}
+  }
+
+  /* clickable columns overlay */
+  .cols{position:absolute;inset:14px;display:flex;z-index:2}
+  .col{flex:1;cursor:pointer;position:relative;border-radius:12px;transition:background .12s}
+  .col::before{
+    content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:60%;aspect-ratio:1;border-radius:50%;
+    background:var(--cur);opacity:0;transition:opacity .12s;
+    box-shadow:inset 0 -2px 4px rgba(0,0,0,.25);
+  }
+  .board-frame:not(.locked) .col:hover{background:rgba(255,255,255,.07)}
+  .board-frame:not(.locked) .col:hover::before{opacity:.5}
+  .board-frame.locked .col{cursor:default}
+
+  .gamebar{display:flex;gap:10px}
+  .gamebar .btn-ghost{flex:1;padding:11px}
+
+  /* ---------- footer ---------- */
+  .foot{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:4px 4px 0;flex-wrap:wrap;
+  }
+  .values{display:flex;gap:16px;flex-wrap:wrap}
+  .values span{
+    font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:12.5px;color:var(--ink-faint);
+    display:flex;align-items:center;gap:5px;
+  }
+  .values span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .foot-tag{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;color:var(--ink-soft)}
+
+  /* ---------- modals ---------- */
+  .modal-bg{
+    position:fixed;inset:0;background:rgba(17,38,59,.5);backdrop-filter:blur(3px);
+    display:none;place-items:center;padding:20px;z-index:50;
+  }
+  .modal-bg.on{display:grid}
+  .modal{
+    background:var(--card);border-radius:var(--radius);padding:26px;max-width:420px;width:100%;
+    box-shadow:0 24px 60px rgba(17,38,59,.28);text-align:center;
+    animation:pop .3s cubic-bezier(.2,1.1,.4,1) both;
+  }
+  @keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:22px;margin-bottom:6px;text-align:left}
+  .modal .rules{text-align:left;display:flex;flex-direction:column;gap:11px;margin:16px 0 20px}
+  .modal .rules li{list-style:none;display:flex;gap:10px;font-size:14px;color:var(--ink-soft);line-height:1.45}
+  .modal .rules .ic{color:var(--accent);font-weight:800;flex:none}
+  .win-badge{width:70px;height:70px;border-radius:50%;margin:0 auto 14px;box-shadow:inset 0 -4px 7px rgba(0,0,0,.28),inset 0 4px 5px rgba(255,255,255,.4)}
+  .win-name{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.01em}
+  .win-sub{color:var(--ink-soft);font-size:14px;margin:6px 0 20px}
+  .win-name.tie{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div class="brand-name">Next Standard<span>Speelhal</span></div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-ghost" id="btnUitleg">? Uitleg</button>
+      <div class="tagline">Make it work</div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="slash"><span class="s">/</span>Vier op een rij<span class="s">/</span></div>
+    <div class="hero-sub">Vier schijven op een rij — horizontaal, verticaal of diagonaal.</div>
+  </div>
+
+  <!-- SETUP -->
+  <div class="setupwrap">
+    <div class="card setup">
+      <div>
+        <div class="field-label"><span class="s">/</span> Tegenstander</div>
+        <div class="seg" id="segMode">
+          <button data-mode="human" class="active">2 spelers<small>mens tegen mens</small></button>
+          <button data-mode="ai">Tegen Claude<small>jij tegen de computer</small></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="field-label"><span class="s">/</span> Bordmaat</div>
+        <div class="seg" id="segSize">
+          <button data-c="6" data-r="5">6 × 5<small>snel</small></button>
+          <button data-c="7" data-r="6" class="active">7 × 6<small>klassiek</small></button>
+          <button data-c="8" data-r="7">8 × 7<small>groot</small></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="field-label"><span class="s">/</span> Spelers</div>
+        <div class="players" id="players"></div>
+      </div>
+
+      <button class="btn-primary" id="btnStart">Let's make it work</button>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div class="gamewrap">
+    <div class="statusbar">
+      <div class="turn">
+        <div class="pdot" id="turnDot"></div>
+        <div style="min-width:0">
+          <div class="turn-txt" id="turnName">Speler 1</div>
+          <div class="turn-sub" id="turnSub">is aan zet</div>
+        </div>
+      </div>
+      <div class="score">
+        <div class="sc"><span class="pdot" style="background:var(--p-mint)"></span><span id="sc1">0</span></div>
+        <div class="sc"><span class="pdot" style="background:var(--p-red)"></span><span id="sc2">0</span></div>
+      </div>
+    </div>
+
+    <div class="board-frame" id="frame">
+      <div class="board-grid" id="grid"></div>
+      <div class="cols" id="cols"></div>
+    </div>
+
+    <div class="gamebar">
+      <button class="btn-ghost" id="btnReset">Nieuwe ronde</button>
+      <button class="btn-ghost" id="btnQuit">Terug naar instellingen</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <div class="values">
+      <span>Commitment</span><span>Lef</span><span>Uniek</span><span>Bruisend</span>
+    </div>
+    <div class="foot-tag">Minder gepieker. Meer op een rij.</div>
+  </div>
+</div>
+
+<!-- UITLEG MODAL -->
+<div class="modal-bg" id="modalUitleg">
+  <div class="modal">
+    <h3><span style="color:var(--accent)">/</span> Zo speel je</h3>
+    <ul class="rules">
+      <li><span class="ic">1</span><div>Klik op een kolom om je schijf te laten vallen. Hij zakt naar de laagste vrije plek.</div></li>
+      <li><span class="ic">2</span><div>Spelers wisselen om de beurt. In "Tegen Claude" begin jij, daarna denkt Claude na.</div></li>
+      <li><span class="ic">★</span><div>Wie als eerste vier schijven op een rij heeft — horizontaal, verticaal of diagonaal — wint.</div></li>
+      <li><span class="ic">=</span><div>Vol bord zonder winnaar? Dan is het gelijkspel.</div></li>
+    </ul>
+    <button class="btn-primary" id="closeUitleg">Begrepen</button>
+  </div>
+</div>
+
+<!-- WIN MODAL -->
+<div class="modal-bg" id="modalWin">
+  <div class="modal">
+    <div class="win-badge" id="winBadge"></div>
+    <div class="win-name" id="winName">Speler 1 wint!</div>
+    <div class="win-sub" id="winSub">Vier op een rij. Goed gespeeld.</div>
+    <button class="btn-primary" id="btnAgain">Opnieuw spelen</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+
+  const COLORS = [
+    {key:'mint', cls:'mint', name:'Mint', hex:'#15B49A'},
+    {key:'red', cls:'red', name:'Rood', hex:'#B8283C'},
+  ];
+  const DEFAULT_NAMES = ['Speler 1','Speler 2'];
+
+  // ---- config / state ----
+  let cfg = { mode:'human', cols:7, rows:6, names:[...DEFAULT_NAMES] };
+  let board = [];          // board[col][row], row 0 = onderaan; 0 leeg, 1/2 speler
+  let cur = 0;             // 0 of 1
+  let busy = false;
+  let over = false;
+  let scores = [0,0];
+
+  // ===== SETUP UI =====
+  function renderPlayers(){
+    const wrap = $('players');
+    wrap.innerHTML = '';
+    for(let i=0;i<2;i++){
+      const c = COLORS[i];
+      const isAI = (cfg.mode==='ai' && i===1);
+      const row = document.createElement('div');
+      row.className = 'prow';
+      row.innerHTML = `
+        <div class="pdot" style="background:${c.hex}"></div>
+        <input type="text" maxlength="18" data-i="${i}"
+               value="${isAI ? 'Claude' : (cfg.names[i]||DEFAULT_NAMES[i])}"
+               placeholder="${c.name}" ${isAI?'disabled':''}>
+        <div class="tag">${isAI?'computer':c.name}</div>`;
+      wrap.appendChild(row);
+    }
+    wrap.querySelectorAll('input').forEach(inp=>{
+      inp.addEventListener('input', e=>{ cfg.names[+e.target.dataset.i] = e.target.value; });
+    });
+  }
+
+  $('segMode').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    $('segMode').querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    cfg.mode = b.dataset.mode;
+    renderPlayers();
+  });
+  $('segSize').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    $('segSize').querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    cfg.cols = +b.dataset.c; cfg.rows = +b.dataset.r;
+  });
+
+  // ===== BOARD BUILD =====
+  function buildBoard(){
+    board = Array.from({length:cfg.cols}, ()=>Array(cfg.rows).fill(0));
+    const grid = $('grid');
+    grid.style.gridTemplateColumns = `repeat(${cfg.cols},1fr)`;
+    grid.innerHTML = '';
+    // render van boven (row rows-1) naar beneden (row 0)
+    for(let r=cfg.rows-1; r>=0; r--){
+      for(let c=0;c<cfg.cols;c++){
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.id = `cell-${c}-${r}`;
+        cell.innerHTML = '<div class="hole"></div>';
+        grid.appendChild(cell);
+      }
+    }
+    // klik-kolommen
+    const cols = $('cols');
+    cols.innerHTML = '';
+    for(let c=0;c<cfg.cols;c++){
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.dataset.c = c;
+      col.addEventListener('click', ()=>onColumn(c));
+      cols.appendChild(col);
+    }
+  }
+
+  function lowestFree(c){
+    for(let r=0;r<cfg.rows;r++) if(board[c][r]===0) return r;
+    return -1;
+  }
+
+  function onColumn(c){
+    if(busy || over) return;
+    if(cfg.mode==='ai' && cur===1) return; // niet klikken als Claude aan zet is
+    const r = lowestFree(c);
+    if(r<0) return;
+    playMove(c, r, cur, ()=>{
+      const win = winningCells(board, c, r, cur+1);
+      if(win){ endGame(cur, win); return; }
+      if(isFull(board)){ endGame(-1, null); return; }
+      cur = 1-cur;
+      updateTurn();
+      if(cfg.mode==='ai' && cur===1) setTimeout(aiTurn, 380);
+    });
+  }
+
+  function playMove(c, r, player, done){
+    busy = true;
+    board[c][r] = player+1;
+    const cell = $(`cell-${c}-${r}`);
+    const disc = document.createElement('div');
+    disc.className = `disc ${COLORS[player].cls}`;
+    // valafstand: vanaf boven het bord tot rij r
+    const cellH = cell.getBoundingClientRect().height || 48;
+    const fromTop = (cfg.rows - r);          // aantal cellen van bovenrand tot doelcel + 1
+    disc.style.setProperty('--fall', `-${(fromTop*cellH)+16}px`);
+    cell.appendChild(disc);
+    disc.dataset.pc = `${c}-${r}`;
+    setTimeout(done, 470);
+    setTimeout(()=>{ busy=false; }, 470);
+  }
+
+  // ===== WIN LOGIC =====
+  const DIRS = [[1,0],[0,1],[1,1],[1,-1]];
+  function winningCells(bd, c, r, val){
+    for(const [dc,dr] of DIRS){
+      const line = [[c,r]];
+      for(let s=1;s<4;s++){ const nc=c+dc*s, nr=r+dr*s;
+        if(nc<0||nc>=cfg.cols||nr<0||nr>=cfg.rows||bd[nc][nr]!==val) break; line.push([nc,nr]); }
+      for(let s=1;s<4;s++){ const nc=c-dc*s, nr=r-dr*s;
+        if(nc<0||nc>=cfg.cols||nr<0||nr>=cfg.rows||bd[nc][nr]!==val) break; line.unshift([nc,nr]); }
+      if(line.length>=4) return line.slice(0,4);
+    }
+    return null;
+  }
+  function isFull(bd){ return bd.every(col=>col[cfg.rows-1]!==0); }
+
+  // ===== AI (minimax + alpha-beta) =====
+  function aiTurn(){
+    if(over) return;
+    busy = true;
+    // even async zodat de UI niet bevriest
+    setTimeout(()=>{
+      const depth = cfg.cols>=8 ? 5 : (cfg.cols>=7 ? 6 : 7);
+      const c = bestMove(depth);
+      const r = lowestFree(c);
+      busy = false;
+      playMove(c, r, 1, ()=>{
+        const win = winningCells(board, c, r, 2);
+        if(win){ endGame(1, win); return; }
+        if(isFull(board)){ endGame(-1, null); return; }
+        cur = 0; updateTurn();
+      });
+    }, 20);
+  }
+
+  function validCols(bd){
+    const out=[];
+    // van midden naar buiten voor betere pruning
+    const order=[];
+    const mid=(cfg.cols-1)/2;
+    for(let c=0;c<cfg.cols;c++) order.push(c);
+    order.sort((a,b)=>Math.abs(a-mid)-Math.abs(b-mid));
+    for(const c of order){ if(bd[c][cfg.rows-1]===0) out.push(c); }
+    return out;
+  }
+  function dropRow(bd,c){ for(let r=0;r<cfg.rows;r++) if(bd[c][r]===0) return r; return -1; }
+  function wins(bd,c,r,val){ return !!winningCells(bd,c,r,val); }
+
+  function scoreWindow(cells, me){
+    let m=0,o=0;
+    for(const v of cells){ if(v===me) m++; else if(v!==0) o++; }
+    if(m>0&&o>0) return 0;
+    if(m===3) return 8; if(m===2) return 3; if(m===1) return 1;
+    if(o===3) return -10; if(o===2) return -3; if(o===1) return -1;
+    return 0;
+  }
+  function evaluate(bd, me){
+    let s=0;
+    // centrum-bonus
+    const midCol=Math.floor(cfg.cols/2);
+    for(let r=0;r<cfg.rows;r++) if(bd[midCol][r]===me) s+=3;
+    for(const [dc,dr] of DIRS){
+      for(let c=0;c<cfg.cols;c++) for(let r=0;r<cfg.rows;r++){
+        const ec=c+dc*3, er=r+dr*3;
+        if(ec<0||ec>=cfg.cols||er<0||er>=cfg.rows) continue;
+        const w=[];
+        for(let k=0;k<4;k++) w.push(bd[c+dc*k][r+dr*k]);
+        s+=scoreWindow(w, me);
+      }
+    }
+    return s;
+  }
+
+  function minimax(bd, depth, alpha, beta, maximizing){
+    const valid = validCols(bd);
+    // terminal check op laatste zet is duur; check via evaluate + vol
+    if(depth===0 || valid.length===0){
+      return {score: evaluate(bd,2)};
+    }
+    if(maximizing){ // Claude = speler 2
+      let best={score:-Infinity, col:valid[0]};
+      for(const c of valid){
+        const r=dropRow(bd,c); bd[c][r]=2;
+        let val;
+        if(wins(bd,c,r,2)) val=100000+depth;
+        else val=minimax(bd,depth-1,alpha,beta,false).score;
+        bd[c][r]=0;
+        if(val>best.score) best={score:val,col:c};
+        alpha=Math.max(alpha,val);
+        if(alpha>=beta) break;
+      }
+      return best;
+    } else { // mens = speler 1
+      let best={score:Infinity, col:valid[0]};
+      for(const c of valid){
+        const r=dropRow(bd,c); bd[c][r]=1;
+        let val;
+        if(wins(bd,c,r,1)) val=-100000-depth;
+        else val=minimax(bd,depth-1,alpha,beta,true).score;
+        bd[c][r]=0;
+        if(val<best.score) best={score:val,col:c};
+        beta=Math.min(beta,val);
+        if(alpha>=beta) break;
+      }
+      return best;
+    }
+  }
+  function bestMove(depth){
+    // directe winst / directe blok eerst
+    const valid=validCols(board);
+    for(const c of valid){ const r=dropRow(board,c); board[c][r]=2; const w=wins(board,c,r,2); board[c][r]=0; if(w) return c; }
+    for(const c of valid){ const r=dropRow(board,c); board[c][r]=1; const w=wins(board,c,r,1); board[c][r]=0; if(w) return c; }
+    const res=minimax(board, depth, -Infinity, Infinity, true);
+    return (res.col!=null)?res.col:valid[0];
+  }
+
+  // ===== UI updates =====
+  function updateTurn(){
+    const c = COLORS[cur];
+    $('turnDot').style.background = c.hex;
+    $('turnName').textContent = playerName(cur);
+    $('turnSub').textContent = (cfg.mode==='ai' && cur===1) ? 'denkt na…' : 'is aan zet';
+    document.documentElement.style.setProperty('--cur', c.hex);
+  }
+  function playerName(i){
+    if(cfg.mode==='ai' && i===1) return 'Claude';
+    return (cfg.names[i]&&cfg.names[i].trim()) ? cfg.names[i].trim() : DEFAULT_NAMES[i];
+  }
+
+  function endGame(winner, cells){
+    over = true;
+    $('frame').classList.add('locked');
+    if(cells){
+      cells.forEach(([c,r])=>{
+        const cell=$(`cell-${c}-${r}`);
+        const disc=cell&&cell.querySelector('.disc');
+        if(disc) disc.classList.add('win');
+      });
+    }
+    setTimeout(()=>{
+      if(winner<0){
+        $('winBadge').style.background = 'var(--ink-faint)';
+        $('winName').textContent = 'Gelijkspel';
+        $('winName').classList.add('tie');
+        $('winSub').textContent = 'Bord vol, niemand vier op een rij. Nog een keer?';
+      }else{
+        scores[winner]++; renderScores();
+        $('winBadge').style.background = `radial-gradient(circle at 38% 32%, #fff6, ${COLORS[winner].hex} 62%)`;
+        $('winName').classList.remove('tie');
+        $('winName').textContent = `${playerName(winner)} wint!`;
+        $('winSub').textContent = 'Vier op een rij. Goed gespeeld.';
+      }
+      $('modalWin').classList.add('on');
+    }, 620);
+  }
+  function renderScores(){ $('sc1').textContent=scores[0]; $('sc2').textContent=scores[1]; }
+
+  // ===== flow =====
+  function startGame(){
+    cfg.names = cfg.names.map((n,i)=> n||DEFAULT_NAMES[i]);
+    document.querySelector('.setupwrap').classList.add('off');
+    document.querySelector('.gamewrap').classList.add('on');
+    newRound();
+  }
+  function newRound(){
+    over=false; busy=false; cur=0;
+    $('frame').classList.remove('locked');
+    buildBoard();
+    updateTurn();
+    $('modalWin').classList.remove('on');
+  }
+  function quitToSetup(){
+    document.querySelector('.gamewrap').classList.remove('on');
+    document.querySelector('.setupwrap').classList.remove('off');
+    $('modalWin').classList.remove('on');
+    scores=[0,0]; renderScores();
+  }
+
+  $('btnStart').addEventListener('click', startGame);
+  $('btnReset').addEventListener('click', newRound);
+  $('btnAgain').addEventListener('click', newRound);
+  $('btnQuit').addEventListener('click', quitToSetup);
+  $('btnUitleg').addEventListener('click', ()=>$('modalUitleg').classList.add('on'));
+  $('closeUitleg').addEventListener('click', ()=>$('modalUitleg').classList.remove('on'));
+  $('modalUitleg').addEventListener('click', e=>{ if(e.target===$('modalUitleg')) $('modalUitleg').classList.remove('on'); });
+
+  // init
+  renderPlayers();
+  renderScores();
+})();
+</script>
+</body>
+</html>
