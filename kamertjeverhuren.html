@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kamertje verhuren — Next Standard editie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ---- Next Standard styleguide ---- */
+    /* Brand */
+    --brand-blue:    #00F0FF;
+    --brand-green:   #00F098;
+    --blue-500:      #384980;
+    --blue-700:      #1E2745;
+    --blue-900:      #13192B;
+    /* System */
+    --white:         #FFFFFF;
+    --grey-300:      #F1F3F9;
+    --grey-400:      #E6E8EF;
+    --grey-700:      #E3E7F3;
+    --grey-900:      #D4D9EC;
+
+    /* ---- semantische tokens ---- */
+    --bg:            var(--grey-300);
+    --bg-card:       var(--white);
+    --ink:           var(--blue-900);
+    --ink-soft:      var(--blue-500);
+    --ink-faint:     #8B92AB;
+    --line:          rgba(19, 25, 43, 0.08);
+    --line-strong:   rgba(19, 25, 43, 0.16);
+
+    /* Speler 1 — cyaan (uit brand colors) */
+    --p1:            var(--brand-blue);
+    --p1-dark:       #00BCD4;          /* helder cyaan voor wanden — max contrast met navy */
+    --p1-soft:       #B3FAFF;
+
+    /* Speler 2 / Claude — navy (uit brand colors) */
+    --p2:            var(--blue-700);  /* Blue 700 als box-fill */
+    --p2-dark:       var(--blue-900);  /* Blue 900 voor max contrast op lijnen */
+    --p2-soft:       var(--grey-700);  /* lichtgrijs-blauw voor badges */
+
+    --radius:        14px;
+    --radius-sm:     8px;
+
+    /* fonts */
+    --font-display:  'Montserrat', 'Gilroy', sans-serif;
+    --font-body:     'Montserrat', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 40px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .brand-mark {
+    width: 36px; height: 36px;
+    background: var(--ink);
+    color: var(--brand-green);
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: -0.04em;
+  }
+
+  .tag-make {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .tag-make::before { content: '/ '; color: var(--brand-green); font-style: normal; font-weight: 800; }
+  .tag-make::after  { content: ' /'; color: var(--brand-green); font-style: normal; font-weight: 800; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 24px;
+    padding: 36px 32px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -60px; bottom: -60px;
+    width: 220px; height: 220px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.22;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    left: -40px; top: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-blue);
+    border-radius: 50%;
+    opacity: 0.12;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    margin-bottom: 12px;
+    font-weight: 600;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(36px, 6.5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    position: relative;
+  }
+  .hero h1 .slash { color: var(--brand-green); font-weight: 900; }
+  .hero-sub {
+    margin-top: 14px;
+    max-width: 480px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.55;
+    position: relative;
+    font-weight: 400;
+  }
+
+  /* ---------- setup ---------- */
+  .setup {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border: 1px solid var(--line);
+  }
+  .field label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .field input {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;
+    background: var(--bg);
+    color: var(--ink);
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
+  }
+
+  /* mode segmented */
+  .mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    gap: 4px;
+  }
+  .mode-toggle button {
+    border: none;
+    background: transparent;
+    padding: 12px 14px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all .18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .mode-toggle button .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    transition: background .18s;
+  }
+  .mode-toggle button.active {
+    background: var(--ink);
+    color: #fff;
+  }
+  .mode-toggle button.active .dot { background: var(--brand-blue); }
+  .mode-toggle button[data-mode="ai"].active .dot { background: var(--p2-soft); }
+
+  .player-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .ai-card {
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+  }
+  .ai-card .ai-mark {
+    width: 30px; height: 30px;
+    background: var(--p2);
+    color: var(--white);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 16px;
+  }
+  .ai-card .ai-info { line-height: 1.2; }
+  .ai-card .ai-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .ai-card .ai-meta {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 1px;
+    font-weight: 500;
+  }
+
+  .size-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .size-chip {
+    flex: 1 1 auto;
+    min-width: 120px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line-strong);
+    background: var(--bg);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    transition: all .15s;
+  }
+  .size-chip strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .size-chip span {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .size-chip:hover { border-color: var(--ink); }
+  .size-chip.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .size-chip.active span { color: var(--brand-green); }
+
+  .btn-start {
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: transform .12s, background .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn-start:hover { background: #00d987; }
+  .btn-start:active { transform: scale(0.99); }
+  .btn-start .arrow {
+    display: inline-block;
+    transition: transform .18s;
+    font-style: normal;
+  }
+  .btn-start:hover .arrow { transform: translateX(4px); }
+
+  /* ---------- game ---------- */
+  .game { display: none; flex-direction: column; gap: 18px; }
+  .game.active { display: flex; }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+  }
+  .player-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    position: relative;
+    transition: all .25s;
+  }
+  .player-card.p1 { border-left: 4px solid var(--p1); }
+  .player-card.p2 { border-left: 4px solid var(--p2); }
+  .player-card.turn { transform: translateY(-2px); }
+  .player-card.p1.turn { box-shadow: 0 0 0 2px var(--p1-dark); border-color: var(--p1-dark); }
+  .player-card.p2.turn { box-shadow: 0 0 0 2px var(--p2-dark); border-color: var(--p2-dark); }
+
+  .player-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .player-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-top: 2px;
+    line-height: 1.1;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .player-name .ai-badge {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    background: var(--p2-soft);
+    color: var(--p2-dark);
+    padding: 3px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .player-score {
+    margin-top: 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .player-score .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 38px;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .player-score .of {
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  .turn-indicator {
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 130px;
+  }
+  .turn-indicator .who {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--brand-blue);
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .turn-indicator.is-p2 .who { color: var(--white); }
+  .turn-indicator .label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .turn-indicator .bonus {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 4px;
+    font-style: italic;
+    min-height: 14px;
+    font-weight: 500;
+  }
+  .turn-indicator .thinking {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 2px;
+  }
+  .turn-indicator .thinking span {
+    width: 5px; height: 5px;
+    background: var(--white);
+    border-radius: 50%;
+    animation: dot-bounce 1.2s infinite ease-in-out;
+  }
+  .turn-indicator .thinking span:nth-child(2) { animation-delay: .15s; }
+  .turn-indicator .thinking span:nth-child(3) { animation-delay: .3s; }
+  @keyframes dot-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* board */
+  .board-wrap {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 28px;
+    display: flex;
+    justify-content: center;
+    border: 1px solid var(--line);
+    transition: opacity .2s;
+  }
+  .board-wrap.thinking {
+    opacity: 0.85;
+    pointer-events: none;
+  }
+  .board {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    user-select: none;
+    touch-action: manipulation;
+  }
+  .board .dot { fill: var(--ink); }
+  .board .line { cursor: pointer; transition: opacity .15s; }
+  .board .line-hit { fill: transparent; cursor: pointer; }
+  .board .line-vis {
+    fill: var(--line);
+    pointer-events: none;
+    transition: fill .2s;
+  }
+  .board .line-hit:hover + .line-vis { fill: var(--ink-faint); }
+  .board .line-vis.drawn-p1 { fill: var(--p1-dark); }
+  .board .line-vis.drawn-p2 { fill: var(--p2-dark); }
+  .board .line.locked .line-hit { cursor: default; pointer-events: none; }
+
+  .board .box-fill {
+    transition: fill-opacity .35s ease;
+    fill-opacity: 0;
+  }
+  .board .box-fill.p1 { fill: var(--p1); fill-opacity: 1; }
+  .board .box-fill.p2 { fill: var(--p2); fill-opacity: 1; }
+  .board .box-init {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    text-anchor: middle;
+    dominant-baseline: central;
+    opacity: 0;
+    transition: opacity .3s ease .1s;
+    pointer-events: none;
+  }
+  .board .box-init.show { opacity: 1; }
+  .board .box-init.p1 { fill: var(--blue-900); }
+  .board .box-init.p2 { fill: var(--white); }
+
+  @keyframes ai-flash {
+    0% { filter: brightness(1.6) drop-shadow(0 0 8px var(--brand-green)); }
+    100% { filter: none; }
+  }
+  .board .line-vis.ai-flash {
+    animation: ai-flash .8s ease-out;
+  }
+
+  /* controls */
+  .controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .controls-left { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 11px 18px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink-soft); }
+  .btn.btn-ghost:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .rules-hint {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .rules-hint .slash { color: var(--brand-green); font-style: normal; font-weight: 800; }
+
+  /* winner */
+  .winner {
+    display: none;
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .winner.active { display: block; }
+  .winner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, var(--brand-green) 0%, transparent 50%);
+    opacity: 0.18;
+  }
+  .winner-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    position: relative;
+  }
+  .winner-name {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(32px, 6vw, 48px);
+    letter-spacing: -0.025em;
+    margin-top: 6px;
+    line-height: 1.05;
+    position: relative;
+  }
+  .winner-name.tie { color: var(--brand-green); }
+  .winner-score {
+    margin-top: 10px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    position: relative;
+    font-weight: 500;
+  }
+  .winner-tag {
+    margin-top: 18px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    color: var(--brand-green);
+    font-size: 18px;
+    position: relative;
+  }
+
+  /* footer */
+  .footer {
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer .vals { display: flex; gap: 12px; flex-wrap: wrap; }
+  .footer .vals span {
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .footer .vals span:nth-child(1) { color: var(--p1-dark); }
+  .footer .vals span:nth-child(2) { color: var(--brand-green); }
+  .footer .vals span:nth-child(3) { color: var(--ink-soft); }
+  .footer .vals span:nth-child(4) { color: var(--ink); }
+
+  /* ---------- uitleg knop ---------- */
+  .btn-uitleg {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-uitleg:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  /* ---------- modal ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(19,25,43,0.72);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(19,25,43,0.32);
+    position: relative;
+    animation: modal-in .22s ease-out;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+  .modal-header {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    right: -40px; bottom: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+  .modal-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: rgba(255,255,255,0.8);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: background .15s;
+    position: absolute;
+    z-index: 1;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.25); }
+  .modal-body {
+    padding: 24px 28px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .rule-block {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rule-icon {
+    font-size: 22px;
+    min-width: 32px;
+    text-align: center;
+    margin-top: 1px;
+  }
+  .rule-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+    color: var(--ink);
+  }
+  .rule-text {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .rule-text strong { color: var(--ink); font-weight: 700; }
+  .modal-btn-start {
+    display: block;
+    width: calc(100% - 56px);
+    margin: 20px 28px 24px;
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 800;
+    font-style: italic;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .modal-btn-start:hover { background: #00d987; }
+
+  @media (max-width: 640px) {
+    .player-row { grid-template-columns: 1fr; }
+    .scoreboard { grid-template-columns: 1fr; }
+    .turn-indicator { order: -1; }
+    .hero { padding: 28px 22px; }
+    .board-wrap { padding: 16px; }
+  }
+
+  @keyframes pop {
+    0% { transform: scale(0.6); fill-opacity: 0; }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); fill-opacity: 1; }
+  }
+  .board .box-fill.just-won {
+    animation: pop .35s ease-out;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div>Next Standard</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="btn-uitleg" id="btnUitleg">? Uitleg</button>
+      <div class="tag-make">Make it work</div>
+    </div>
+  </div>
+
+  <!-- Uitleg modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Spelregels /</div>
+        <h2 class="modal-title">Kamertje verhuren</h2>
+        <button class="modal-close" id="modalClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="rule-block">
+          <div class="rule-icon">🎯</div>
+          <div>
+            <div class="rule-title">Doel</div>
+            <div class="rule-text">Verdien zoveel mogelijk vakjes. Degene met de meeste vakjes aan het einde wint.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">✏️</div>
+          <div>
+            <div class="rule-title">Een beurt</div>
+            <div class="rule-text">Klik op een lijn tussen twee punten om hem te tekenen. Spelers wisselen om de beurt.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🏠</div>
+          <div>
+            <div class="rule-title">Vakje veroveren</div>
+            <div class="rule-text">Sluit je met jouw lijn een vakje af (alle 4 zijden getekend)? Dan is dat vakje van jou én mag je <strong>nog een extra beurt</strong> nemen.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🤖</div>
+          <div>
+            <div class="rule-title">Tegen Claude spelen</div>
+            <div class="rule-text">Kies "Tegen Claude" in de setup. Claude pakt altijd gratis vakjes, speelt veilige zetten en probeert lange ketens te vermijden. Versla hem als je kan.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">📐</div>
+          <div>
+            <div class="rule-title">Bordgroottes</div>
+            <div class="rule-text"><strong>4 × 4</strong> — 9 vakjes, snel potje.<br><strong>6 × 5</strong> — 20 vakjes, standaard.<br><strong>7 × 6</strong> — 30 vakjes, voor de strategen.</div>
+          </div>
+        </div>
+      </div>
+      <button class="modal-btn-start" id="modalBtnStart">Begrepen — spelen maar <span style="font-style:normal">→</span></button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">/ Pauzespel /</div>
+    <h1><span class="slash">/</span>Kamertje<br>verhuren<span class="slash">/</span></h1>
+    <p class="hero-sub">Minder administratie. Meer vakjes. Een klassieker, op z'n Next Standards: scherp, snel en met lef. Pak een collega — of daag Claude uit.</p>
+  </div>
+
+  <div id="setup" class="setup">
+
+    <div class="field">
+      <label>/ Modus /</label>
+      <div class="mode-toggle" id="modeToggle">
+        <button class="active" data-mode="duo"><span class="dot"></span>Twee spelers</button>
+        <button data-mode="ai"><span class="dot"></span>Tegen Claude</button>
+      </div>
+    </div>
+
+    <div class="player-row" id="playerRow">
+      <div class="field">
+        <label>/ Speler 1 /</label>
+        <input id="p1name" type="text" maxlength="14" value="Speler 1" autocomplete="off">
+      </div>
+      <div class="field" id="p2field">
+        <label>/ Speler 2 /</label>
+        <input id="p2name" type="text" maxlength="14" value="Speler 2" autocomplete="off">
+      </div>
+      <div class="field" id="aiField" style="display:none;">
+        <label>/ Tegenstander /</label>
+        <div class="ai-card">
+          <div class="ai-mark">C</div>
+          <div class="ai-info">
+            <div class="ai-name">Claude</div>
+            <div class="ai-meta">Pakt vakjes, speelt veilig, gaat voor de winst</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" id="starterField" style="display:none;">
+      <label>/ Wie begint? /</label>
+      <div class="mode-toggle" id="starterToggle">
+        <button class="active" data-starter="1"><span class="dot"></span>Jij begint</button>
+        <button data-starter="2"><span class="dot"></span>Claude begint</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>/ Bordgrootte /</label>
+      <div class="size-picker" id="sizePicker">
+        <button class="size-chip" data-w="4" data-h="4"><strong>4 × 4</strong><span>9 vakjes — snel</span></button>
+        <button class="size-chip active" data-w="6" data-h="5"><strong>6 × 5</strong><span>20 vakjes — standaard</span></button>
+        <button class="size-chip" data-w="7" data-h="6"><strong>7 × 6</strong><span>30 vakjes — strategisch</span></button>
+      </div>
+    </div>
+
+    <button class="btn-start" id="btnStart">
+      Let's make it work <span class="arrow">→</span>
+    </button>
+  </div>
+
+  <div id="game" class="game">
+    <div class="scoreboard">
+      <div class="player-card p1 turn" id="card1">
+        <div class="player-label">/ Speler 1 /</div>
+        <div class="player-name" id="name1">Stephan</div>
+        <div class="player-score"><span class="num" id="score1">0</span><span class="of" id="of1">/ 20</span></div>
+      </div>
+      <div class="turn-indicator" id="turnIndicator">
+        <div class="label">Aan zet</div>
+        <div class="who" id="turnName">Stephan</div>
+        <div class="bonus" id="bonusText"></div>
+      </div>
+      <div class="player-card p2" id="card2">
+        <div class="player-label" id="label2">/ Speler 2 /</div>
+        <div class="player-name" id="name2">Coen</div>
+        <div class="player-score"><span class="num" id="score2">0</span><span class="of" id="of2">/ 20</span></div>
+      </div>
+    </div>
+
+    <div class="board-wrap" id="boardWrap">
+      <svg id="board" class="board" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <div class="winner" id="winner">
+      <div class="winner-label">/ Game over /</div>
+      <div class="winner-name" id="winnerName">—</div>
+      <div class="winner-score" id="winnerScore"></div>
+      <div class="winner-tag">Make it work.</div>
+    </div>
+
+    <div class="controls">
+      <div class="controls-left">
+        <button class="btn" id="btnReset">Nieuwe ronde</button>
+        <button class="btn btn-ghost" id="btnNew">Andere setup</button>
+      </div>
+      <div class="rules-hint">
+        <span class="slash">/</span> Maak een vakje af → krijg 'm + nóg een beurt <span class="slash">/</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="vals">
+      <span>Commitment</span>
+      <span>Lef</span>
+      <span>Uniek</span>
+      <span>Bruisend</span>
+    </div>
+    <div>© Kamertje verhuren · Next Standard editie</div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- uitleg modal ----------
+  const overlay = $('modalOverlay');
+  $('btnUitleg').addEventListener('click', () => overlay.classList.add('open'));
+  $('modalClose').addEventListener('click', () => overlay.classList.remove('open'));
+  $('modalBtnStart').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+
+  // ---------- game setup ----------
+  let cfg = { w: 6, h: 5, p1: 'Speler 1', p2: 'Speler 2', mode: 'duo', starter: 1 };
+  let state = null;
+  let aiBusy = false;
+
+  const modeToggle = $('modeToggle');
+  modeToggle.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    modeToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    cfg.mode = btn.dataset.mode;
+    if (cfg.mode === 'ai') {
+      $('p2field').style.display = 'none';
+      $('aiField').style.display = 'block';
+      $('starterField').style.display = 'block';
+    } else {
+      $('p2field').style.display = 'block';
+      $('aiField').style.display = 'none';
+      $('starterField').style.display = 'none';
+    }
+  });
+
+  const starterToggle = $('starterToggle');
+  starterToggle.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    starterToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    cfg.starter = parseInt(btn.dataset.starter, 10);
+  });
+
+  const sizePicker = $('sizePicker');
+  sizePicker.addEventListener('click', (e) => {
+    const chip = e.target.closest('.size-chip');
+    if (!chip) return;
+    sizePicker.querySelectorAll('.size-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    cfg.w = parseInt(chip.dataset.w, 10);
+    cfg.h = parseInt(chip.dataset.h, 10);
+  });
+
+  $('btnStart').addEventListener('click', () => {
+    cfg.p1 = ($('p1name').value || 'Speler 1').trim().slice(0, 14) || 'Speler 1';
+    if (cfg.mode === 'ai') {
+      cfg.p2 = 'Claude';
+    } else {
+      cfg.p2 = ($('p2name').value || 'Speler 2').trim().slice(0, 14) || 'Speler 2';
+    }
+    $('setup').style.display = 'none';
+    $('game').classList.add('active');
+    startGame();
+  });
+
+  $('btnReset').addEventListener('click', () => {
+    if (aiBusy) return;
+    startGame();
+  });
+  $('btnNew').addEventListener('click', () => {
+    if (aiBusy) return;
+    $('game').classList.remove('active');
+    $('setup').style.display = 'flex';
+    $('winner').classList.remove('active');
+  });
+
+  function startGame() {
+    const W = cfg.w, H = cfg.h;
+    const totalBoxes = (W - 1) * (H - 1);
+
+    state = {
+      W, H,
+      hLines: Array.from({length: H}, () => Array(W - 1).fill(0)),
+      vLines: Array.from({length: H - 1}, () => Array(W).fill(0)),
+      boxes: Array.from({length: H - 1}, () => Array(W - 1).fill(0)),
+      turn: cfg.mode === 'ai' ? cfg.starter : 1,
+      score1: 0, score2: 0, totalBoxes, done: false
+    };
+
+    $('name1').textContent = cfg.p1;
+    if (cfg.mode === 'ai') {
+      $('label2').textContent = '/ Tegenstander /';
+      $('name2').innerHTML = cfg.p2 + ' <span class="ai-badge">AI</span>';
+    } else {
+      $('label2').textContent = '/ Speler 2 /';
+      $('name2').textContent = cfg.p2;
+    }
+    $('score1').textContent = '0';
+    $('score2').textContent = '0';
+    $('of1').textContent = '/ ' + totalBoxes;
+    $('of2').textContent = '/ ' + totalBoxes;
+    $('bonusText').textContent = '';
+    $('winner').classList.remove('active');
+    $('boardWrap').classList.remove('thinking');
+    aiBusy = false;
+
+    updateTurnUI();
+    drawBoard();
+
+    // Als Claude begint, laat 'm meteen een zet doen
+    if (cfg.mode === 'ai' && state.turn === 2) {
+      scheduleAiMove();
+    }
+  }
+
+  function updateTurnUI() {
+    const c1 = $('card1'), c2 = $('card2'), ti = $('turnIndicator');
+    if (state.done) {
+      c1.classList.remove('turn');
+      c2.classList.remove('turn');
+      return;
+    }
+    if (state.turn === 1) {
+      c1.classList.add('turn'); c2.classList.remove('turn');
+      ti.classList.remove('is-p2');
+      $('turnName').textContent = cfg.p1;
+    } else {
+      c2.classList.add('turn'); c1.classList.remove('turn');
+      ti.classList.add('is-p2');
+      const isAi = cfg.mode === 'ai';
+      if (isAi && aiBusy) {
+        $('turnName').innerHTML = 'Claude denkt <span class="thinking"><span></span><span></span><span></span></span>';
+      } else {
+        $('turnName').textContent = cfg.p2;
+      }
+    }
+  }
+
+  function drawBoard() {
+    const svg = $('board');
+    const W = state.W, H = state.H;
+
+    const maxBoardWidth = 720;
+    const maxCell = 90;
+    const minCell = 56;
+    const cell = Math.max(minCell, Math.min(maxCell, Math.floor((maxBoardWidth - 40) / (W - 1))));
+    const pad = 28;
+    const vbW = pad * 2 + (W - 1) * cell;
+    const vbH = pad * 2 + (H - 1) * cell;
+
+    svg.setAttribute('viewBox', `0 0 ${vbW} ${vbH}`);
+    svg.setAttribute('width', vbW);
+    svg.setAttribute('style', `width: 100%; max-width: ${vbW}px;`);
+    svg.innerHTML = '';
+
+    const xOf = (c) => pad + c * cell;
+    const yOf = (r) => pad + r * cell;
+
+    for (let r = 0; r < H - 1; r++) {
+      for (let c = 0; c < W - 1; c++) {
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', xOf(c));
+        rect.setAttribute('y', yOf(r));
+        rect.setAttribute('width', cell);
+        rect.setAttribute('height', cell);
+        rect.setAttribute('class', 'box-fill');
+        rect.setAttribute('id', `box-${r}-${c}`);
+        rect.setAttribute('rx', 2);
+        svg.appendChild(rect);
+
+        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txt.setAttribute('x', xOf(c) + cell / 2);
+        txt.setAttribute('y', yOf(r) + cell / 2 + 1);
+        txt.setAttribute('font-size', Math.round(cell * 0.42));
+        txt.setAttribute('class', 'box-init');
+        txt.setAttribute('id', `init-${r}-${c}`);
+        svg.appendChild(txt);
+      }
+    }
+
+    const lineThick = Math.max(4, Math.round(cell * 0.08));
+    const hit = Math.max(20, Math.round(cell * 0.32));
+
+    for (let r = 0; r < H; r++) {
+      for (let c = 0; c < W - 1; c++) {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('class', 'line');
+        g.setAttribute('data-type', 'h');
+        g.setAttribute('data-r', r);
+        g.setAttribute('data-c', c);
+        const x = xOf(c), y = yOf(r);
+        const hb = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        hb.setAttribute('x', x);
+        hb.setAttribute('y', y - hit / 2);
+        hb.setAttribute('width', cell);
+        hb.setAttribute('height', hit);
+        hb.setAttribute('class', 'line-hit');
+        g.appendChild(hb);
+        const vis = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        vis.setAttribute('x', x);
+        vis.setAttribute('y', y - lineThick / 2);
+        vis.setAttribute('width', cell);
+        vis.setAttribute('height', lineThick);
+        vis.setAttribute('class', 'line-vis');
+        vis.setAttribute('rx', lineThick / 2);
+        vis.setAttribute('id', `h-${r}-${c}`);
+        g.appendChild(vis);
+        svg.appendChild(g);
+      }
+    }
+
+    for (let r = 0; r < H - 1; r++) {
+      for (let c = 0; c < W; c++) {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('class', 'line');
+        g.setAttribute('data-type', 'v');
+        g.setAttribute('data-r', r);
+        g.setAttribute('data-c', c);
+        const x = xOf(c), y = yOf(r);
+        const hb = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        hb.setAttribute('x', x - hit / 2);
+        hb.setAttribute('y', y);
+        hb.setAttribute('width', hit);
+        hb.setAttribute('height', cell);
+        hb.setAttribute('class', 'line-hit');
+        g.appendChild(hb);
+        const vis = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        vis.setAttribute('x', x - lineThick / 2);
+        vis.setAttribute('y', y);
+        vis.setAttribute('width', lineThick);
+        vis.setAttribute('height', cell);
+        vis.setAttribute('class', 'line-vis');
+        vis.setAttribute('rx', lineThick / 2);
+        vis.setAttribute('id', `v-${r}-${c}`);
+        g.appendChild(vis);
+        svg.appendChild(g);
+      }
+    }
+
+    const dotR = Math.max(4, Math.round(cell * 0.085));
+    for (let r = 0; r < H; r++) {
+      for (let c = 0; c < W; c++) {
+        const d = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        d.setAttribute('cx', xOf(c));
+        d.setAttribute('cy', yOf(r));
+        d.setAttribute('r', dotR);
+        d.setAttribute('class', 'dot');
+        svg.appendChild(d);
+      }
+    }
+
+    svg.addEventListener('click', onLineClick);
+  }
+
+  function onLineClick(e) {
+    if (state.done || aiBusy) return;
+    if (cfg.mode === 'ai' && state.turn !== 1) return;
+    const g = e.target.closest('g.line');
+    if (!g || g.classList.contains('locked')) return;
+    const type = g.dataset.type;
+    const r = parseInt(g.dataset.r, 10);
+    const c = parseInt(g.dataset.c, 10);
+    playMove(type, r, c, false);
+  }
+
+  function playMove(type, r, c, isAi) {
+    const player = state.turn;
+    if (type === 'h') {
+      if (state.hLines[r][c]) return;
+      state.hLines[r][c] = player;
+      const vis = $(`h-${r}-${c}`);
+      vis.classList.add(player === 1 ? 'drawn-p1' : 'drawn-p2');
+      if (isAi) vis.classList.add('ai-flash');
+    } else {
+      if (state.vLines[r][c]) return;
+      state.vLines[r][c] = player;
+      const vis = $(`v-${r}-${c}`);
+      vis.classList.add(player === 1 ? 'drawn-p1' : 'drawn-p2');
+      if (isAi) vis.classList.add('ai-flash');
+    }
+    const g = document.querySelector(`g.line[data-type="${type}"][data-r="${r}"][data-c="${c}"]`);
+    if (g) g.classList.add('locked');
+
+    let claimed = 0;
+    const toCheck = [];
+    if (type === 'h') {
+      if (r - 1 >= 0) toCheck.push([r - 1, c]);
+      if (r < state.H - 1) toCheck.push([r, c]);
+    } else {
+      if (c - 1 >= 0) toCheck.push([r, c - 1]);
+      if (c < state.W - 1) toCheck.push([r, c]);
+    }
+    for (const [br, bc] of toCheck) {
+      if (state.boxes[br][bc]) continue;
+      if (boxComplete(br, bc)) {
+        state.boxes[br][bc] = player;
+        claimBox(br, bc, player);
+        claimed++;
+      }
+    }
+
+    if (claimed > 0) {
+      if (player === 1) state.score1 += claimed; else state.score2 += claimed;
+      $('score1').textContent = state.score1;
+      $('score2').textContent = state.score2;
+      $('bonusText').textContent = claimed === 1 ? '+1 vakje — nog een beurt!' : `+${claimed} vakjes — nog een beurt!`;
+    } else {
+      $('bonusText').textContent = '';
+      state.turn = state.turn === 1 ? 2 : 1;
+    }
+
+    if (state.score1 + state.score2 >= state.totalBoxes) {
+      finishGame();
+      return;
+    }
+
+    updateTurnUI();
+
+    if (cfg.mode === 'ai' && state.turn === 2 && !state.done) {
+      scheduleAiMove();
+    }
+  }
+
+  function boxComplete(br, bc) {
+    return state.hLines[br][bc] &&
+           state.hLines[br + 1][bc] &&
+           state.vLines[br][bc] &&
+           state.vLines[br][bc + 1];
+  }
+
+  function claimBox(br, bc, player) {
+    const box = $(`box-${br}-${bc}`);
+    const init = $(`init-${br}-${bc}`);
+    box.classList.add(player === 1 ? 'p1' : 'p2', 'just-won');
+    init.textContent = (player === 1 ? cfg.p1 : cfg.p2).charAt(0).toUpperCase();
+    init.classList.add(player === 1 ? 'p1' : 'p2', 'show');
+  }
+
+  function finishGame() {
+    state.done = true;
+    aiBusy = false;
+    $('boardWrap').classList.remove('thinking');
+    updateTurnUI();
+    const name = $('winnerName');
+    const sc = $('winnerScore');
+
+    if (state.score1 > state.score2) {
+      name.textContent = cfg.p1;
+      name.classList.remove('tie');
+      name.style.color = 'var(--brand-blue)';
+      sc.textContent = `${state.score1} – ${state.score2} vakjes`;
+    } else if (state.score2 > state.score1) {
+      name.textContent = cfg.p2;
+      name.classList.remove('tie');
+      name.style.color = 'var(--white)';
+      sc.textContent = `${state.score2} – ${state.score1} vakjes`;
+    } else {
+      name.textContent = 'Gelijkspel';
+      name.classList.add('tie');
+      name.style.color = '';
+      sc.textContent = `Beide spelers ${state.score1} vakjes — nog een ronde?`;
+    }
+    $('winner').classList.add('active');
+    $('bonusText').textContent = '';
+  }
+
+  function scheduleAiMove() {
+    aiBusy = true;
+    $('boardWrap').classList.add('thinking');
+    updateTurnUI();
+    const delay = 650 + Math.floor(Math.random() * 500);
+    setTimeout(() => { aiTurn(); }, delay);
+  }
+
+  function aiTurn() {
+    if (state.done) { aiBusy = false; return; }
+    const move = aiPickMove();
+    aiBusy = false;
+    $('boardWrap').classList.remove('thinking');
+    if (!move) return;
+    playMove(move.type, move.r, move.c, true);
+  }
+
+  function collectOpenLines() {
+    const lines = [];
+    for (let r = 0; r < state.H; r++) {
+      for (let c = 0; c < state.W - 1; c++) {
+        if (!state.hLines[r][c]) lines.push({ type: 'h', r, c });
+      }
+    }
+    for (let r = 0; r < state.H - 1; r++) {
+      for (let c = 0; c < state.W; c++) {
+        if (!state.vLines[r][c]) lines.push({ type: 'v', r, c });
+      }
+    }
+    return lines;
+  }
+
+  function sidesOf(br, bc) {
+    let n = 0;
+    if (state.hLines[br][bc]) n++;
+    if (state.hLines[br + 1][bc]) n++;
+    if (state.vLines[br][bc]) n++;
+    if (state.vLines[br][bc + 1]) n++;
+    return n;
+  }
+
+  function adjacentBoxes(move) {
+    const { type, r, c } = move;
+    const a = [];
+    if (type === 'h') {
+      if (r - 1 >= 0) a.push([r - 1, c]);
+      if (r < state.H - 1) a.push([r, c]);
+    } else {
+      if (c - 1 >= 0) a.push([r, c - 1]);
+      if (c < state.W - 1) a.push([r, c]);
+    }
+    return a;
+  }
+
+  function aiPickMove() {
+    const all = collectOpenLines();
+    if (all.length === 0) return null;
+
+    const scored = all.map(m => {
+      const adj = adjacentBoxes(m);
+      let completes = 0;
+      let putsToThree = 0;
+      for (const [br, bc] of adj) {
+        const s = sidesOf(br, bc);
+        if (s === 3) completes++;
+        else if (s === 2) putsToThree++;
+      }
+      return { ...m, completes, putsToThree };
+    });
+
+    const winners = scored.filter(m => m.completes > 0);
+    if (winners.length > 0) {
+      winners.sort((a, b) => b.completes - a.completes);
+      const best = winners[0].completes;
+      const top = winners.filter(m => m.completes === best);
+      return pickRandom(top);
+    }
+
+    const safe = scored.filter(m => m.putsToThree === 0);
+    if (safe.length > 0) {
+      return pickRandom(safe);
+    }
+
+    let bestMove = null;
+    let bestChainCost = Infinity;
+    for (const m of scored) {
+      const cost = simulateChainCost(m);
+      if (cost < bestChainCost) {
+        bestChainCost = cost;
+        bestMove = m;
+      }
+    }
+    return bestMove || pickRandom(scored);
+  }
+
+  function simulateChainCost(move) {
+    const h = state.hLines.map(row => row.slice());
+    const v = state.vLines.map(row => row.slice());
+
+    function s(br, bc) {
+      let n = 0;
+      if (h[br][bc]) n++;
+      if (h[br + 1][bc]) n++;
+      if (v[br][bc]) n++;
+      if (v[br][bc + 1]) n++;
+      return n;
+    }
+
+    if (move.type === 'h') h[move.r][move.c] = 1;
+    else v[move.r][move.c] = 1;
+
+    let captured = 0;
+    let progress = true;
+    let guard = 0;
+    while (progress && guard < 200) {
+      progress = false;
+      guard++;
+      for (let br = 0; br < state.H - 1 && !progress; br++) {
+        for (let bc = 0; bc < state.W - 1; bc++) {
+          if (s(br, bc) === 3) {
+            if (!h[br][bc]) h[br][bc] = 1;
+            else if (!h[br + 1][bc]) h[br + 1][bc] = 1;
+            else if (!v[br][bc]) v[br][bc] = 1;
+            else if (!v[br][bc + 1]) v[br][bc + 1] = 1;
+            captured++;
+            progress = true;
+            break;
+          }
+        }
+      }
+    }
+    return captured;
+  }
+
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+})();
+</script>
+
+</body>
+</html>
