@@ -941,7 +941,6 @@
 
   .game-row {
     display: grid;
-    grid-template-columns: 1fr auto;
     gap: 10px;
     align-items: center;
     padding: 10px 12px;
@@ -958,17 +957,6 @@
     margin: 0 6px;
   }
   .game-meta { font-size: 12px; color: var(--ink-faint); font-weight: 500; margin-top: 2px; }
-  .game-del {
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--ink-faint);
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 13px;
-    transition: all .15s;
-  }
-  .game-del:hover, .game-del:focus-visible { border-color: var(--line-strong); color: var(--ink); }
   .stats-empty {
     padding: 22px;
     border: 1px dashed var(--line-strong);
@@ -2134,7 +2122,6 @@
   ];
 
   const REMOTE = !!(CONFIG.supabaseUrl && CONFIG.supabaseKey);
-  const UNDO_MS = 10 * 60 * 1000;
   const GAMES_PAGE = 15;
   const NEW = '__new__';
   const LS = {
@@ -2281,21 +2268,6 @@
         lsSet(LS.pendingGames, pending);
         return { saved: false, queued: true };
       }
-    },
-
-    async deleteGame(g) {
-      if (!REMOTE) {
-        lsSet(LS.games, lsGet(LS.games, []).filter(x => x.id !== g.id));
-        return true;
-      }
-      if (g.pending) {
-        lsSet(LS.pendingGames, lsGet(LS.pendingGames, []).filter(x => x.id !== g.id));
-        return true;
-      }
-      const rows = await rest(`games?id=eq.${encodeURIComponent(g.id)}`, {
-        method: 'DELETE', headers: { Prefer: 'return=representation' }
-      });
-      return Array.isArray(rows) && rows.length > 0;
     },
 
     async players() {
@@ -2513,7 +2485,6 @@
       .concat(all.filter(p => p.played < PROVISIONAL).sort(byRating));
   }
 
-  const canUndo = (g) => !REMOTE || g.pending || (Number.isFinite(g.created) && Date.now() - g.created < UNDO_MS - 15000);
   const fmtDate = new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
   let lastGames = [];
@@ -2541,7 +2512,7 @@
     } else if (loadFailed) {
       html = '<span class="live off"></span>Geen verbinding met de centrale ranglijst. Probeer het straks opnieuw.';
     } else {
-      html = '<span class="live"></span>Centrale ranglijst. Een potje kun je tot 10 minuten na afloop ongedaan maken.';
+      html = '<span class="live"></span>Centrale ranglijst, voor iedereen hetzelfde. Potjes verwijderen kan alleen via het beheer in Supabase.';
     }
     if (pending) html += ` ${pending} ${pending === 1 ? 'potje wacht' : 'potjes wachten'} nog op verzending.`;
     $('statsSource').innerHTML = html;
@@ -2598,15 +2569,11 @@
       const size = (g.w && g.h) ? `${g.w} × ${g.h}` : '';
       const mode = g.mode === 'ai' ? `tegen Claude (${g.level || 'normaal'})` : 'onderling';
       const extra = (g.s1 === g.s2 ? ', gelijkspel' : '') + (g.pending ? ', wacht op verzending' : '');
-      const undo = canUndo(g)
-        ? `<button class="game-del" data-id="${esc(g.id)}" aria-label="Potje ongedaan maken" title="Potje ongedaan maken">✕</button>`
-        : '';
       return `<li class="game-row">
         <div>
           <div class="game-match">${n1}<span class="score">${g.s1} – ${g.s2}</span>${n2}</div>
           <div class="game-meta">${esc(fmtDate.format(new Date(g.t)))}, ${size} ${mode}${extra}</div>
         </div>
-        ${undo}
       </li>`;
     }).join('');
 
@@ -2648,20 +2615,6 @@
   });
 
   $('gamesMore').addEventListener('click', () => { showAllGames = !showAllGames; renderStats(); });
-
-  $('gameList').addEventListener('click', async (e) => {
-    const btn = e.target.closest('.game-del');
-    if (!btn) return;
-    const g = lastGames.find(x => x.id === btn.dataset.id);
-    if (!g) return;
-    if (!confirm(`Potje ${g.p1} ${g.s1} – ${g.s2} ${g.p2} ongedaan maken?`)) return;
-    btn.disabled = true;
-    let ok = false;
-    try { ok = await store.deleteGame(g); } catch (err) { ok = false; }
-    await loadStats();
-    setStatus(ok ? 'Potje ongedaan gemaakt.'
-      : 'Dit potje kon niet meer ongedaan worden gemaakt. Na 10 minuten kan dat alleen nog via het beheer in Supabase.');
-  });
 
   // ---------- start ----------
   (function init() {
