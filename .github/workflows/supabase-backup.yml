@@ -1,0 +1,74 @@
+name: Kamertje verhuren - Supabase actief houden en back-up
+
+on:
+  schedule:
+    - cron: '17 5 */3 * *'   # elke 3 dagen om 05:17 UTC
+  workflow_dispatch:          # handmatig starten via het tabblad Actions
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kamertje-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Database uitlezen (houdt Supabase actief)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_KEY:-}" ]; then
+            echo "::error::De secrets SUPABASE_URL en/of SUPABASE_KEY ontbreken (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+          base="${SUPABASE_URL%/}/rest/v1"
+          get() {
+            curl -sS --fail-with-body --retry 3 --retry-delay 10 --retry-all-errors \
+              -H "apikey: ${SUPABASE_KEY}" "${base}/$1"
+          }
+
+          mkdir -p backup
+          get "players?select=name,created_at&order=name.asc" | jq '.' > /tmp/players.json
+
+          echo '[]' > /tmp/games.json
+          offset=0
+          while :; do
+            get "games?select=*&order=played_at.asc,id.asc&limit=1000&offset=${offset}" > /tmp/page.json
+            jq -s '.[0] + .[1]' /tmp/games.json /tmp/page.json > /tmp/merged.json
+            mv /tmp/merged.json /tmp/games.json
+            [ "$(jq 'length' /tmp/page.json)" -lt 1000 ] && break
+            offset=$((offset + 1000))
+          done
+
+          # Pas overschrijven als alles gelukt is
+          mv /tmp/players.json backup/kamertje-players.json
+          jq '.' /tmp/games.json > backup/kamertje-games.json
+          echo "Spelers: $(jq 'length' backup/kamertje-players.json), potjes: $(jq 'length' backup/kamertje-games.json)"
+
+      - name: Back-up opslaan in de repo
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add backup/
+          if ! git diff --cached --quiet; then
+            git commit -m "Back-up Kamertje verhuren $(date -u +%Y-%m-%d)"
+          else
+            # GitHub schakelt geplande workflows uit na 60 dagen zonder activiteit in de repo.
+            last=$(git log -1 --format=%ct)
+            if [ $(( $(date +%s) - last )) -gt $(( 45 * 86400 )) ]; then
+              git commit --allow-empty -m "Keepalive: geplande back-up actief houden"
+            else
+              echo "Geen wijzigingen sinds de vorige back-up."
+              exit 0
+            fi
+          fi
+          git push
