@@ -213,6 +213,52 @@
     box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
   }
 
+  .field select {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 40px 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2313192B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color .15s, background-color .15s, box-shadow .15s;
+  }
+  .field select:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
+  }
+  .field .player-new { margin-top: 8px; }
+  .level-toggle { grid-template-columns: repeat(3, 1fr); }
+  .resume {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-left: 4px solid var(--brand-green);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+  }
+  .resume[hidden] { display: none; }
+  .resume-title { font-family: var(--font-display); font-weight: 800; font-style: italic; font-size: 16px; }
+  .resume-text { font-size: 13px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; }
+  .resume-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .resume-actions .btn { padding: 9px 14px; font-size: 13px; }
+  .setup-error { font-size: 14px; font-weight: 600; color: #C62F4B; }
+  .setup-error:empty { display: none; }
+
   /* mode segmented */
   .mode-toggle {
     display: grid;
@@ -819,6 +865,162 @@
   }
   .modal-btn-start:hover { background: #00d987; }
 
+  /* ---------- statistieken ---------- */
+  .topbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .modal.modal-wide { max-width: 680px; }
+  .stats-filter { grid-template-columns: repeat(3, 1fr); }
+  .stats-filter button { font-size: 13px; padding: 10px 8px; }
+  .stats-section { display: flex; flex-direction: column; gap: 10px; }
+  .stats-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .stats-heading small {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .rank-list, .game-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .rank-row {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+  .rank-row.top { background: var(--ink); color: #fff; }
+  .rank-pos {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-faint);
+  }
+  .rank-row.top .rank-pos { color: var(--brand-green); }
+  .rank-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    word-break: break-word;
+  }
+  .rank-meta { font-size: 12px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; }
+  .rank-row.top .rank-meta { color: rgba(255,255,255,0.65); }
+  .rank-bar { height: 4px; background: var(--line-strong); border-radius: 2px; margin-top: 7px; overflow: hidden; }
+  .rank-row.top .rank-bar { background: rgba(255,255,255,0.15); }
+  .rank-bar span { display: block; height: 100%; background: var(--brand-green); border-radius: 2px; }
+  .rank-wins { text-align: right; line-height: 1; }
+  .rank-wins .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+  }
+  .rank-wins .lbl { display: block; font-size: 11px; color: var(--ink-soft); font-weight: 600; margin-top: 3px; }
+  .rank-wins .up { color: #00A86B; }
+  .rank-wins .down { color: #C62F4B; }
+  .rank-row.top .rank-wins .up { color: var(--brand-green); }
+  .rank-row.top .rank-wins .down { color: #FF8FA3; }
+  .rank-row.provisional { background: transparent; border: 1px dashed var(--line-strong); }
+  .rank-divider { font-size: 12px; color: var(--ink-faint); font-weight: 600; margin-top: 8px; }
+  .stats-note { font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; margin-top: -4px; }
+  .rank-row.top .rank-wins .lbl { color: rgba(255,255,255,0.65); }
+
+  .game-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .game-match { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+  .game-match strong { color: var(--ink); font-weight: 800; }
+  .game-match .score {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--ink);
+    margin: 0 6px;
+  }
+  .game-meta { font-size: 12px; color: var(--ink-faint); font-weight: 500; margin-top: 2px; }
+  .game-del {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink-faint);
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all .15s;
+  }
+  .game-del:hover, .game-del:focus-visible { border-color: var(--line-strong); color: var(--ink); }
+  .stats-empty {
+    padding: 22px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .stats-more { align-self: flex-start; }
+  .stats-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 18px 28px 24px;
+    border-top: 1px solid var(--line);
+    margin-top: 16px;
+  }
+  .stats-actions .btn { padding: 9px 14px; font-size: 13px; }
+  .stats-status { width: 100%; font-size: 13px; color: var(--ink-soft); font-weight: 500; min-height: 18px; }
+  .stats-status:empty { display: none; }
+  .stats-source { flex: 1 1 260px; font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; align-self: center; }
+  .stats-source .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-green); margin-right: 6px; vertical-align: 1px; }
+  .stats-source .off { background: var(--ink-faint); }
+
+  .winner-record {
+    white-space: pre-line;
+    line-height: 1.6;
+    margin-top: 14px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    position: relative;
+    font-weight: 600;
+  }
+  .winner-record:empty { display: none; }
+  .winner-stats-btn {
+    margin-top: 16px;
+    position: relative;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius-sm);
+    padding: 9px 16px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .winner-stats-btn:hover { background: var(--brand-green); border-color: var(--brand-green); color: var(--blue-900); }
+
   @media (max-width: 640px) {
     .player-row { grid-template-columns: 1fr; }
     .scoreboard { grid-template-columns: 1fr; }
@@ -848,7 +1050,8 @@
       <div class="brand-mark">N</div>
       <div>Next Standard</div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px;">
+    <div class="topbar-actions">
+      <button class="btn-uitleg" id="btnStats">Statistieken</button>
       <button class="btn-uitleg" id="btnUitleg">? Uitleg</button>
       <div class="tag-make">Make it work</div>
     </div>
@@ -888,7 +1091,7 @@
           <div class="rule-icon">🤖</div>
           <div>
             <div class="rule-title">Tegen Claude spelen</div>
-            <div class="rule-text">Kies "Tegen Claude" in de setup. Claude pakt altijd gratis vakjes, speelt veilige zetten en probeert lange ketens te vermijden. Versla hem als je kan.</div>
+            <div class="rule-text">Kies "Tegen Claude" en een niveau. <strong>Makkelijk</strong> speelt op gevoel, <strong>Normaal</strong> pakt vakjes en speelt veilig, <strong>Moeilijk</strong> beheerst ook het eindspel met ketens. Elk niveau heeft een eigen plek in de ranglijst.</div>
           </div>
         </div>
         <div class="rule-block">
@@ -903,6 +1106,39 @@
     </div>
   </div>
 
+  <!-- Statistieken modal -->
+  <div class="modal-overlay" id="statsOverlay">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Wie is de baas? /</div>
+        <h2 class="modal-title" id="statsTitle">Statistieken</h2>
+        <button class="modal-close" id="statsClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="mode-toggle stats-filter" id="statsFilter">
+          <button class="active" data-filter="all"><span class="dot"></span>Alles</button>
+          <button data-filter="duo"><span class="dot"></span>Onderling</button>
+          <button data-filter="ai"><span class="dot"></span>Tegen Claude</button>
+        </div>
+        <div class="stats-section">
+          <div class="stats-heading">Ranglijst <small id="rankSummary"></small></div>
+          <p class="stats-note">Gerangschikt op Elo-rating. Iedereen begint op 1000, en winnen van een sterkere tegenstander levert meer op. Na 3 potjes tel je volwaardig mee.</p>
+          <ol class="rank-list" id="rankList"></ol>
+        </div>
+        <div class="stats-section">
+          <div class="stats-heading">Gespeelde potjes <small id="gamesSummary"></small></div>
+          <ul class="game-list" id="gameList"></ul>
+          <button class="btn btn-ghost stats-more" id="gamesMore" style="display:none;">Toon alle potjes</button>
+        </div>
+      </div>
+      <div class="stats-actions">
+        <div class="stats-source" id="statsSource"></div>
+        <button class="btn btn-ghost" id="btnRefresh">Vernieuwen</button>
+        <div class="stats-status" id="statsStatus" role="status"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="hero">
     <div class="hero-eyebrow">/ Pauzespel /</div>
     <h1><span class="slash">/</span>Kamertje<br>verhuren<span class="slash">/</span></h1>
@@ -910,6 +1146,17 @@
   </div>
 
   <div id="setup" class="setup">
+
+    <div class="resume" id="resumeBox" hidden>
+      <div>
+        <div class="resume-title">Potje nog bezig</div>
+        <div class="resume-text" id="resumeText"></div>
+      </div>
+      <div class="resume-actions">
+        <button class="btn" id="btnResume">Verder spelen</button>
+        <button class="btn btn-ghost" id="btnDiscard">Weggooien</button>
+      </div>
+    </div>
 
     <div class="field">
       <label>/ Modus /</label>
@@ -921,12 +1168,14 @@
 
     <div class="player-row" id="playerRow">
       <div class="field">
-        <label>/ Speler 1 /</label>
-        <input id="p1name" type="text" maxlength="14" value="Speler 1" autocomplete="off">
+        <label for="p1select">/ Speler 1 /</label>
+        <select id="p1select"></select>
+        <input id="p1name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 1" hidden>
       </div>
       <div class="field" id="p2field">
-        <label>/ Speler 2 /</label>
-        <input id="p2name" type="text" maxlength="14" value="Speler 2" autocomplete="off">
+        <label for="p2select">/ Speler 2 /</label>
+        <select id="p2select"></select>
+        <input id="p2name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 2" hidden>
       </div>
       <div class="field" id="aiField" style="display:none;">
         <label>/ Tegenstander /</label>
@@ -934,17 +1183,28 @@
           <div class="ai-mark">C</div>
           <div class="ai-info">
             <div class="ai-name">Claude</div>
-            <div class="ai-meta">Pakt vakjes, speelt veilig, gaat voor de winst</div>
+            <div class="ai-meta" id="aiMeta">Pakt vakjes, speelt veilig, vermijdt lange ketens</div>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="setup-error" id="setupError" role="alert"></div>
 
     <div class="field" id="starterField" style="display:none;">
       <label>/ Wie begint? /</label>
       <div class="mode-toggle" id="starterToggle">
         <button class="active" data-starter="1"><span class="dot"></span>Jij begint</button>
         <button data-starter="2"><span class="dot"></span>Claude begint</button>
+      </div>
+    </div>
+
+    <div class="field" id="levelField" style="display:none;">
+      <label>/ Niveau /</label>
+      <div class="mode-toggle level-toggle" id="levelToggle">
+        <button data-level="makkelijk"><span class="dot"></span>Makkelijk</button>
+        <button class="active" data-level="normaal"><span class="dot"></span>Normaal</button>
+        <button data-level="moeilijk"><span class="dot"></span>Moeilijk</button>
       </div>
     </div>
 
@@ -989,7 +1249,9 @@
       <div class="winner-label">/ Game over /</div>
       <div class="winner-name" id="winnerName">—</div>
       <div class="winner-score" id="winnerScore"></div>
+      <div class="winner-record" id="winnerRecord"></div>
       <div class="winner-tag">Make it work.</div>
+      <button class="winner-stats-btn" id="winnerStatsBtn">Bekijk statistieken</button>
     </div>
 
     <div class="controls">
@@ -1028,7 +1290,12 @@
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.classList.remove('open'); });
 
   // ---------- game setup ----------
-  let cfg = { w: 6, h: 5, p1: 'Speler 1', p2: 'Speler 2', mode: 'duo', starter: 1 };
+  let cfg = { w: 6, h: 5, p1: 'Speler 1', p2: 'Speler 2', mode: 'duo', starter: 1, level: 'normaal' };
+  const LEVEL_META = {
+    makkelijk: 'Pakt meestal vrije vakjes, verder op gevoel',
+    normaal: 'Pakt vakjes, speelt veilig, vermijdt lange ketens',
+    moeilijk: 'Telt ketens en speelt het eindspel als een kenner'
+  };
   let state = null;
   let aiBusy = false;
 
@@ -1043,11 +1310,25 @@
       $('p2field').style.display = 'none';
       $('aiField').style.display = 'block';
       $('starterField').style.display = 'block';
+      $('levelField').style.display = 'block';
     } else {
       $('p2field').style.display = 'block';
       $('aiField').style.display = 'none';
       $('starterField').style.display = 'none';
+      $('levelField').style.display = 'none';
     }
+    $('setupError').textContent = '';
+  });
+
+  function setLevel(level) {
+    if (!LEVEL_META[level]) return;
+    cfg.level = level;
+    $('levelToggle').querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.level === level));
+    $('aiMeta').textContent = LEVEL_META[level];
+  }
+  $('levelToggle').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (btn) setLevel(btn.dataset.level);
   });
 
   const starterToggle = $('starterToggle');
@@ -1070,12 +1351,14 @@
   });
 
   $('btnStart').addEventListener('click', () => {
-    cfg.p1 = ($('p1name').value || 'Speler 1').trim().slice(0, 14) || 'Speler 1';
-    if (cfg.mode === 'ai') {
-      cfg.p2 = 'Claude';
-    } else {
-      cfg.p2 = ($('p2name').value || 'Speler 2').trim().slice(0, 14) || 'Speler 2';
-    }
+    const p1 = chosenName(1);
+    const p2 = cfg.mode === 'ai' ? 'Claude' : chosenName(2);
+    const err = validateNames(p1, p2);
+    if (err) { $('setupError').textContent = err; return; }
+    $('setupError').textContent = '';
+    cfg.p1 = p1;
+    cfg.p2 = p2;
+    adoptTypedNames();
     $('setup').style.display = 'none';
     $('game').classList.add('active');
     startGame();
@@ -1090,9 +1373,10 @@
     $('game').classList.remove('active');
     $('setup').style.display = 'flex';
     $('winner').classList.remove('active');
+    refreshResume();
   });
 
-  function startGame() {
+  function startGame(saved) {
     const W = cfg.w, H = cfg.h;
     const totalBoxes = (W - 1) * (H - 1);
 
@@ -1102,8 +1386,18 @@
       vLines: Array.from({length: H - 1}, () => Array(W).fill(0)),
       boxes: Array.from({length: H - 1}, () => Array(W - 1).fill(0)),
       turn: cfg.mode === 'ai' ? cfg.starter : 1,
-      score1: 0, score2: 0, totalBoxes, done: false
+      score1: 0, score2: 0, totalBoxes, done: false,
+      initials: initialsFor(cfg.p1, cfg.p2)
     };
+    if (saved) {
+      const sv = saved.state;
+      Object.assign(state, {
+        hLines: sv.hLines.map(r => r.slice()), vLines: sv.vLines.map(r => r.slice()),
+        boxes: sv.boxes.map(r => r.slice()), turn: sv.turn, score1: sv.score1, score2: sv.score2
+      });
+    } else {
+      clearProgress();
+    }
 
     $('name1').textContent = cfg.p1;
     if (cfg.mode === 'ai') {
@@ -1113,17 +1407,20 @@
       $('label2').textContent = '/ Speler 2 /';
       $('name2').textContent = cfg.p2;
     }
-    $('score1').textContent = '0';
-    $('score2').textContent = '0';
+    $('score1').textContent = state.score1;
+    $('score2').textContent = state.score2;
     $('of1').textContent = '/ ' + totalBoxes;
     $('of2').textContent = '/ ' + totalBoxes;
     $('bonusText').textContent = '';
     $('winner').classList.remove('active');
+    $('winnerRecord').textContent = '';
+    recordToken++;
     $('boardWrap').classList.remove('thinking');
     aiBusy = false;
 
     updateTurnUI();
     drawBoard();
+    if (saved) paintSavedBoard();
 
     // Als Claude begint, laat 'm meteen een zet doen
     if (cfg.mode === 'ai' && state.turn === 2) {
@@ -1162,6 +1459,7 @@
     const maxCell = 90;
     const minCell = 56;
     const cell = Math.max(minCell, Math.min(maxCell, Math.floor((maxBoardWidth - 40) / (W - 1))));
+    state.cell = cell;
     const pad = 28;
     const vbW = pad * 2 + (W - 1) * cell;
     const vbH = pad * 2 + (H - 1) * cell;
@@ -1266,9 +1564,10 @@
         svg.appendChild(d);
       }
     }
-
-    svg.addEventListener('click', onLineClick);
   }
+
+  // Eenmalig koppelen; drawBoard bouwt alleen de inhoud opnieuw op.
+  $('board').addEventListener('click', onLineClick);
 
   function onLineClick(e) {
     if (state.done || aiBusy) return;
@@ -1332,6 +1631,7 @@
       return;
     }
 
+    saveProgress();
     updateTurnUI();
 
     if (cfg.mode === 'ai' && state.turn === 2 && !state.done) {
@@ -1350,12 +1650,15 @@
     const box = $(`box-${br}-${bc}`);
     const init = $(`init-${br}-${bc}`);
     box.classList.add(player === 1 ? 'p1' : 'p2', 'just-won');
-    init.textContent = (player === 1 ? cfg.p1 : cfg.p2).charAt(0).toUpperCase();
+    const label = state.initials[player - 1];
+    init.textContent = label;
+    if (label.length > 1) init.setAttribute('font-size', Math.round(state.cell * 0.32));
     init.classList.add(player === 1 ? 'p1' : 'p2', 'show');
   }
 
   function finishGame() {
     state.done = true;
+    clearProgress();
     aiBusy = false;
     $('boardWrap').classList.remove('thinking');
     updateTurnUI();
@@ -1380,6 +1683,87 @@
     }
     $('winner').classList.add('active');
     $('bonusText').textContent = '';
+    recordGame();
+  }
+
+  // ---------- lopend potje bewaren ----------
+  const PROGRESS_KEY = 'ns-kamertje-verhuren:progress:v1';
+  const PROGRESS_MAX_AGE = 12 * 60 * 60 * 1000;
+
+  function saveProgress() {
+    if (!state || state.done) return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+        t: Date.now(),
+        cfg: { w: cfg.w, h: cfg.h, p1: cfg.p1, p2: cfg.p2, mode: cfg.mode, starter: cfg.starter, level: cfg.level },
+        state: { hLines: state.hLines, vLines: state.vLines, boxes: state.boxes, turn: state.turn, score1: state.score1, score2: state.score2 }
+      }));
+    } catch (e) { /* opslag niet beschikbaar: dan maar zonder hervatten */ }
+  }
+
+  function clearProgress() {
+    try { localStorage.removeItem(PROGRESS_KEY); } catch (e) { /* niets te doen */ }
+  }
+
+  function loadProgress() {
+    try {
+      const p = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+      if (!p || !p.cfg || !p.state || Date.now() - p.t > PROGRESS_MAX_AGE) return null;
+      const { w, h } = p.cfg, sv = p.state;
+      const ok = [[4, 4], [6, 5], [7, 6]].some(([a, b]) => a === w && b === h) &&
+        Array.isArray(sv.hLines) && sv.hLines.length === h && sv.hLines.every(r => r.length === w - 1) &&
+        Array.isArray(sv.vLines) && sv.vLines.length === h - 1 && sv.vLines.every(r => r.length === w) &&
+        Array.isArray(sv.boxes) && sv.boxes.length === h - 1 && sv.boxes.every(r => r.length === w - 1) &&
+        (sv.turn === 1 || sv.turn === 2) && sv.score1 + sv.score2 < (w - 1) * (h - 1);
+      return ok ? p : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function paintSavedBoard() {
+    const paint = (kind, grid) => grid.forEach((row, r) => row.forEach((owner, c) => {
+      if (!owner) return;
+      $(`${kind}-${r}-${c}`).classList.add(owner === 1 ? 'drawn-p1' : 'drawn-p2');
+      const g = document.querySelector(`g.line[data-type="${kind}"][data-r="${r}"][data-c="${c}"]`);
+      if (g) g.classList.add('locked');
+    }));
+    paint('h', state.hLines);
+    paint('v', state.vLines);
+    state.boxes.forEach((row, r) => row.forEach((owner, c) => { if (owner) claimBox(r, c, owner); }));
+  }
+
+  function refreshResume() {
+    const p = loadProgress();
+    $('resumeBox').hidden = !p;
+    if (!p) return;
+    const c = p.cfg, sv = p.state;
+    const p2 = c.mode === 'ai' ? `Claude (${c.level || 'normaal'})` : c.p2;
+    $('resumeText').textContent = `${c.p1} ${sv.score1} – ${sv.score2} ${p2}, ${c.w} × ${c.h}`;
+  }
+
+  $('btnResume').addEventListener('click', () => {
+    const p = loadProgress();
+    if (!p) { refreshResume(); return; }
+    Object.assign(cfg, p.cfg);
+    if (!cfg.level) cfg.level = 'normaal';
+    $('setup').style.display = 'none';
+    $('game').classList.add('active');
+    startGame(p);
+  });
+  $('btnDiscard').addEventListener('click', () => { clearProgress(); refreshResume(); });
+
+  // Beginletters in de vakjes; bij gelijke letters een extra letter die het verschil maakt.
+  function initialsFor(a, b) {
+    const x = String(a).trim(), y = String(b).trim();
+    const up = (t) => t.charAt(0).toUpperCase();
+    if (!x || !y || up(x) !== up(y)) return [up(x), up(y)];
+    const lx = x.toLowerCase(), ly = y.toLowerCase();
+    let i = 1;
+    while (i < lx.length && i < ly.length && lx[i] === ly[i]) i++;
+    const pick = (t, lt) => up(t) + (lt[i] || '');
+    const res = [pick(x, lx), pick(y, ly)];
+    return res[0] === res[1] ? [up(x) + '1', up(y) + '2'] : res;
   }
 
   function scheduleAiMove() {
@@ -1436,7 +1820,7 @@
     return a;
   }
 
-  function aiPickMove() {
+  function aiNormal() {
     const all = collectOpenLines();
     if (all.length === 0) return null;
 
@@ -1516,9 +1900,783 @@
     return captured;
   }
 
+  // ---------- Claude: niveaus ----------
+  function aiPickMove() {
+    if (cfg.level === 'makkelijk') return aiEasy();
+    if (cfg.level === 'moeilijk') return aiHard() || aiNormal();
+    return aiNormal();
+  }
+
+  // Makkelijk: pakt meestal vrije vakjes, verder grotendeels op gevoel.
+  function aiEasy() {
+    const all = collectOpenLines();
+    if (!all.length) return null;
+    const caps = all.filter(m => adjacentBoxes(m).some(([r, c]) => sidesOf(r, c) === 3));
+    if (caps.length && Math.random() < 0.85) return pickRandom(caps);
+    const safe = all.filter(m => adjacentBoxes(m).every(([r, c]) => sidesOf(r, c) !== 2));
+    if (safe.length && Math.random() < 0.6) return pickRandom(safe);
+    return pickRandom(all);
+  }
+
+  // Moeilijk: speelt het eindspel met ketens en lussen exact door.
+  // Geeft null terug als de stelling niet in ketens en lussen valt te splitsen;
+  // dan speelt Normaal de zet.
+  function aiHard() {
+    const m = hmModel();
+    const caps = [];
+    for (let r = 0; r < hmRows(); r++) {
+      for (let c = 0; c < hmCols(); c++) if (hmSides(m, r, c) === 3) caps.push([r, c]);
+    }
+
+    if (caps.length) {
+      const all = hmClone(m);
+      hmTakeAll(all);
+      // Na het pakken nog een veilige zet over? Dan is alles pakken gewoon goed.
+      if (hmHasSafeMove(all)) return hmOpenSides(m, caps[0][0], caps[0][1])[0];
+
+      const walks = caps.map(b => hmWalk(m, b));
+      const plain = walks.find(w => !w.decision);
+      if (plain) return plain.take;
+
+      // Alleen nog staarten over waar een keuze zit. Meerdere? Eerst de andere leegmaken.
+      const keys = new Set(walks.map(w => w.key));
+      if (keys.size > 1) return walks[0].take;
+
+      const t = walks[0];
+      const after = hmClone(m);
+      t.boxes.forEach(([r, c]) => hmOpenSides(after, r, c).forEach(s => hmDraw(after, s)));
+      const comps = hmDecompose(after);
+      if (!comps) return t.take;
+      const rest = egValue(egKey(comps));
+      const k = t.boxes.length;
+      // Alles pakken: k + rest. Laten liggen: tegenstander krijgt k en moet zelf openen.
+      return (-k - rest > k + rest) ? t.decline : t.take;
+    }
+
+    if (hmHasSafeMove(m)) return null;
+
+    const comps = hmDecompose(m);
+    if (!comps || !comps.length) return null;
+    let best = null, bestVal = -Infinity;
+    comps.forEach((comp, i) => {
+      const rest = egValue(egKey(comps.filter((_, j) => j !== i)));
+      const n = comp.n;
+      const val = comp.loop ? -Math.max(n + rest, n - 8 - rest)
+        : n <= 2 ? -(n + rest)
+        : -Math.max(n + rest, n - 4 - rest);
+      if (val > bestVal || (val === bestVal && n < best.n)) { bestVal = val; best = comp; }
+    });
+    return hmOpeningLine(m, best);
+  }
+
+  const hmRows = () => state.H - 1;
+  const hmCols = () => state.W - 1;
+  const hmModel = () => ({
+    h: state.hLines.map(row => row.map(x => x ? 1 : 0)),
+    v: state.vLines.map(row => row.map(x => x ? 1 : 0))
+  });
+  const hmClone = (m) => ({ h: m.h.map(r => r.slice()), v: m.v.map(r => r.slice()) });
+  const hmSame = (a, b) => a.type === b.type && a.r === b.r && a.c === b.c;
+  const hmDraw = (m, l) => { if (l.type === 'h') m.h[l.r][l.c] = 1; else m.v[l.r][l.c] = 1; };
+  const hmSides = (m, r, c) => m.h[r][c] + m.h[r + 1][c] + m.v[r][c] + m.v[r][c + 1];
+
+  // Open zijden van een vakje, met het buurvakje aan de andere kant (null = rand).
+  function hmOpenSides(m, r, c) {
+    const out = [];
+    if (!m.h[r][c])     out.push({ type: 'h', r, c,        nb: r > 0 ? [r - 1, c] : null });
+    if (!m.h[r + 1][c]) out.push({ type: 'h', r: r + 1, c, nb: r + 1 < hmRows() ? [r + 1, c] : null });
+    if (!m.v[r][c])     out.push({ type: 'v', r, c,        nb: c > 0 ? [r, c - 1] : null });
+    if (!m.v[r][c + 1]) out.push({ type: 'v', r, c: c + 1, nb: c + 1 < hmCols() ? [r, c + 1] : null });
+    return out;
+  }
+
+  function hmLineBoxes(l) {
+    const a = [];
+    if (l.type === 'h') { if (l.r > 0) a.push([l.r - 1, l.c]); if (l.r < hmRows()) a.push([l.r, l.c]); }
+    else { if (l.c > 0) a.push([l.r, l.c - 1]); if (l.c < hmCols()) a.push([l.r, l.c]); }
+    return a;
+  }
+
+  function hmHasSafeMove(m) {
+    for (let r = 0; r <= hmRows(); r++) {
+      for (let c = 0; c < hmCols(); c++) {
+        if (!m.h[r][c] && hmLineBoxes({ type: 'h', r, c }).every(([br, bc]) => hmSides(m, br, bc) <= 1)) return true;
+      }
+    }
+    for (let r = 0; r < hmRows(); r++) {
+      for (let c = 0; c <= hmCols(); c++) {
+        if (!m.v[r][c] && hmLineBoxes({ type: 'v', r, c }).every(([br, bc]) => hmSides(m, br, bc) <= 1)) return true;
+      }
+    }
+    return false;
+  }
+
+  function hmTakeAll(m) {
+    let found = true;
+    while (found) {
+      found = false;
+      for (let r = 0; r < hmRows(); r++) {
+        for (let c = 0; c < hmCols(); c++) {
+          if (hmSides(m, r, c) === 3) { hmDraw(m, hmOpenSides(m, r, c)[0]); found = true; }
+        }
+      }
+    }
+  }
+
+  // Volg de keten vanaf een pakbaar vakje. Een keuze is er bij een staart van 2 vakjes
+  // (open eind) of een lusrest van 4 vakjes (twee pakbare uiteinden).
+  function hmWalk(m, start) {
+    const take = hmOpenSides(m, start[0], start[1])[0];
+    const boxes = [start], path = [take];
+    let side = take, bothEnded = false;
+    while (side.nb && boxes.length < 64) {
+      const [r, c] = side.nb;
+      const s = hmSides(m, r, c);
+      if (s === 3) { boxes.push([r, c]); bothEnded = true; break; }
+      if (s !== 2) break;
+      boxes.push([r, c]);
+      side = hmOpenSides(m, r, c).find(o => !hmSame(o, side));
+      path.push(side);
+    }
+    const key = boxes.map(b => b.join('.')).sort().join('|');
+    if (!bothEnded && boxes.length === 2) return { decision: true, take, decline: path[1], boxes, key };
+    if (bothEnded && boxes.length === 4) return { decision: true, take, decline: path[1], boxes, key };
+    return { decision: false, take, boxes, key };
+  }
+
+  // Splits de stelling in ketens en lussen; null als dat niet zuiver kan.
+  function hmDecompose(m) {
+    const seen = new Set(), comps = [];
+    for (let r = 0; r < hmRows(); r++) {
+      for (let c = 0; c < hmCols(); c++) {
+        const s = hmSides(m, r, c);
+        if (s === 4) continue;
+        if (s !== 2) return null;
+      }
+    }
+    for (let r = 0; r < hmRows(); r++) {
+      for (let c = 0; c < hmCols(); c++) {
+        if (hmSides(m, r, c) === 4 || seen.has(r + ',' + c)) continue;
+        const boxes = [], stack = [[r, c]];
+        let ground = 0;
+        seen.add(r + ',' + c);
+        while (stack.length) {
+          const [br, bc] = stack.pop();
+          boxes.push([br, bc]);
+          for (const o of hmOpenSides(m, br, bc)) {
+            if (!o.nb) { ground++; continue; }
+            const k = o.nb.join(',');
+            if (!seen.has(k)) { seen.add(k); stack.push(o.nb); }
+          }
+        }
+        comps.push({ loop: ground === 0, n: boxes.length, boxes });
+      }
+    }
+    return comps;
+  }
+
+  const egKey = (comps) => comps.map(c => (c.loop ? 'L' : 'C') + c.n).sort().join(',');
+  const egMemo = new Map();
+  // Beste netto score voor wie een component moet openen (beide spelers perfect).
+  function egValue(key) {
+    if (!key) return 0;
+    if (egMemo.has(key)) return egMemo.get(key);
+    const parts = key.split(',');
+    let best = -Infinity;
+    parts.forEach((p, i) => {
+      if (i > 0 && p === parts[i - 1]) return;
+      const rest = egValue(parts.filter((_, j) => j !== i).join(','));
+      const n = parseInt(p.slice(1), 10);
+      const val = p[0] === 'L' ? -Math.max(n + rest, n - 8 - rest)
+        : n <= 2 ? -(n + rest)
+        : -Math.max(n + rest, n - 4 - rest);
+      if (val > best) best = val;
+    });
+    egMemo.set(key, best);
+    return best;
+  }
+
+  function hmOpeningLine(m, comp) {
+    const [b0, b1] = comp.boxes;
+    if (!comp.loop && comp.n === 2) {
+      // In het midden openen, dan kan de tegenstander niet weigeren.
+      const mid = hmOpenSides(m, b0[0], b0[1]).find(o => o.nb && o.nb[0] === b1[0] && o.nb[1] === b1[1]);
+      if (mid) return mid;
+      const alt = hmOpenSides(m, b1[0], b1[1]).find(o => o.nb && o.nb[0] === b0[0] && o.nb[1] === b0[1]);
+      if (alt) return alt;
+    }
+    if (!comp.loop) {
+      for (const [r, c] of comp.boxes) {
+        const g = hmOpenSides(m, r, c).find(o => !o.nb);
+        if (g) return g;
+      }
+    }
+    return hmOpenSides(m, b0[0], b0[1])[0];
+  }
+
   function pickRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
+
+  // ---------- centrale ranglijst ----------
+  // Vul hier de gegevens van je Supabase-project in (Project Settings > API Keys).
+  // Laat je ze leeg, dan bewaart het spel de potjes alleen in deze browser.
+  const CONFIG = {
+    supabaseUrl: 'https://wyqhmnzykmmasuncbdmp.supabase.co',
+    supabaseKey: 'sb_publishable_jGT0Zoe1bCNHQ_DffHhmDw_z7ehX-Zk'
+  };
+
+  // Vaste spelers in het keuzelijstje. Nieuwe namen die iemand typt, worden
+  // na het eerste afgeronde potje centraal toegevoegd.
+  const COLLEAGUES = [
+    'Albrecht', 'Coen', 'Didi', 'Gerwin', 'Hannah', 'Jacco', 'Jeroen', 'Lars', 'Marit', 'Milan',
+    'Niek', 'Nick', 'Nikos', 'Numan', 'Sam', 'Stefan', 'Stephan', 'Steven', 'Thijs'
+  ];
+
+  const REMOTE = !!(CONFIG.supabaseUrl && CONFIG.supabaseKey);
+  const UNDO_MS = 10 * 60 * 1000;
+  const GAMES_PAGE = 15;
+  const NEW = '__new__';
+  const LS = {
+    games: 'ns-kamertje-verhuren:games:v2',
+    players: 'ns-kamertje-verhuren:players:v2',
+    pendingGames: 'ns-kamertje-verhuren:pending-games:v2',
+    pendingPlayers: 'ns-kamertje-verhuren:pending-players:v2',
+    playersCache: 'ns-kamertje-verhuren:players-cache:v2',
+    last: 'ns-kamertje-verhuren:last-choice:v2'
+  };
+
+  let statsFilter = 'all';
+  let showAllGames = false;
+  let recordToken = 0;
+  let knownPlayers = [];               // uit opslag (centraal of lokaal)
+  const sessionNames = new Map();      // getypt in deze sessie, nog niet opgeslagen
+
+  const keyOf = (n) => String(n).trim().toLowerCase();
+  const cleanName = (v) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 14);
+  const esc = (t) => String(t).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const lsGet = (k, fallback) => {
+    try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; }
+    catch (e) { return fallback; }
+  };
+  const lsSet = (k, v) => {
+    try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+    catch (e) { return false; }
+  };
+  const uuid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() :
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+
+  function isValidGame(g) {
+    return g && typeof g.id === 'string' && typeof g.p1 === 'string' && typeof g.p2 === 'string' &&
+      Number.isFinite(g.s1) && Number.isFinite(g.s2) && Number.isFinite(g.t);
+  }
+
+  // ---------- opslag ----------
+  async function rest(path, opts = {}) {
+    const res = await fetch(`${CONFIG.supabaseUrl.replace(/\/+$/, '')}/rest/v1/${path}`, {
+      ...opts,
+      headers: { apikey: CONFIG.supabaseKey, 'Content-Type': 'application/json', ...(opts.headers || {}) }
+    });
+    if (!res.ok) {
+      const err = new Error(`HTTP ${res.status}`);
+      err.status = res.status;
+      throw err;
+    }
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  // Fouten waarbij opnieuw proberen zin heeft (geen verbinding, server, configuratie).
+  const retryable = (e) => !e.status || e.status >= 500 || [401, 403, 404, 408, 429].includes(e.status);
+
+  const fromRow = (r) => ({
+    id: r.id, t: Date.parse(r.played_at), mode: r.mode, w: r.board_w, h: r.board_h,
+    p1: r.p1, p2: r.p2, s1: r.s1, s2: r.s2, level: r.ai_level || null, created: Date.parse(r.created_at)
+  });
+  const toRow = (g) => {
+    const row = {
+      id: g.id, played_at: new Date(g.t).toISOString(), mode: g.mode, board_w: g.w, board_h: g.h,
+      p1: g.p1, p2: g.p2, s1: g.s1, s2: g.s2
+    };
+    if (g.mode === 'ai') row.ai_level = g.level || 'normaal';
+    return row;
+  };
+
+  // Naam in de statistieken. Claude telt per niveau als aparte tegenstander;
+  // potjes van voor de niveaus waren op Normaal.
+  const labelOf = (g, side) => side === 1 ? g.p1
+    : g.mode === 'ai' ? `Claude (${g.level || 'normaal'})` : g.p2;
+
+  function insertGame(g) {
+    return rest('games', {
+      method: 'POST',
+      headers: { Prefer: 'return=minimal,resolution=ignore-duplicates' },
+      body: JSON.stringify(toRow(g))
+    });
+  }
+
+  async function insertPlayer(name) {
+    try {
+      await rest('players', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ name }) });
+      return true;
+    } catch (e) {
+      if (e.status === 409) return true;   // bestaat al
+      if (retryable(e)) throw e;
+      return false;                        // ongeldige naam: niet opnieuw proberen
+    }
+  }
+
+  async function flushPending() {
+    if (!REMOTE) return;
+    const games = lsGet(LS.pendingGames, []);
+    if (games.length) {
+      const left = [];
+      for (const g of games) {
+        try { await insertGame(g); } catch (e) { if (retryable(e)) left.push(g); }
+      }
+      lsSet(LS.pendingGames, left);
+    }
+    const names = lsGet(LS.pendingPlayers, []);
+    if (names.length) {
+      const left = [];
+      for (const n of names) {
+        try { await insertPlayer(n); } catch (e) { left.push(n); }
+      }
+      lsSet(LS.pendingPlayers, left);
+    }
+  }
+
+  const store = {
+    async games() {
+      if (!REMOTE) return lsGet(LS.games, []).filter(isValidGame);
+      await flushPending();
+      const out = [];
+      const page = 1000;
+      for (let off = 0; ; off += page) {
+        const rows = await rest(`games?select=*&order=played_at.asc&limit=${page}&offset=${off}`);
+        out.push(...rows.map(fromRow));
+        if (rows.length < page) break;
+      }
+      const ids = new Set(out.map(g => g.id));
+      const pending = lsGet(LS.pendingGames, []).filter(g => !ids.has(g.id)).map(g => ({ ...g, pending: true }));
+      return out.concat(pending);
+    },
+
+    async addGame(g) {
+      if (!REMOTE) {
+        const games = lsGet(LS.games, []);
+        games.push(g);
+        return { saved: lsSet(LS.games, games) };
+      }
+      try {
+        await insertGame(g);
+        return { saved: true };
+      } catch (e) {
+        if (!retryable(e)) return { saved: false };
+        const pending = lsGet(LS.pendingGames, []);
+        pending.push(g);
+        lsSet(LS.pendingGames, pending);
+        return { saved: false, queued: true };
+      }
+    },
+
+    async deleteGame(g) {
+      if (!REMOTE) {
+        lsSet(LS.games, lsGet(LS.games, []).filter(x => x.id !== g.id));
+        return true;
+      }
+      if (g.pending) {
+        lsSet(LS.pendingGames, lsGet(LS.pendingGames, []).filter(x => x.id !== g.id));
+        return true;
+      }
+      const rows = await rest(`games?id=eq.${encodeURIComponent(g.id)}`, {
+        method: 'DELETE', headers: { Prefer: 'return=representation' }
+      });
+      return Array.isArray(rows) && rows.length > 0;
+    },
+
+    async players() {
+      if (!REMOTE) return lsGet(LS.players, []);
+      const pending = lsGet(LS.pendingPlayers, []);
+      try {
+        const rows = await rest('players?select=name');
+        const names = rows.map(r => r.name);
+        lsSet(LS.playersCache, names);
+        return names.concat(pending);
+      } catch (e) {
+        return lsGet(LS.playersCache, []).concat(pending);
+      }
+    },
+
+    async addPlayer(name) {
+      if (!REMOTE) {
+        const list = lsGet(LS.players, []);
+        if (!list.some(n => keyOf(n) === keyOf(name))) { list.push(name); lsSet(LS.players, list); }
+        return;
+      }
+      try {
+        await insertPlayer(name);
+      } catch (e) {
+        const pending = lsGet(LS.pendingPlayers, []);
+        if (!pending.some(n => keyOf(n) === keyOf(name))) { pending.push(name); lsSet(LS.pendingPlayers, pending); }
+      }
+    }
+  };
+
+  // ---------- spelerskeuze ----------
+  function sortedNames(list) {
+    const m = new Map();
+    list.forEach(n => {
+      const c = cleanName(n);
+      const k = keyOf(c);
+      if (c && k !== 'claude' && !m.has(k)) m.set(k, c);
+    });
+    return [...m.values()].sort((a, b) => a.localeCompare(b, 'nl', { sensitivity: 'base' }));
+  }
+
+  let playerNames = [];
+  function renderPlayerSelects() {
+    playerNames = sortedNames(COLLEAGUES.concat(knownPlayers, [...sessionNames.values()]));
+    [1, 2].forEach(n => {
+      const sel = $(`p${n}select`);
+      const keep = sel.value;
+      sel.innerHTML = '<option value="">Kies een speler</option>' +
+        playerNames.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('') +
+        `<option value="${NEW}">+ Andere naam typen</option>`;
+      if (keep === NEW || playerNames.includes(keep)) sel.value = keep;
+    });
+  }
+
+  function selectName(n, name) {
+    const sel = $(`p${n}select`), inp = $(`p${n}name`);
+    if (name && playerNames.includes(name)) {
+      sel.value = name;
+      inp.hidden = true;
+      inp.value = '';
+    }
+  }
+
+  function chosenName(n) {
+    const sel = $(`p${n}select`);
+    if (sel.value !== NEW) return sel.value;
+    const typed = cleanName($(`p${n}name`).value);
+    const existing = playerNames.find(x => keyOf(x) === keyOf(typed));
+    return existing || typed;
+  }
+
+  function validateNames(p1, p2) {
+    const typing = (n) => $(`p${n}select`).value === NEW;
+    if (!p1) return typing(1) ? 'Typ een naam voor speler 1.' : 'Kies speler 1, of typ een andere naam.';
+    if (cfg.mode !== 'ai') {
+      if (!p2) return typing(2) ? 'Typ een naam voor speler 2.' : 'Kies speler 2, of typ een andere naam.';
+      if (keyOf(p1) === keyOf(p2)) return 'Kies twee verschillende spelers.';
+    }
+    if (keyOf(p1) === 'claude' || (cfg.mode !== 'ai' && keyOf(p2) === 'claude')) {
+      return 'Claude is de AI-tegenstander. Kies een andere naam, of speel "Tegen Claude".';
+    }
+    return '';
+  }
+
+  // Getypte namen direct in de lijst zetten en de keuze op dit apparaat onthouden.
+  function adoptTypedNames() {
+    const names = cfg.mode === 'ai' ? [cfg.p1] : [cfg.p1, cfg.p2];
+    names.forEach(n => {
+      if (!playerNames.some(x => keyOf(x) === keyOf(n))) sessionNames.set(keyOf(n), n);
+    });
+    renderPlayerSelects();
+    selectName(1, cfg.p1);
+    if (cfg.mode !== 'ai') selectName(2, cfg.p2);
+    const last = lsGet(LS.last, {});
+    lsSet(LS.last, {
+      p1: cfg.p1,
+      p2: cfg.mode === 'ai' ? last.p2 : cfg.p2,
+      level: cfg.mode === 'ai' ? cfg.level : (last.level || 'normaal')
+    });
+  }
+
+  [1, 2].forEach(n => {
+    $(`p${n}select`).addEventListener('change', () => {
+      const isNew = $(`p${n}select`).value === NEW;
+      const inp = $(`p${n}name`);
+      inp.hidden = !isNew;
+      if (isNew) inp.focus();
+      $('setupError').textContent = '';
+    });
+    $(`p${n}name`).addEventListener('input', () => { $('setupError').textContent = ''; });
+  });
+
+  async function loadPlayers() {
+    knownPlayers = await store.players();
+    renderPlayerSelects();
+  }
+
+  // ---------- potje vastleggen ----------
+  async function recordGame() {
+    const token = ++recordToken;
+    const rec = $('winnerRecord');
+    rec.textContent = 'Opslaan...';
+    const g = {
+      id: uuid(), t: Date.now(), mode: cfg.mode, w: state.W, h: state.H,
+      p1: cfg.p1, p2: cfg.p2, s1: state.score1, s2: state.score2,
+      level: cfg.mode === 'ai' ? cfg.level : null
+    };
+    const p1 = cfg.p1, p2 = cfg.p2;
+    const n1 = labelOf(g, 1), n2 = labelOf(g, 2);
+    const res = await store.addGame(g);
+
+    // Nieuwe namen pas na een afgerond potje opslaan, zo blijven tikfouten uit de lijst.
+    for (const n of [p1, p2]) {
+      const k = keyOf(n);
+      if (k !== 'claude' && sessionNames.has(k)) {
+        await store.addPlayer(n);
+        sessionNames.delete(k);
+        if (!knownPlayers.some(x => keyOf(x) === k)) knownPlayers.push(n);
+      }
+    }
+
+    let games = null;
+    if (res.saved) { try { games = await store.games(); } catch (e) { games = null; } }
+    if (token !== recordToken) return;
+
+    if (res.queued) {
+      rec.textContent = 'Geen verbinding met de ranglijst. Dit potje wordt verstuurd zodra de verbinding terug is.';
+    } else if (!res.saved) {
+      rec.textContent = 'Dit potje kon niet worden opgeslagen.';
+    } else if (!games) {
+      rec.textContent = 'Opgeslagen in de ranglijst.';
+    } else {
+      const h = headToHead(games, n1, n2);
+      const total = h.w1 + h.w2 + h.t;
+      const line1 = total <= 1
+        ? 'Eerste potje tussen jullie, opgeslagen in de ranglijst.'
+        : `Onderling na ${total} potjes: ${n1} ${h.w1} – ${h.w2} ${n2}` + (h.t ? ` (${h.t}× gelijk)` : '');
+      const stats = computeStats(games);
+      const fmt = (name) => {
+        const p = stats.find(x => keyOf(x.name) === keyOf(name));
+        if (!p) return '';
+        const d = Math.round(p.delta);
+        return `${name} ${Math.round(p.rating)} (${d >= 0 ? '+' : '−'}${Math.abs(d)})`;
+      };
+      rec.textContent = `${line1}\nRating: ${fmt(n1)}, ${fmt(n2)}`;
+    }
+  }
+
+  function headToHead(games, n1, n2) {
+    const k1 = keyOf(n1), k2 = keyOf(n2);
+    let w1 = 0, w2 = 0, t = 0;
+    for (const g of games) {
+      const a = keyOf(labelOf(g, 1)), b = keyOf(labelOf(g, 2));
+      let x, y;
+      if (a === k1 && b === k2) { x = g.s1; y = g.s2; }
+      else if (a === k2 && b === k1) { x = g.s2; y = g.s1; }
+      else continue;
+      if (x > y) w1++; else if (y > x) w2++; else t++;
+    }
+    return { w1, w2, t };
+  }
+
+  // ---------- statistieken ----------
+  // Elo-rating: iedereen start op 1000. Nieuwe spelers bewegen sneller (hogere K),
+  // zodat ze na een paar potjes op hun niveau zitten.
+  const ELO_START = 1000;
+  const PROVISIONAL = 3;
+  const kFactor = (p) => p.played < 10 ? 40 : 24;
+
+  function computeStats(games) {
+    const map = new Map();
+    const get = (name) => {
+      const k = keyOf(name);
+      if (!map.has(k)) map.set(k, { name, played: 0, won: 0, lost: 0, tied: 0, rating: ELO_START, delta: 0 });
+      const p = map.get(k);
+      p.name = name; // meest recente schrijfwijze
+      return p;
+    };
+    games.slice().sort((a, b) => a.t - b.t).forEach(g => {
+      const a = get(labelOf(g, 1)), b = get(labelOf(g, 2));
+      const sa = g.s1 > g.s2 ? 1 : g.s1 < g.s2 ? 0 : 0.5;
+      const ea = 1 / (1 + Math.pow(10, (b.rating - a.rating) / 400));
+      const da = kFactor(a) * (sa - ea);
+      const db = kFactor(b) * ((1 - sa) - (1 - ea));
+      a.rating += da; b.rating += db;
+      a.delta = da; b.delta = db;
+      a.played++; b.played++;
+      if (sa === 1) { a.won++; b.lost++; }
+      else if (sa === 0) { b.won++; a.lost++; }
+      else { a.tied++; b.tied++; }
+    });
+    const byRating = (x, y) => y.rating - x.rating || y.played - x.played || x.name.localeCompare(y.name, 'nl');
+    const all = [...map.values()];
+    return all.filter(p => p.played >= PROVISIONAL).sort(byRating)
+      .concat(all.filter(p => p.played < PROVISIONAL).sort(byRating));
+  }
+
+  const canUndo = (g) => !REMOTE || g.pending || (Number.isFinite(g.created) && Date.now() - g.created < UNDO_MS - 15000);
+  const fmtDate = new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+  let lastGames = [];
+  let loadFailed = false;
+
+  async function loadStats() {
+    $('rankList').innerHTML = '<li class="stats-empty">Ranglijst laden...</li>';
+    $('gameList').innerHTML = '';
+    $('gamesMore').style.display = 'none';
+    try {
+      lastGames = await store.games();
+      loadFailed = false;
+    } catch (e) {
+      lastGames = REMOTE ? lsGet(LS.pendingGames, []).map(g => ({ ...g, pending: true })) : [];
+      loadFailed = true;
+    }
+    renderStats();
+  }
+
+  function renderSource() {
+    const pending = REMOTE ? lsGet(LS.pendingGames, []).length : 0;
+    let html;
+    if (!REMOTE) {
+      html = '<span class="live off"></span>Niet gekoppeld aan de centrale ranglijst. Potjes worden alleen in deze browser bewaard.';
+    } else if (loadFailed) {
+      html = '<span class="live off"></span>Geen verbinding met de centrale ranglijst. Probeer het straks opnieuw.';
+    } else {
+      html = '<span class="live"></span>Centrale ranglijst. Een potje kun je tot 10 minuten na afloop ongedaan maken.';
+    }
+    if (pending) html += ` ${pending} ${pending === 1 ? 'potje wacht' : 'potjes wachten'} nog op verzending.`;
+    $('statsSource').innerHTML = html;
+  }
+
+  function renderStats() {
+    renderSource();
+    const games = statsFilter === 'all' ? lastGames : lastGames.filter(g => (g.mode || 'duo') === statsFilter);
+    const players = computeStats(games);
+    const rankList = $('rankList'), gameList = $('gameList');
+
+    $('rankSummary').textContent = players.length ? `${players.length} ${players.length === 1 ? 'speler' : 'spelers'}` : '';
+    $('gamesSummary').textContent = games.length ? `${games.length} ${games.length === 1 ? 'potje' : 'potjes'}` : '';
+
+    if (!games.length) {
+      const msg = loadFailed
+        ? 'De ranglijst kon niet worden geladen. Controleer de verbinding en klik op Vernieuwen.'
+        : statsFilter === 'ai'
+          ? 'Nog niemand heeft Claude uitgedaagd. Kies "Tegen Claude" in de setup en rond een potje af.'
+          : statsFilter === 'duo'
+            ? 'Nog geen potjes tussen collega\'s. Rond een potje af en het verschijnt hier.'
+            : 'Nog geen potjes gespeeld. Rond een potje af en het verschijnt hier.';
+      rankList.innerHTML = `<li class="stats-empty">${msg}</li>`;
+      gameList.innerHTML = '';
+      $('gamesMore').style.display = 'none';
+      return;
+    }
+
+    const row = (p, pos) => {
+      const provisional = p.played < PROVISIONAL;
+      const parts = [`${p.won} gewonnen`, `${p.lost} verloren`];
+      if (p.tied) parts.push(`${p.tied} gelijk`);
+      const d = Math.round(p.delta);
+      const delta = d > 0 ? `<span class="up">▲ ${d}</span>` : d < 0 ? `<span class="down">▼ ${-d}</span>` : '±0';
+      return `<li class="rank-row${pos === 1 ? ' top' : ''}${provisional ? ' provisional' : ''}">
+        <div class="rank-pos">${provisional ? '' : pos}</div>
+        <div>
+          <div class="rank-name">${esc(p.name)}</div>
+          <div class="rank-meta">${p.played} ${p.played === 1 ? 'potje' : 'potjes'}: ${parts.join(', ')}</div>
+        </div>
+        <div class="rank-wins"><span class="num">${Math.round(p.rating)}</span><span class="lbl" title="Verschil door het laatste potje">${delta}</span></div>
+      </li>`;
+    };
+    const established = players.filter(p => p.played >= PROVISIONAL);
+    const provisional = players.filter(p => p.played < PROVISIONAL);
+    rankList.innerHTML = established.map((p, i) => row(p, i + 1)).join('') +
+      (provisional.length ? `<li class="rank-divider">Voorlopig, nog geen ${PROVISIONAL} potjes</li>` + provisional.map(p => row(p, 0)).join('') : '');
+
+    const sorted = games.slice().sort((a, b) => b.t - a.t);
+    const shown = showAllGames ? sorted : sorted.slice(0, GAMES_PAGE);
+    gameList.innerHTML = shown.map(g => {
+      const n1 = g.s1 > g.s2 ? `<strong>${esc(g.p1)}</strong>` : esc(g.p1);
+      const n2 = g.s2 > g.s1 ? `<strong>${esc(g.p2)}</strong>` : esc(g.p2);
+      const size = (g.w && g.h) ? `${g.w} × ${g.h}` : '';
+      const mode = g.mode === 'ai' ? `tegen Claude (${g.level || 'normaal'})` : 'onderling';
+      const extra = (g.s1 === g.s2 ? ', gelijkspel' : '') + (g.pending ? ', wacht op verzending' : '');
+      const undo = canUndo(g)
+        ? `<button class="game-del" data-id="${esc(g.id)}" aria-label="Potje ongedaan maken" title="Potje ongedaan maken">✕</button>`
+        : '';
+      return `<li class="game-row">
+        <div>
+          <div class="game-match">${n1}<span class="score">${g.s1} – ${g.s2}</span>${n2}</div>
+          <div class="game-meta">${esc(fmtDate.format(new Date(g.t)))}, ${size} ${mode}${extra}</div>
+        </div>
+        ${undo}
+      </li>`;
+    }).join('');
+
+    const more = $('gamesMore');
+    if (sorted.length > GAMES_PAGE) {
+      more.style.display = '';
+      more.textContent = showAllGames ? 'Toon minder' : `Toon alle ${sorted.length} potjes`;
+    } else {
+      more.style.display = 'none';
+    }
+  }
+
+  function setStatus(text) { $('statsStatus').textContent = text; }
+
+  const statsOverlay = $('statsOverlay');
+  function openStats() {
+    showAllGames = false;
+    setStatus('');
+    statsOverlay.classList.add('open');
+    loadStats();
+  }
+  function closeStats() { statsOverlay.classList.remove('open'); }
+
+  $('btnStats').addEventListener('click', openStats);
+  $('winnerStatsBtn').addEventListener('click', openStats);
+  $('statsClose').addEventListener('click', closeStats);
+  $('btnRefresh').addEventListener('click', () => { setStatus(''); loadStats(); });
+  statsOverlay.addEventListener('click', (e) => { if (e.target === statsOverlay) closeStats(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStats(); });
+
+  $('statsFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    $('statsFilter').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    statsFilter = btn.dataset.filter;
+    showAllGames = false;
+    renderStats();
+  });
+
+  $('gamesMore').addEventListener('click', () => { showAllGames = !showAllGames; renderStats(); });
+
+  $('gameList').addEventListener('click', async (e) => {
+    const btn = e.target.closest('.game-del');
+    if (!btn) return;
+    const g = lastGames.find(x => x.id === btn.dataset.id);
+    if (!g) return;
+    if (!confirm(`Potje ${g.p1} ${g.s1} – ${g.s2} ${g.p2} ongedaan maken?`)) return;
+    btn.disabled = true;
+    let ok = false;
+    try { ok = await store.deleteGame(g); } catch (err) { ok = false; }
+    await loadStats();
+    setStatus(ok ? 'Potje ongedaan gemaakt.'
+      : 'Dit potje kon niet meer ongedaan worden gemaakt. Na 10 minuten kan dat alleen nog via het beheer in Supabase.');
+  });
+
+  // ---------- start ----------
+  (function init() {
+    renderPlayerSelects();
+    const last = lsGet(LS.last, {});
+    selectName(1, last.p1);
+    selectName(2, last.p2);
+    setLevel(last.level || 'normaal');
+    refreshResume();
+    loadPlayers().then(() => {
+      if (!$('p1select').value) selectName(1, last.p1);
+      if (!$('p2select').value) selectName(2, last.p2);
+    });
+    flushPending().catch(() => {});
+  })();
 })();
 </script>
 
