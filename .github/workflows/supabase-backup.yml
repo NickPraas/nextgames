@@ -1,4 +1,4 @@
-name: Kamertje verhuren - Supabase actief houden en back-up
+name: Speelhal - Supabase actief houden en back-up
 
 on:
   schedule:
@@ -35,23 +35,29 @@ jobs:
               -H "apikey: ${SUPABASE_KEY}" "${base}/$1"
           }
 
-          mkdir -p backup
-          get "players?select=name,created_at&order=name.asc" | jq '.' > /tmp/players.json
+          # Haalt een hele tabel op (in pagina's van 1000) en schrijft hem naar $2.
+          export_table() {
+            echo '[]' > /tmp/all.json
+            offset=0
+            while :; do
+              get "$1&limit=1000&offset=${offset}" > /tmp/page.json
+              jq -s '.[0] + .[1]' /tmp/all.json /tmp/page.json > /tmp/merged.json
+              mv /tmp/merged.json /tmp/all.json
+              [ "$(jq 'length' /tmp/page.json)" -lt 1000 ] && break
+              offset=$((offset + 1000))
+            done
+            jq '.' /tmp/all.json > "$2"
+          }
 
-          echo '[]' > /tmp/games.json
-          offset=0
-          while :; do
-            get "games?select=*&order=played_at.asc,id.asc&limit=1000&offset=${offset}" > /tmp/page.json
-            jq -s '.[0] + .[1]' /tmp/games.json /tmp/page.json > /tmp/merged.json
-            mv /tmp/merged.json /tmp/games.json
-            [ "$(jq 'length' /tmp/page.json)" -lt 1000 ] && break
-            offset=$((offset + 1000))
-          done
+          mkdir -p /tmp/backup
+          export_table "players?select=name,created_at&order=name.asc" /tmp/backup/kamertje-players.json
+          export_table "games?select=*&order=played_at.asc,id.asc" /tmp/backup/kamertje-games.json
+          export_table "matches?select=*&order=played_at.asc,id.asc" /tmp/backup/speelhal-matches.json
 
           # Pas overschrijven als alles gelukt is
-          mv /tmp/players.json backup/kamertje-players.json
-          jq '.' /tmp/games.json > backup/kamertje-games.json
-          echo "Spelers: $(jq 'length' backup/kamertje-players.json), potjes: $(jq 'length' backup/kamertje-games.json)"
+          mkdir -p backup
+          cp /tmp/backup/*.json backup/
+          for f in backup/*.json; do echo "$f: $(jq 'length' "$f") regels"; done
 
       - name: Back-up opslaan in de repo
         run: |
@@ -60,7 +66,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add backup/
           if ! git diff --cached --quiet; then
-            git commit -m "Back-up Kamertje verhuren $(date -u +%Y-%m-%d)"
+            git commit -m "Back-up Speelhal $(date -u +%Y-%m-%d)"
           else
             # GitHub schakelt geplande workflows uit na 60 dagen zonder activiteit in de repo.
             last=$(git log -1 --format=%ct)
