@@ -1265,6 +1265,7 @@
 
 </div>
 
+<script src="speelhal.js?v=2026-10-15"></script>
 <script>
 (function () {
   const $ = (id) => document.getElementById(id);
@@ -1339,14 +1340,17 @@
   });
 
   $('btnStart').addEventListener('click', () => {
-    const p1 = chosenName(1);
-    const p2 = cfg.mode === 'ai' ? 'Claude' : chosenName(2);
-    const err = validateNames(p1, p2);
+    const solo = cfg.mode === 'ai';
+    const p1 = hall.picker.chosen(1);
+    const p2 = solo ? 'Claude' : hall.picker.chosen(2);
+    const err = hall.picker.validate(p1, p2, solo);
     if (err) { $('setupError').textContent = err; return; }
     $('setupError').textContent = '';
     cfg.p1 = p1;
     cfg.p2 = p2;
-    adoptTypedNames();
+    hall.picker.adopt(solo ? [p1] : [p1, p2]);
+    const prev = hall.last.get();
+    hall.last.set({ p1, p2: solo ? prev.p2 : p2, level: solo ? cfg.level : (prev.level || 'normaal') });
     $('setup').style.display = 'none';
     $('game').classList.add('active');
     startGame();
@@ -1401,8 +1405,7 @@
     $('of2').textContent = '/ ' + totalBoxes;
     $('bonusText').textContent = '';
     $('winner').classList.remove('active');
-    $('winnerRecord').textContent = '';
-    recordToken++;
+    hall.resetRecord();
     $('boardWrap').classList.remove('thinking');
     aiBusy = false;
 
@@ -2106,529 +2109,61 @@
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  // ---------- centrale ranglijst ----------
-  // Vul hier de gegevens van je Supabase-project in (Project Settings > API Keys).
-  // Laat je ze leeg, dan bewaart het spel de potjes alleen in deze browser.
-  const CONFIG = {
-    supabaseUrl: 'https://wyqhmnzykmmasuncbdmp.supabase.co',
-    supabaseKey: 'sb_publishable_jGT0Zoe1bCNHQ_DffHhmDw_z7ehX-Zk'
-  };
-
-  // Vaste spelers in het keuzelijstje. Nieuwe namen die iemand typt, worden
-  // na het eerste afgeronde potje centraal toegevoegd.
-  const COLLEAGUES = [
-    'Albrecht', 'Coen', 'Didi', 'Gerwin', 'Hannah', 'Jacco', 'Jeroen', 'Lars', 'Marit', 'Milan',
-    'Niek', 'Nick', 'Nikos', 'Numan', 'Sam', 'Stefan', 'Stephan', 'Steven', 'Thijs'
-  ];
-
-  const REMOTE = !!(CONFIG.supabaseUrl && CONFIG.supabaseKey);
-  const GAMES_PAGE = 15;
-  const NEW = '__new__';
-  const LS = {
-    games: 'ns-kamertje-verhuren:games:v2',
-    players: 'ns-kamertje-verhuren:players:v2',
-    pendingGames: 'ns-kamertje-verhuren:pending-games:v2',
-    pendingPlayers: 'ns-kamertje-verhuren:pending-players:v2',
-    playersCache: 'ns-kamertje-verhuren:players-cache:v2',
-    last: 'ns-kamertje-verhuren:last-choice:v2'
-  };
-
-  let statsFilter = 'all';
-  let showAllGames = false;
-  let recordToken = 0;
-  let knownPlayers = [];               // uit opslag (centraal of lokaal)
-  const sessionNames = new Map();      // getypt in deze sessie, nog niet opgeslagen
-
-  const keyOf = (n) => String(n).trim().toLowerCase();
-  const cleanName = (v) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 14);
-  const esc = (t) => String(t).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const lsGet = (k, fallback) => {
-    try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; }
-    catch (e) { return fallback; }
-  };
-  const lsSet = (k, v) => {
-    try { localStorage.setItem(k, JSON.stringify(v)); return true; }
-    catch (e) { return false; }
-  };
-  const uuid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() :
-    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0;
-      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-
-  function isValidGame(g) {
-    return g && typeof g.id === 'string' && typeof g.p1 === 'string' && typeof g.p2 === 'string' &&
-      Number.isFinite(g.s1) && Number.isFinite(g.s2) && Number.isFinite(g.t);
-  }
-
-  // ---------- opslag ----------
-  async function rest(path, opts = {}) {
-    const res = await fetch(`${CONFIG.supabaseUrl.replace(/\/+$/, '')}/rest/v1/${path}`, {
-      ...opts,
-      headers: { apikey: CONFIG.supabaseKey, 'Content-Type': 'application/json', ...(opts.headers || {}) }
-    });
-    if (!res.ok) {
-      const err = new Error(`HTTP ${res.status}`);
-      err.status = res.status;
-      throw err;
-    }
-    const text = await res.text();
-    return text ? JSON.parse(text) : null;
-  }
-
-  // Fouten waarbij opnieuw proberen zin heeft (geen verbinding, server, configuratie).
-  const retryable = (e) => !e.status || e.status >= 500 || [401, 403, 404, 408, 429].includes(e.status);
-
-  const fromRow = (r) => ({
-    id: r.id, t: Date.parse(r.played_at), mode: r.mode, w: r.board_w, h: r.board_h,
-    p1: r.p1, p2: r.p2, s1: r.s1, s2: r.s2, level: r.ai_level || null, created: Date.parse(r.created_at)
-  });
-  const toRow = (g) => {
-    const row = {
-      id: g.id, played_at: new Date(g.t).toISOString(), mode: g.mode, board_w: g.w, board_h: g.h,
-      p1: g.p1, p2: g.p2, s1: g.s1, s2: g.s2
-    };
-    if (g.mode === 'ai') row.ai_level = g.level || 'normaal';
-    return row;
-  };
-
+  // ---------- centrale ranglijst (gedeelde code in speelhal.js) ----------
   // Naam in de statistieken. Claude telt per niveau als aparte tegenstander;
   // potjes van voor de niveaus waren op Normaal.
-  const labelOf = (g, side) => side === 1 ? g.p1
-    : g.mode === 'ai' ? `Claude (${g.level || 'normaal'})` : g.p2;
+  const labelOf = (e, side) => side === 1 ? e.p1
+    : e.mode === 'ai' ? `Claude (${e.level || 'normaal'})` : e.p2;
 
-  function insertGame(g) {
-    return rest('games', {
-      method: 'POST',
-      headers: { Prefer: 'return=minimal,resolution=ignore-duplicates' },
-      body: JSON.stringify(toRow(g))
-    });
-  }
-
-  async function insertPlayer(name) {
-    try {
-      await rest('players', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ name }) });
-      return true;
-    } catch (e) {
-      if (e.status === 409) return true;   // bestaat al
-      if (retryable(e)) throw e;
-      return false;                        // ongeldige naam: niet opnieuw proberen
-    }
-  }
-
-  async function flushPending() {
-    if (!REMOTE) return;
-    const games = lsGet(LS.pendingGames, []);
-    if (games.length) {
-      const left = [];
-      for (const g of games) {
-        try { await insertGame(g); } catch (e) { if (retryable(e)) left.push(g); }
-      }
-      lsSet(LS.pendingGames, left);
-    }
-    const names = lsGet(LS.pendingPlayers, []);
-    if (names.length) {
-      const left = [];
-      for (const n of names) {
-        try { await insertPlayer(n); } catch (e) { left.push(n); }
-      }
-      lsSet(LS.pendingPlayers, left);
-    }
-  }
-
-  const store = {
-    async games() {
-      if (!REMOTE) return lsGet(LS.games, []).filter(isValidGame);
-      await flushPending();
-      const out = [];
-      const page = 1000;
-      for (let off = 0; ; off += page) {
-        const rows = await rest(`games?select=*&order=played_at.asc&limit=${page}&offset=${off}`);
-        out.push(...rows.map(fromRow));
-        if (rows.length < page) break;
-      }
-      const ids = new Set(out.map(g => g.id));
-      const pending = lsGet(LS.pendingGames, []).filter(g => !ids.has(g.id)).map(g => ({ ...g, pending: true }));
-      return out.concat(pending);
+  const hall = Speelhal.create({
+    prefix: 'ns-kamertje-verhuren', version: 'v2', resultName: 'games',
+    table: 'games',
+    toRow: (e) => {
+      const row = {
+        id: e.id, played_at: new Date(e.t).toISOString(), mode: e.mode, board_w: e.w, board_h: e.h,
+        p1: e.p1, p2: e.p2, s1: e.s1, s2: e.s2
+      };
+      if (e.mode === 'ai') row.ai_level = e.level || 'normaal';
+      return row;
     },
-
-    async addGame(g) {
-      if (!REMOTE) {
-        const games = lsGet(LS.games, []);
-        games.push(g);
-        return { saved: lsSet(LS.games, games) };
-      }
-      try {
-        await insertGame(g);
-        return { saved: true };
-      } catch (e) {
-        if (!retryable(e)) return { saved: false };
-        const pending = lsGet(LS.pendingGames, []);
-        pending.push(g);
-        lsSet(LS.pendingGames, pending);
-        return { saved: false, queued: true };
-      }
+    fromRow: (r) => ({
+      id: r.id, t: Date.parse(r.played_at), mode: r.mode, w: r.board_w, h: r.board_h,
+      p1: r.p1, p2: r.p2, s1: r.s1, s2: r.s2, level: r.ai_level || null
+    }),
+    units: { one: 'potje', many: 'potjes', this: 'Dit potje' },
+    labelOf,
+    filters: {
+      all: () => true,
+      duo: (e) => (e.mode || 'duo') === 'duo',
+      ai: (e) => e.mode === 'ai'
     },
-
-    async players() {
-      if (!REMOTE) return lsGet(LS.players, []);
-      const pending = lsGet(LS.pendingPlayers, []);
-      try {
-        const rows = await rest('players?select=name');
-        const names = rows.map(r => r.name);
-        lsSet(LS.playersCache, names);
-        return names.concat(pending);
-      } catch (e) {
-        return lsGet(LS.playersCache, []).concat(pending);
-      }
+    emptyText: (f) => f === 'ai'
+      ? 'Nog niemand heeft Claude uitgedaagd. Kies "Tegen Claude" in de setup en rond een potje af.'
+      : f === 'duo'
+        ? 'Nog geen potjes tussen collega\'s. Rond een potje af en het verschijnt hier.'
+        : 'Nog geen potjes gespeeld. Rond een potje af en het verschijnt hier.',
+    itemMeta: (e) => {
+      const size = (e.w && e.h) ? `${e.w} × ${e.h}` : '';
+      const mode = e.mode === 'ai' ? `tegen Claude (${Speelhal.esc(e.level || 'normaal')})` : 'onderling';
+      return `${size} ${mode}` + (e.s1 === e.s2 ? ', gelijkspel' : '');
     },
-
-    async addPlayer(name) {
-      if (!REMOTE) {
-        const list = lsGet(LS.players, []);
-        if (!list.some(n => keyOf(n) === keyOf(name))) { list.push(name); lsSet(LS.players, list); }
-        return;
-      }
-      try {
-        await insertPlayer(name);
-      } catch (e) {
-        const pending = lsGet(LS.pendingPlayers, []);
-        if (!pending.some(n => keyOf(n) === keyOf(name))) { pending.push(name); lsSet(LS.pendingPlayers, pending); }
-      }
-    }
-  };
-
-  // ---------- spelerskeuze ----------
-  function sortedNames(list) {
-    const m = new Map();
-    list.forEach(n => {
-      const c = cleanName(n);
-      const k = keyOf(c);
-      if (c && k !== 'claude' && !m.has(k)) m.set(k, c);
-    });
-    return [...m.values()].sort((a, b) => a.localeCompare(b, 'nl', { sensitivity: 'base' }));
-  }
-
-  let playerNames = [];
-  function renderPlayerSelects() {
-    playerNames = sortedNames(COLLEAGUES.concat(knownPlayers, [...sessionNames.values()]));
-    [1, 2].forEach(n => {
-      const sel = $(`p${n}select`);
-      const keep = sel.value;
-      sel.innerHTML = '<option value="">Kies een speler</option>' +
-        playerNames.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('') +
-        `<option value="${NEW}">+ Andere naam typen</option>`;
-      if (keep === NEW || playerNames.includes(keep)) sel.value = keep;
-    });
-  }
-
-  function selectName(n, name) {
-    const sel = $(`p${n}select`), inp = $(`p${n}name`);
-    if (name && playerNames.includes(name)) {
-      sel.value = name;
-      inp.hidden = true;
-      inp.value = '';
-    }
-  }
-
-  function chosenName(n) {
-    const sel = $(`p${n}select`);
-    if (sel.value !== NEW) return sel.value;
-    const typed = cleanName($(`p${n}name`).value);
-    const existing = playerNames.find(x => keyOf(x) === keyOf(typed));
-    return existing || typed;
-  }
-
-  function validateNames(p1, p2) {
-    const typing = (n) => $(`p${n}select`).value === NEW;
-    if (!p1) return typing(1) ? 'Typ een naam voor speler 1.' : 'Kies speler 1, of typ een andere naam.';
-    if (cfg.mode !== 'ai') {
-      if (!p2) return typing(2) ? 'Typ een naam voor speler 2.' : 'Kies speler 2, of typ een andere naam.';
-      if (keyOf(p1) === keyOf(p2)) return 'Kies twee verschillende spelers.';
-    }
-    if (keyOf(p1) === 'claude' || (cfg.mode !== 'ai' && keyOf(p2) === 'claude')) {
-      return 'Claude is de AI-tegenstander. Kies een andere naam, of speel "Tegen Claude".';
-    }
-    return '';
-  }
-
-  // Getypte namen direct in de lijst zetten en de keuze op dit apparaat onthouden.
-  function adoptTypedNames() {
-    const names = cfg.mode === 'ai' ? [cfg.p1] : [cfg.p1, cfg.p2];
-    names.forEach(n => {
-      if (!playerNames.some(x => keyOf(x) === keyOf(n))) sessionNames.set(keyOf(n), n);
-    });
-    renderPlayerSelects();
-    selectName(1, cfg.p1);
-    if (cfg.mode !== 'ai') selectName(2, cfg.p2);
-    const last = lsGet(LS.last, {});
-    lsSet(LS.last, {
-      p1: cfg.p1,
-      p2: cfg.mode === 'ai' ? last.p2 : cfg.p2,
-      level: cfg.mode === 'ai' ? cfg.level : (last.level || 'normaal')
-    });
-  }
-
-  [1, 2].forEach(n => {
-    $(`p${n}select`).addEventListener('change', () => {
-      const isNew = $(`p${n}select`).value === NEW;
-      const inp = $(`p${n}name`);
-      inp.hidden = !isNew;
-      if (isNew) inp.focus();
-      $('setupError').textContent = '';
-    });
-    $(`p${n}name`).addEventListener('input', () => { $('setupError').textContent = ''; });
+    reserved: { names: ['claude'], message: 'Claude is de AI-tegenstander. Kies een andere naam, of speel "Tegen Claude".' }
   });
 
-  async function loadPlayers() {
-    knownPlayers = await store.players();
-    renderPlayerSelects();
-  }
-
-  // ---------- potje vastleggen ----------
-  async function recordGame() {
-    const token = ++recordToken;
-    const rec = $('winnerRecord');
-    rec.textContent = 'Opslaan...';
-    const g = {
-      id: uuid(), t: Date.now(), mode: cfg.mode, w: state.W, h: state.H,
+  function recordGame() {
+    hall.record({
+      id: hall.uuid(), t: Date.now(), mode: cfg.mode, w: state.W, h: state.H,
       p1: cfg.p1, p2: cfg.p2, s1: state.score1, s2: state.score2,
       level: cfg.mode === 'ai' ? cfg.level : null
-    };
-    const p1 = cfg.p1, p2 = cfg.p2;
-    const n1 = labelOf(g, 1), n2 = labelOf(g, 2);
-    const res = await store.addGame(g);
-
-    // Nieuwe namen pas na een afgerond potje opslaan, zo blijven tikfouten uit de lijst.
-    for (const n of [p1, p2]) {
-      const k = keyOf(n);
-      if (k !== 'claude' && sessionNames.has(k)) {
-        await store.addPlayer(n);
-        sessionNames.delete(k);
-        if (!knownPlayers.some(x => keyOf(x) === k)) knownPlayers.push(n);
-      }
-    }
-
-    let games = null;
-    if (res.saved) { try { games = await store.games(); } catch (e) { games = null; } }
-    if (token !== recordToken) return;
-
-    if (res.queued) {
-      rec.textContent = 'Geen verbinding met de ranglijst. Dit potje wordt verstuurd zodra de verbinding terug is.';
-    } else if (!res.saved) {
-      rec.textContent = 'Dit potje kon niet worden opgeslagen.';
-    } else if (!games) {
-      rec.textContent = 'Opgeslagen in de ranglijst.';
-    } else {
-      const h = headToHead(games, n1, n2);
-      const total = h.w1 + h.w2 + h.t;
-      const line1 = total <= 1
-        ? 'Eerste potje tussen jullie, opgeslagen in de ranglijst.'
-        : `Onderling na ${total} potjes: ${n1} ${h.w1} – ${h.w2} ${n2}` + (h.t ? ` (${h.t}× gelijk)` : '');
-      const stats = computeStats(games);
-      const fmt = (name) => {
-        const p = stats.find(x => keyOf(x.name) === keyOf(name));
-        if (!p) return '';
-        const d = Math.round(p.delta);
-        return `${name} ${Math.round(p.rating)} (${d >= 0 ? '+' : '−'}${Math.abs(d)})`;
-      };
-      rec.textContent = `${line1}\nRating: ${fmt(n1)}, ${fmt(n2)}`;
-    }
-  }
-
-  function headToHead(games, n1, n2) {
-    const k1 = keyOf(n1), k2 = keyOf(n2);
-    let w1 = 0, w2 = 0, t = 0;
-    for (const g of games) {
-      const a = keyOf(labelOf(g, 1)), b = keyOf(labelOf(g, 2));
-      let x, y;
-      if (a === k1 && b === k2) { x = g.s1; y = g.s2; }
-      else if (a === k2 && b === k1) { x = g.s2; y = g.s1; }
-      else continue;
-      if (x > y) w1++; else if (y > x) w2++; else t++;
-    }
-    return { w1, w2, t };
-  }
-
-  // ---------- statistieken ----------
-  // Elo-rating: iedereen start op 1000. Nieuwe spelers bewegen sneller (hogere K),
-  // zodat ze na een paar potjes op hun niveau zitten.
-  const ELO_START = 1000;
-  const PROVISIONAL = 3;
-  const kFactor = (p) => p.played < 10 ? 40 : 24;
-
-  function computeStats(games) {
-    const map = new Map();
-    const get = (name) => {
-      const k = keyOf(name);
-      if (!map.has(k)) map.set(k, { name, played: 0, won: 0, lost: 0, tied: 0, rating: ELO_START, delta: 0 });
-      const p = map.get(k);
-      p.name = name; // meest recente schrijfwijze
-      return p;
-    };
-    games.slice().sort((a, b) => a.t - b.t).forEach(g => {
-      const a = get(labelOf(g, 1)), b = get(labelOf(g, 2));
-      const sa = g.s1 > g.s2 ? 1 : g.s1 < g.s2 ? 0 : 0.5;
-      const ea = 1 / (1 + Math.pow(10, (b.rating - a.rating) / 400));
-      const da = kFactor(a) * (sa - ea);
-      const db = kFactor(b) * ((1 - sa) - (1 - ea));
-      a.rating += da; b.rating += db;
-      a.delta = da; b.delta = db;
-      a.played++; b.played++;
-      if (sa === 1) { a.won++; b.lost++; }
-      else if (sa === 0) { b.won++; a.lost++; }
-      else { a.tied++; b.tied++; }
     });
-    const byRating = (x, y) => y.rating - x.rating || y.played - x.played || x.name.localeCompare(y.name, 'nl');
-    const all = [...map.values()];
-    return all.filter(p => p.played >= PROVISIONAL).sort(byRating)
-      .concat(all.filter(p => p.played < PROVISIONAL).sort(byRating));
   }
-
-  const fmtDate = new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-
-  let lastGames = [];
-  let loadFailed = false;
-
-  async function loadStats() {
-    $('rankList').innerHTML = '<li class="stats-empty">Ranglijst laden...</li>';
-    $('gameList').innerHTML = '';
-    $('gamesMore').style.display = 'none';
-    try {
-      lastGames = await store.games();
-      loadFailed = false;
-    } catch (e) {
-      lastGames = REMOTE ? lsGet(LS.pendingGames, []).map(g => ({ ...g, pending: true })) : [];
-      loadFailed = true;
-    }
-    renderStats();
-  }
-
-  function renderSource() {
-    const pending = REMOTE ? lsGet(LS.pendingGames, []).length : 0;
-    let html;
-    if (!REMOTE) {
-      html = '<span class="live off"></span>Niet gekoppeld aan de centrale ranglijst. Potjes worden alleen in deze browser bewaard.';
-    } else if (loadFailed) {
-      html = '<span class="live off"></span>Geen verbinding met de centrale ranglijst. Probeer het straks opnieuw.';
-    } else {
-      html = '<span class="live"></span>Centrale ranglijst, voor iedereen hetzelfde. Potjes verwijderen kan alleen via het beheer in Supabase.';
-    }
-    if (pending) html += ` ${pending} ${pending === 1 ? 'potje wacht' : 'potjes wachten'} nog op verzending.`;
-    $('statsSource').innerHTML = html;
-  }
-
-  function renderStats() {
-    renderSource();
-    const games = statsFilter === 'all' ? lastGames : lastGames.filter(g => (g.mode || 'duo') === statsFilter);
-    const players = computeStats(games);
-    const rankList = $('rankList'), gameList = $('gameList');
-
-    $('rankSummary').textContent = players.length ? `${players.length} ${players.length === 1 ? 'speler' : 'spelers'}` : '';
-    $('gamesSummary').textContent = games.length ? `${games.length} ${games.length === 1 ? 'potje' : 'potjes'}` : '';
-
-    if (!games.length) {
-      const msg = loadFailed
-        ? 'De ranglijst kon niet worden geladen. Controleer de verbinding en klik op Vernieuwen.'
-        : statsFilter === 'ai'
-          ? 'Nog niemand heeft Claude uitgedaagd. Kies "Tegen Claude" in de setup en rond een potje af.'
-          : statsFilter === 'duo'
-            ? 'Nog geen potjes tussen collega\'s. Rond een potje af en het verschijnt hier.'
-            : 'Nog geen potjes gespeeld. Rond een potje af en het verschijnt hier.';
-      rankList.innerHTML = `<li class="stats-empty">${msg}</li>`;
-      gameList.innerHTML = '';
-      $('gamesMore').style.display = 'none';
-      return;
-    }
-
-    const row = (p, pos) => {
-      const provisional = p.played < PROVISIONAL;
-      const parts = [`${p.won} gewonnen`, `${p.lost} verloren`];
-      if (p.tied) parts.push(`${p.tied} gelijk`);
-      const d = Math.round(p.delta);
-      const delta = d > 0 ? `<span class="up">▲ ${d}</span>` : d < 0 ? `<span class="down">▼ ${-d}</span>` : '±0';
-      return `<li class="rank-row${pos === 1 ? ' top' : ''}${provisional ? ' provisional' : ''}">
-        <div class="rank-pos">${provisional ? '' : pos}</div>
-        <div>
-          <div class="rank-name">${esc(p.name)}</div>
-          <div class="rank-meta">${p.played} ${p.played === 1 ? 'potje' : 'potjes'}: ${parts.join(', ')}</div>
-        </div>
-        <div class="rank-wins"><span class="num">${Math.round(p.rating)}</span><span class="lbl" title="Verschil door het laatste potje">${delta}</span></div>
-      </li>`;
-    };
-    const established = players.filter(p => p.played >= PROVISIONAL);
-    const provisional = players.filter(p => p.played < PROVISIONAL);
-    rankList.innerHTML = established.map((p, i) => row(p, i + 1)).join('') +
-      (provisional.length ? `<li class="rank-divider">Voorlopig, nog geen ${PROVISIONAL} potjes</li>` + provisional.map(p => row(p, 0)).join('') : '');
-
-    const sorted = games.slice().sort((a, b) => b.t - a.t);
-    const shown = showAllGames ? sorted : sorted.slice(0, GAMES_PAGE);
-    gameList.innerHTML = shown.map(g => {
-      const n1 = g.s1 > g.s2 ? `<strong>${esc(g.p1)}</strong>` : esc(g.p1);
-      const n2 = g.s2 > g.s1 ? `<strong>${esc(g.p2)}</strong>` : esc(g.p2);
-      const size = (g.w && g.h) ? `${g.w} × ${g.h}` : '';
-      const mode = g.mode === 'ai' ? `tegen Claude (${g.level || 'normaal'})` : 'onderling';
-      const extra = (g.s1 === g.s2 ? ', gelijkspel' : '') + (g.pending ? ', wacht op verzending' : '');
-      return `<li class="game-row">
-        <div>
-          <div class="game-match">${n1}<span class="score">${g.s1} – ${g.s2}</span>${n2}</div>
-          <div class="game-meta">${esc(fmtDate.format(new Date(g.t)))}, ${size} ${mode}${extra}</div>
-        </div>
-      </li>`;
-    }).join('');
-
-    const more = $('gamesMore');
-    if (sorted.length > GAMES_PAGE) {
-      more.style.display = '';
-      more.textContent = showAllGames ? 'Toon minder' : `Toon alle ${sorted.length} potjes`;
-    } else {
-      more.style.display = 'none';
-    }
-  }
-
-  function setStatus(text) { $('statsStatus').textContent = text; }
-
-  const statsOverlay = $('statsOverlay');
-  function openStats() {
-    showAllGames = false;
-    setStatus('');
-    statsOverlay.classList.add('open');
-    loadStats();
-  }
-  function closeStats() { statsOverlay.classList.remove('open'); }
-
-  $('btnStats').addEventListener('click', openStats);
-  $('winnerStatsBtn').addEventListener('click', openStats);
-  $('statsClose').addEventListener('click', closeStats);
-  $('btnRefresh').addEventListener('click', () => { setStatus(''); loadStats(); });
-  statsOverlay.addEventListener('click', (e) => { if (e.target === statsOverlay) closeStats(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStats(); });
-
-  $('statsFilter').addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    $('statsFilter').querySelectorAll('button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    statsFilter = btn.dataset.filter;
-    showAllGames = false;
-    renderStats();
-  });
-
-  $('gamesMore').addEventListener('click', () => { showAllGames = !showAllGames; renderStats(); });
 
   // ---------- start ----------
   (function init() {
-    renderPlayerSelects();
-    const last = lsGet(LS.last, {});
-    selectName(1, last.p1);
-    selectName(2, last.p2);
-    setLevel(last.level || 'normaal');
+    const lastChoice = hall.last.get();
+    hall.init(lastChoice);
+    setLevel(lastChoice.level || 'normaal');
     refreshResume();
-    loadPlayers().then(() => {
-      if (!$('p1select').value) selectName(1, last.p1);
-      if (!$('p2select').value) selectName(2, last.p2);
-    });
-    flushPending().catch(() => {});
   })();
 })();
 </script>

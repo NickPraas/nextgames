@@ -992,6 +992,8 @@
   .bg-board .off2 { fill: var(--grey-900); }
   .bg-board .tray-lbl { font-family: var(--font-body); font-weight: 700; font-size: 15px; fill: rgba(255,255,255,0.75); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
   .bg-board .last-dot { fill: var(--brand-green); stroke: var(--blue-900); stroke-width: 2; }
+  .bg-board .last-from { fill: none; stroke: var(--brand-green); stroke-width: 3; }
+  .bg-board .chk, .bg-board .off1, .bg-board .off2 { will-change: transform; }
   .bg-board .hit { fill: transparent; cursor: pointer; }
   .bg-board .hit.off { cursor: default; }
 
@@ -1103,7 +1105,7 @@
           <div class="rule-icon">👆</div>
           <div>
             <div class="rule-title">Bediening</div>
-            <div class="rule-text">Tik een schijf aan; de punten waar hij heen mag lichten groen op. Tik het doel aan om te zetten. Dubbelklikken zet meteen met de hoogste steen. Een zet terugnemen kan tot je op <strong>Beurt klaar</strong> klikt.</div>
+            <div class="rule-text">Tik een schijf aan; de punten waar hij heen mag lichten groen op. Tik het doel aan om te zetten, ook als de schijf beide stenen achter elkaar gebruikt. Geeft dat via de ene of de andere steen een verschillend resultaat (de ene route slaat, de andere niet), dan zet je in twee stappen en kies je zelf. Een zet terugnemen kan tot je op <strong>Beurt klaar</strong> klikt. Een open rondje en een groene stip laten zien waar de tegenstander vandaan kwam en heen ging.</div>
           </div>
         </div>
       </div>
@@ -1127,7 +1129,7 @@
         </div>
         <div class="stats-section">
           <div class="stats-heading">Ranglijst <small id="rankSummary"></small></div>
-          <p class="stats-note">Gerangschikt op Elo-rating. Iedereen begint op 1000, en winnen van een sterkere tegenstander levert meer op. Na 3 matches tel je volwaardig mee.</p>
+          <p class="stats-note">Gerangschikt op Elo-rating. Iedereen begint op 1000, en winnen van een sterkere tegenstander levert meer op. Een langere match telt zwaarder dan een los potje. Na 3 matches tel je volwaardig mee.</p>
           <ol class="rank-list" id="rankList"></ol>
         </div>
         <div class="stats-section">
@@ -1262,6 +1264,7 @@
 
 </div>
 
+<script src="speelhal.js?v=2026-10-15"></script>
 <script>
 (function () {
   const $ = (id) => document.getElementById(id);
@@ -1441,6 +1444,8 @@
     return { start, clone, own, opp, allHome, singleMoves, apply, without, turnInfo, legalNext, maxDepth, sequences, pips, points, count };
   })();
 
+  const esc = Speelhal.esc;
+
   // ---------- spelverloop ----------
   const TARGETS = [1, 3, 5, 7];
   let cfg = { p1: '', p2: '', target: 3 };
@@ -1478,23 +1483,34 @@
     ? BG.legalNext(g.pos, g.turn, remaining(), need(), g.info.requiredDie, g.info.memo) : [];
 
   // Bestemmingen voor de gekozen schijf, ook met meerdere stenen achter elkaar.
+  // Een bestemming die alleen via meerdere stappen te bereiken is, bieden we alleen aan als
+  // elke route hetzelfde oplevert. Slaat de ene route wel en de andere niet, dan zet de speler
+  // in losse stappen en kiest hij zelf.
+  const posKey = (s) => s.b.join(',') + '|' + s.bar.join(',') + '|' + s.off.join(',');
   function destinations(from) {
-    const out = new Map();
+    const found = new Map();
     const queue = [{ pos: g.pos, rem: remaining(), need: need(), at: from, path: [] }];
     while (queue.length) {
       const q = queue.shift();
       if (q.need <= 0) continue;
       const opts = BG.legalNext(q.pos, g.turn, q.rem, q.need, g.info.requiredDie, g.info.memo).filter(m => m.from === q.at);
       for (const m of opts) {
-        const k = String(m.to);
+        const ns = BG.clone(q.pos);
+        BG.apply(ns, g.turn, m);
         const path = q.path.concat([m]);
-        if (!out.has(k)) out.set(k, path);
-        if (m.to !== 'off') {
-          const ns = BG.clone(q.pos);
-          BG.apply(ns, g.turn, m);
-          queue.push({ pos: ns, rem: BG.without(q.rem, m.die), need: q.need - 1, at: m.to, path });
-        }
+        const k = String(m.to);
+        if (!found.has(k)) found.set(k, []);
+        found.get(k).push({ path, key: posKey(ns) });
+        if (m.to !== 'off') queue.push({ pos: ns, rem: BG.without(q.rem, m.die), need: q.need - 1, at: m.to, path });
       }
+    }
+    const out = new Map();
+    for (const [to, routes] of found) {
+      const single = routes.find(r => r.path.length === 1);
+      if (single) { out.set(to, single.path); continue; }
+      const shortest = Math.min(...routes.map(r => r.path.length));
+      const best = routes.filter(r => r.path.length === shortest);
+      if (new Set(best.map(r => r.key)).size === 1) out.set(to, best[0].path);
     }
     return out;
   }
@@ -1547,19 +1563,60 @@
   }
 
   function playPath(path) {
+    const anims = [];
+    const startXY = topXY(g.pos, path[0].from, g.turn);
     for (const m of path) {
       g.history.push(BG.clone(g.pos));
-      BG.apply(g.pos, g.turn, m);
+      const hitXY = m.to !== 'off' ? topXY(g.pos, m.to, 3 - g.turn) : null;
+      if (BG.apply(g.pos, g.turn, m)) anims.push({ from: hitXY, at: `bar${3 - g.turn}` });
       g.played.push(m);
-      if (g.pos.off[g.turn] === 15) { gameOver(g.turn); return; }
+      if (g.pos.off[g.turn] === 15) {
+        anims.unshift({ from: startXY, at: `off${g.turn}` });
+        gameOver(g.turn);
+        animate(anims);
+        return;
+      }
     }
-    // Handig bij meerdere zetten met dezelfde schijf: blijft geselecteerd als hij nog kan.
     const last = path[path.length - 1];
+    anims.unshift({ from: startXY, at: last.to === 'off' ? `off${g.turn}` : `p${last.to}` });
+    // Handig bij meerdere zetten met dezelfde schijf: blijft geselecteerd als hij nog kan.
     const srcs = new Set(nextMoves().map(m => String(m.from)));
     if (last.to !== 'off' && srcs.has(String(last.to))) sel = last.to;
     else autoSelect();
     render();
+    animate(anims);
     saveProgress();
+  }
+
+  // Positie van de bovenste schijf van speler p op een punt, de balk of de uitbak.
+  function topXY(pos, loc, p) {
+    if (loc === 'bar') {
+      const k = Math.max(0, Math.min(pos.bar[p], 3) - 1);
+      return { x: G.bx + G.barW / 2, y: p === 1 ? G.H / 2 - 40 - k * 2 * (G.r - 4) : G.H / 2 + 40 + k * 2 * (G.r - 4) };
+    }
+    const n = Math.abs(pos.b[loc]);
+    return { x: colX(colOf(loc)) + G.pw / 2, y: stackY(loc, Math.max(0, Math.min(n, 5) - 1)) };
+  }
+
+  // Laat een schijf vanaf zijn oude plek naar de nieuwe glijden.
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function animate(list) {
+    if (reduceMotion) return;
+    const board = $('bgBoard');
+    list.forEach(({ from, at }) => {
+      const el = from && board.querySelector(`[data-at="${at}"]`);
+      if (!el) return;
+      const to = el.tagName === 'rect'
+        ? { x: +el.getAttribute('x') + +el.getAttribute('width') / 2, y: +el.getAttribute('y') + +el.getAttribute('height') / 2 }
+        : { x: +el.getAttribute('cx'), y: +el.getAttribute('cy') };
+      el.style.transition = 'none';
+      el.style.transform = `translate(${from.x - to.x}px, ${from.y - to.y}px)`;
+      el.getBoundingClientRect();
+      requestAnimationFrame(() => {
+        el.style.transition = 'transform .38s cubic-bezier(.2,.8,.2,1)';
+        el.style.transform = '';
+      });
+    });
   }
 
   function undo() {
@@ -1574,7 +1631,7 @@
 
   function endTurn() {
     if (g.phase !== 'move' || need() > 0) return;
-    g.lastTurn = { p: g.turn, tos: g.played.map(m => m.to).filter(t => t !== 'off') };
+    g.lastTurn = { p: g.turn, moves: g.played.map(m => ({ from: m.from, to: m.to })) };
     g.turn = 3 - g.turn;
     g.phase = 'roll';
     g.dice = [];
@@ -1665,7 +1722,8 @@
       if (g.opening && g.opening[0] === g.opening[1]) return `Allebei ${g.opening[0]} gegooid. Gooi opnieuw om te bepalen wie begint.`;
       return 'Gooi om te bepalen wie begint. De hoogste mag beginnen met beide stenen.';
     }
-    if (g.phase === 'roll') return `<strong>${esc(nameOf(g.turn))}</strong>, gooi de stenen.`;
+    if (g.phase === 'roll') return `<strong>${esc(nameOf(g.turn))}</strong>, gooi de stenen.` +
+      (g.lastTurn && g.lastTurn.moves && g.lastTurn.moves.length ? ' Rondje = waar de vorige zet vandaan kwam, stip = waar hij heen ging.' : '');
     if (g.phase === 'over') return '';
     const intro = (g.opening && !g.played.length)
       ? `${esc(cfg.p1)} gooit ${g.opening[0]}, ${esc(cfg.p2)} gooit ${g.opening[1]}: <strong>${esc(nameOf(g.turn))}</strong> begint. ` : '';
@@ -1742,7 +1800,7 @@
           const top = k === show - 1;
           let cls = `chk chk${p}`;
           if (top && p === g.turn && sources.has(String(i))) cls += sel === i ? ' selected' : ' movable';
-          h += `<circle cx="${cx}" cy="${stackY(i, k)}" r="${r - 1}" class="${cls}"/>`;
+          h += `<circle cx="${cx}" cy="${stackY(i, k)}" r="${r - 1}" class="${cls}"${top ? ` data-at="p${i}"` : ''}/>`;
         }
         if (n > 5) h += `<text x="${cx}" y="${stackY(i, 4)}" class="cnt c${p}">${n}</text>`;
       }
@@ -1752,12 +1810,24 @@
       }
     }
 
-    // Laatste beurt van de tegenstander
-    if (g.lastTurn && (g.phase === 'roll' || g.phase === 'move') && g.lastTurn.p !== g.turn) {
-      new Set(g.lastTurn.tos).forEach(i => {
-        const cx = colX(colOf(i)) + pw / 2;
-        const cy = isTop(i) ? m + triH + 14 : H - m - triH - 14;
-        h += `<circle cx="${cx}" cy="${cy}" r="6" class="last-dot"/>`;
+    // Laatste beurt van de tegenstander: open rondje = vertrek, stip = aankomst
+    if (g.lastTurn && g.lastTurn.moves && (g.phase === 'roll' || g.phase === 'move') && g.lastTurn.p !== g.turn) {
+      const mark = (loc) => {
+        if (loc === 'bar') return { x: G.bx + barW / 2, y: H / 2 };
+        if (loc === 'off') return { x: G.tx + trayW / 2, y: g.lastTurn.p === 1 ? H - m - 8 : m + 8 };
+        return { x: colX(colOf(loc)) + pw / 2, y: isTop(loc) ? m + triH + 14 : H - m - triH - 14 };
+      };
+      // Opeenvolgende zetten van dezelfde schijf samenvoegen tot één route
+      const routes = [];
+      g.lastTurn.moves.forEach(mv => {
+        const prev = routes[routes.length - 1];
+        if (prev && prev.to !== 'off' && String(prev.to) === String(mv.from)) prev.to = mv.to;
+        else routes.push({ from: mv.from, to: mv.to });
+      });
+      routes.forEach(rt => {
+        const a = mark(rt.from), b = mark(rt.to);
+        h += `<circle cx="${a.x}" cy="${a.y}" r="7" class="last-from"/>`;
+        h += `<circle cx="${b.x}" cy="${b.y}" r="6" class="last-dot"/>`;
       });
     }
 
@@ -1770,7 +1840,7 @@
         const cy = p === 1 ? H / 2 - 40 - k * 2 * (r - 4) : H / 2 + 40 + k * 2 * (r - 4);
         let cls = `chk chk${p}`;
         if (k === show - 1 && p === g.turn && sources.has('bar')) cls += sel === 'bar' ? ' selected' : ' movable';
-        h += `<circle cx="${cxBar}" cy="${cy}" r="${r - 5}" class="${cls}"/>`;
+        h += `<circle cx="${cxBar}" cy="${cy}" r="${r - 5}" class="${cls}"${k === show - 1 ? ` data-at="bar${p}"` : ''}/>`;
       }
       if (n > 3) {
         const cy = p === 1 ? H / 2 - 40 - 2 * 2 * (r - 4) : H / 2 + 40 + 2 * 2 * (r - 4);
@@ -1779,8 +1849,8 @@
     });
 
     // Uitgenomen schijven
-    for (let k = 0; k < pos.off[2]; k++) h += `<rect x="${G.tx + 7}" y="${m + 6 + k * 15}" width="${trayW - 14}" height="12" rx="4" class="off2"/>`;
-    for (let k = 0; k < pos.off[1]; k++) h += `<rect x="${G.tx + 7}" y="${H - m - 18 - k * 15}" width="${trayW - 14}" height="12" rx="4" class="off1"/>`;
+    for (let k = 0; k < pos.off[2]; k++) h += `<rect x="${G.tx + 7}" y="${m + 6 + k * 15}" width="${trayW - 14}" height="12" rx="4" class="off2"${k === pos.off[2] - 1 ? ' data-at="off2"' : ''}/>`;
+    for (let k = 0; k < pos.off[1]; k++) h += `<rect x="${G.tx + 7}" y="${H - m - 18 - k * 15}" width="${trayW - 14}" height="12" rx="4" class="off1"${k === pos.off[1] - 1 ? ' data-at="off1"' : ''}/>`;
     if (!pos.off[2]) h += `<text x="${G.tx + trayW / 2}" y="${m + trayH / 2}" class="tray-lbl">uit</text>`;
     if (!pos.off[1]) h += `<text x="${G.tx + trayW / 2}" y="${H - m - trayH / 2}" class="tray-lbl">uit</text>`;
 
@@ -1815,15 +1885,6 @@
     render();
   });
 
-  // Dubbelklik: direct zetten met de hoogste steen.
-  $('bgBoard').addEventListener('dblclick', (e) => {
-    if (!g || g.phase !== 'move' || need() <= 0) return;
-    const loc = locFrom(e);
-    if (loc === null || loc === 'off') return;
-    const opts = nextMoves().filter(m => String(m.from) === String(loc)).sort((a, b) => b.die - a.die);
-    if (opts.length) playPath([opts[0]]);
-  });
-
   $('btnRoll').addEventListener('click', roll);
   $('btnUndo').addEventListener('click', undo);
   $('btnDone').addEventListener('click', endTurn);
@@ -1833,8 +1894,7 @@
     $('setup').style.display = 'none';
     $('game').classList.add('active');
     $('winner').classList.remove('active');
-    $('winnerRecord').textContent = '';
-    recordToken++;
+    hall.resetRecord();
     $('roundResult').classList.remove('show');
     $('name1').textContent = cfg.p1;
     $('name2').textContent = cfg.p2;
@@ -1878,14 +1938,15 @@
   });
 
   $('btnStart').addEventListener('click', () => {
-    const p1 = chosenName(1);
-    const p2 = chosenName(2);
-    const err = validateNames(p1, p2);
+    const p1 = hall.picker.chosen(1);
+    const p2 = hall.picker.chosen(2);
+    const err = hall.picker.validate(p1, p2);
     if (err) { $('setupError').textContent = err; return; }
     $('setupError').textContent = '';
     cfg.p1 = p1;
     cfg.p2 = p2;
-    adoptTypedNames();
+    hall.picker.adopt([p1, p2]);
+    hall.last.set({ p1, p2, target: cfg.target });
     beginMatch();
   });
 
@@ -1946,502 +2007,48 @@
   });
   $('btnDiscard').addEventListener('click', () => { clearProgress(); refreshResume(); });
 
-  // ---------- centrale ranglijst ----------
-  // Zelfde Supabase-project als Kamertje verhuren. De spelerslijst wordt gedeeld.
-  const CONFIG = {
-    supabaseUrl: 'https://wyqhmnzykmmasuncbdmp.supabase.co',
-    supabaseKey: 'sb_publishable_jGT0Zoe1bCNHQ_DffHhmDw_z7ehX-Zk'
-  };
+  // ---------- centrale ranglijst (gedeelde code in speelhal.js) ----------
   const GAME_ID = 'backgammon';
   const VARIANT = 'zonder-kubus';
-
-  // Vaste spelers in het keuzelijstje. Nieuwe namen die iemand typt, worden
-  // na de eerste afgeronde match centraal toegevoegd.
-  const COLLEAGUES = [
-    'Albrecht', 'Coen', 'Didi', 'Gerwin', 'Hannah', 'Jacco', 'Jeroen', 'Lars', 'Marit', 'Milan',
-    'Niek', 'Nick', 'Nikos', 'Numan', 'Sam', 'Stefan', 'Stephan', 'Steven', 'Thijs'
-  ];
-
-  const REMOTE = !!(CONFIG.supabaseUrl && CONFIG.supabaseKey);
-  const LIST_PAGE = 15;
-  const NEW = '__new__';
-  const LS = {
-    matches: 'ns-bg:matches:v1',
-    players: 'ns-bg:players:v1',
-    pendingMatches: 'ns-bg:pending-matches:v1',
-    pendingPlayers: 'ns-bg:pending-players:v1',
-    playersCache: 'ns-bg:players-cache:v1',
-    last: 'ns-bg:last-choice:v1'
-  };
-
-  let statsFilter = 'all';
-  let showAll = false;
-  let recordToken = 0;
-  let knownPlayers = [];
-  const sessionNames = new Map();
-
-  const keyOf = (n) => String(n).trim().toLowerCase();
-  const cleanName = (v) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 14);
-  const esc = (t) => String(t).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  const lsGet = (k, fallback) => {
-    try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; }
-    catch (e) { return fallback; }
-  };
-  const lsSet = (k, v) => {
-    try { localStorage.setItem(k, JSON.stringify(v)); return true; }
-    catch (e) { return false; }
-  };
-  const uuid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() :
-    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0;
-      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-
-  const isValidMatch = (m) => m && typeof m.id === 'string' && typeof m.p1 === 'string' && typeof m.p2 === 'string' &&
-    Number.isFinite(m.s1) && Number.isFinite(m.s2) && Number.isFinite(m.t);
-
-  // ---------- opslag ----------
-  async function rest(path, opts = {}) {
-    const res = await fetch(`${CONFIG.supabaseUrl.replace(/\/+$/, '')}/rest/v1/${path}`, {
-      ...opts,
-      headers: { apikey: CONFIG.supabaseKey, 'Content-Type': 'application/json', ...(opts.headers || {}) }
-    });
-    if (!res.ok) {
-      const err = new Error(`HTTP ${res.status}`);
-      err.status = res.status;
-      throw err;
-    }
-    const text = await res.text();
-    return text ? JSON.parse(text) : null;
-  }
-
-  // Fouten waarbij opnieuw proberen zin heeft (geen verbinding, server, configuratie).
-  const retryable = (e) => !e.status || e.status >= 500 || [401, 403, 404, 408, 429].includes(e.status);
-
-  const fromRow = (r) => ({
-    id: r.id, t: Date.parse(r.played_at), variant: r.variant, target: r.target,
-    p1: r.p1, p2: r.p2, s1: r.score1, s2: r.score2, draws: r.draws || 0
-  });
-  const toRow = (m) => ({
-    id: m.id, game: GAME_ID, variant: VARIANT, target: m.target, played_at: new Date(m.t).toISOString(),
-    p1: m.p1, p2: m.p2, score1: m.s1, score2: m.s2, draws: m.draws
-  });
-
-  function insertMatch(m) {
-    return rest('matches', {
-      method: 'POST',
-      headers: { Prefer: 'return=minimal,resolution=ignore-duplicates' },
-      body: JSON.stringify(toRow(m))
-    });
-  }
-
-  async function insertPlayer(name) {
-    try {
-      await rest('players', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ name }) });
-      return true;
-    } catch (e) {
-      if (e.status === 409) return true;   // bestaat al
-      if (retryable(e)) throw e;
-      return false;                        // ongeldige naam: niet opnieuw proberen
-    }
-  }
-
-  async function flushPending() {
-    if (!REMOTE) return;
-    const matches = lsGet(LS.pendingMatches, []);
-    if (matches.length) {
-      const left = [];
-      for (const m of matches) {
-        try { await insertMatch(m); } catch (e) { if (retryable(e)) left.push(m); }
-      }
-      lsSet(LS.pendingMatches, left);
-    }
-    const names = lsGet(LS.pendingPlayers, []);
-    if (names.length) {
-      const left = [];
-      for (const n of names) {
-        try { await insertPlayer(n); } catch (e) { left.push(n); }
-      }
-      lsSet(LS.pendingPlayers, left);
-    }
-  }
-
-  const store = {
-    async matches() {
-      if (!REMOTE) return lsGet(LS.matches, []).filter(isValidMatch);
-      await flushPending();
-      const out = [];
-      const page = 1000;
-      for (let off = 0; ; off += page) {
-        const rows = await rest(`matches?select=*&game=eq.${GAME_ID}&order=played_at.asc&limit=${page}&offset=${off}`);
-        out.push(...rows.map(fromRow));
-        if (rows.length < page) break;
-      }
-      const ids = new Set(out.map(m => m.id));
-      const pending = lsGet(LS.pendingMatches, []).filter(m => !ids.has(m.id)).map(m => ({ ...m, pending: true }));
-      return out.concat(pending);
+  const hall = Speelhal.create({
+    prefix: 'ns-bg', version: 'v1', resultName: 'matches',
+    table: 'matches', query: `game=eq.${GAME_ID}`,
+    toRow: (e) => ({
+      id: e.id, game: GAME_ID, variant: VARIANT, target: e.target, played_at: new Date(e.t).toISOString(),
+      p1: e.p1, p2: e.p2, score1: e.s1, score2: e.s2, draws: 0
+    }),
+    fromRow: (r) => ({
+      id: r.id, t: Date.parse(r.played_at), target: r.target,
+      p1: r.p1, p2: r.p2, s1: r.score1, s2: r.score2
+    }),
+    units: { one: 'match', many: 'matches', this: 'Deze match' },
+    // Een langere match zegt meer over wie beter speelt: de rating beweegt mee met de wortel
+    // van de lengte. Tot 3 telt normaal, een los potje ongeveer half, tot 7 anderhalf keer.
+    weightOf: (e) => Math.sqrt((e.target || 1) / 3),
+    filters: {
+      all: () => true,
+      single: (e) => e.target === 1,
+      match: (e) => e.target > 1
     },
-
-    async addMatch(m) {
-      if (!REMOTE) {
-        const all = lsGet(LS.matches, []);
-        all.push(m);
-        return { saved: lsSet(LS.matches, all) };
-      }
-      try {
-        await insertMatch(m);
-        return { saved: true };
-      } catch (e) {
-        if (!retryable(e)) return { saved: false };
-        const pending = lsGet(LS.pendingMatches, []);
-        pending.push(m);
-        lsSet(LS.pendingMatches, pending);
-        return { saved: false, queued: true };
-      }
-    },
-
-    async players() {
-      if (!REMOTE) return lsGet(LS.players, []);
-      const pending = lsGet(LS.pendingPlayers, []);
-      try {
-        const rows = await rest('players?select=name');
-        const names = rows.map(r => r.name);
-        lsSet(LS.playersCache, names);
-        return names.concat(pending);
-      } catch (e) {
-        return lsGet(LS.playersCache, []).concat(pending);
-      }
-    },
-
-    async addPlayer(name) {
-      if (!REMOTE) {
-        const list = lsGet(LS.players, []);
-        if (!list.some(n => keyOf(n) === keyOf(name))) { list.push(name); lsSet(LS.players, list); }
-        return;
-      }
-      try {
-        await insertPlayer(name);
-      } catch (e) {
-        const pending = lsGet(LS.pendingPlayers, []);
-        if (!pending.some(n => keyOf(n) === keyOf(name))) { pending.push(name); lsSet(LS.pendingPlayers, pending); }
-      }
-    }
-  };
-
-  // ---------- spelerskeuze ----------
-  function sortedNames(list) {
-    const m = new Map();
-    list.forEach(n => {
-      const c = cleanName(n);
-      const k = keyOf(c);
-      if (c && k !== 'claude' && !m.has(k)) m.set(k, c);
-    });
-    return [...m.values()].sort((a, b) => a.localeCompare(b, 'nl', { sensitivity: 'base' }));
-  }
-
-  let playerNames = [];
-  function renderPlayerSelects() {
-    playerNames = sortedNames(COLLEAGUES.concat(knownPlayers, [...sessionNames.values()]));
-    [1, 2].forEach(n => {
-      const sel = $(`p${n}select`);
-      const keep = sel.value;
-      sel.innerHTML = '<option value="">Kies een speler</option>' +
-        playerNames.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('') +
-        `<option value="${NEW}">+ Andere naam typen</option>`;
-      if (keep === NEW || playerNames.includes(keep)) sel.value = keep;
-    });
-  }
-
-  function selectName(n, name) {
-    const sel = $(`p${n}select`), inp = $(`p${n}name`);
-    if (name && playerNames.includes(name)) {
-      sel.value = name;
-      inp.hidden = true;
-      inp.value = '';
-    }
-  }
-
-  function chosenName(n) {
-    const sel = $(`p${n}select`);
-    if (sel.value !== NEW) return sel.value;
-    const typed = cleanName($(`p${n}name`).value);
-    const existing = playerNames.find(x => keyOf(x) === keyOf(typed));
-    return existing || typed;
-  }
-
-  function validateNames(p1, p2) {
-    const typing = (n) => $(`p${n}select`).value === NEW;
-    if (!p1) return typing(1) ? 'Typ een naam voor speler 1.' : 'Kies speler 1, of typ een andere naam.';
-    if (!p2) return typing(2) ? 'Typ een naam voor speler 2.' : 'Kies speler 2, of typ een andere naam.';
-    if (keyOf(p1) === keyOf(p2)) return 'Kies twee verschillende spelers.';
-    if (keyOf(p1) === 'claude' || keyOf(p2) === 'claude') return 'De naam Claude is gereserveerd. Kies een andere naam.';
-    return '';
-  }
-
-  // Getypte namen direct in de lijst zetten en de keuze op dit apparaat onthouden.
-  function adoptTypedNames() {
-    [cfg.p1, cfg.p2].forEach(n => {
-      if (!playerNames.some(x => keyOf(x) === keyOf(n))) sessionNames.set(keyOf(n), n);
-    });
-    renderPlayerSelects();
-    selectName(1, cfg.p1);
-    selectName(2, cfg.p2);
-    lsSet(LS.last, { p1: cfg.p1, p2: cfg.p2, target: cfg.target });
-  }
-
-  [1, 2].forEach(n => {
-    $(`p${n}select`).addEventListener('change', () => {
-      const isNew = $(`p${n}select`).value === NEW;
-      const inp = $(`p${n}name`);
-      inp.hidden = !isNew;
-      if (isNew) inp.focus();
-      $('setupError').textContent = '';
-    });
-    $(`p${n}name`).addEventListener('input', () => { $('setupError').textContent = ''; });
+    emptyText: (f) => f === 'all'
+      ? 'Nog geen matches gespeeld. Speel een match uit en hij verschijnt hier.'
+      : f === 'single' ? 'Nog geen losse potjes gespeeld.' : 'Nog geen matches van meerdere punten gespeeld.',
+    itemMeta: (e) => e.target > 1 ? `match tot ${e.target}` : 'los potje'
   });
 
-  async function loadPlayers() {
-    knownPlayers = await store.players();
-    renderPlayerSelects();
-  }
-
-  // ---------- match vastleggen ----------
-  async function recordMatch() {
-    const token = ++recordToken;
-    const rec = $('winnerRecord');
-    rec.textContent = 'Opslaan...';
-    const m = {
-      id: uuid(), t: Date.now(), variant: VARIANT, target: cfg.target,
-      p1: cfg.p1, p2: cfg.p2, s1: match.score1, s2: match.score2, draws: 0
-    };
-    const p1 = cfg.p1, p2 = cfg.p2;
-    const res = await store.addMatch(m);
-
-    // Nieuwe namen pas na een afgeronde match opslaan, zo blijven tikfouten uit de lijst.
-    for (const n of [p1, p2]) {
-      const k = keyOf(n);
-      if (sessionNames.has(k)) {
-        await store.addPlayer(n);
-        sessionNames.delete(k);
-        if (!knownPlayers.some(x => keyOf(x) === k)) knownPlayers.push(n);
-      }
-    }
-
-    let all = null;
-    if (res.saved) { try { all = await store.matches(); } catch (e) { all = null; } }
-    if (token !== recordToken) return;
-
-    if (res.queued) {
-      rec.textContent = 'Geen verbinding met de ranglijst. Deze match wordt verstuurd zodra de verbinding terug is.';
-    } else if (!res.saved) {
-      rec.textContent = 'Deze match kon niet worden opgeslagen.';
-    } else if (!all) {
-      rec.textContent = 'Opgeslagen in de ranglijst.';
-    } else {
-      const h = headToHead(all, p1, p2);
-      const total = h.w1 + h.w2;
-      const line1 = total <= 1
-        ? 'Eerste match tussen jullie, opgeslagen in de ranglijst.'
-        : `Onderling na ${total} matches: ${p1} ${h.w1} – ${h.w2} ${p2}`;
-      const stats = computeStats(all);
-      const fmt = (name) => {
-        const p = stats.find(x => keyOf(x.name) === keyOf(name));
-        if (!p) return '';
-        const d = Math.round(p.delta);
-        return `${name} ${Math.round(p.rating)} (${d >= 0 ? '+' : '−'}${Math.abs(d)})`;
-      };
-      rec.textContent = `${line1}\nRating: ${fmt(p1)}, ${fmt(p2)}`;
-    }
-  }
-
-  function headToHead(all, n1, n2) {
-    const k1 = keyOf(n1), k2 = keyOf(n2);
-    let w1 = 0, w2 = 0;
-    for (const m of all) {
-      const a = keyOf(m.p1), b = keyOf(m.p2);
-      let x, y;
-      if (a === k1 && b === k2) { x = m.s1; y = m.s2; }
-      else if (a === k2 && b === k1) { x = m.s2; y = m.s1; }
-      else continue;
-      if (x > y) w1++; else if (y > x) w2++;
-    }
-    return { w1, w2 };
-  }
-
-  // ---------- statistieken ----------
-  // Elo-rating: iedereen start op 1000. Nieuwe spelers bewegen sneller (hogere K),
-  // zodat ze na een paar matches op hun niveau zitten.
-  const ELO_START = 1000;
-  const PROVISIONAL = 3;
-  const kFactor = (p) => p.played < 10 ? 40 : 24;
-
-  function computeStats(all) {
-    const map = new Map();
-    const get = (name) => {
-      const k = keyOf(name);
-      if (!map.has(k)) map.set(k, { name, played: 0, won: 0, lost: 0, rating: ELO_START, delta: 0 });
-      const p = map.get(k);
-      p.name = name; // meest recente schrijfwijze
-      return p;
-    };
-    all.slice().sort((a, b) => a.t - b.t).forEach(m => {
-      if (m.s1 === m.s2) return; // kan niet bij een afgeronde match
-      const a = get(m.p1), b = get(m.p2);
-      const sa = m.s1 > m.s2 ? 1 : 0;
-      const ea = 1 / (1 + Math.pow(10, (b.rating - a.rating) / 400));
-      const da = kFactor(a) * (sa - ea);
-      const db = kFactor(b) * ((1 - sa) - (1 - ea));
-      a.rating += da; b.rating += db;
-      a.delta = da; b.delta = db;
-      a.played++; b.played++;
-      if (sa === 1) { a.won++; b.lost++; } else { b.won++; a.lost++; }
+  function recordMatch() {
+    hall.record({
+      id: hall.uuid(), t: Date.now(), target: cfg.target,
+      p1: cfg.p1, p2: cfg.p2, s1: match.score1, s2: match.score2
     });
-    const byRating = (x, y) => y.rating - x.rating || y.played - x.played || x.name.localeCompare(y.name, 'nl');
-    const players = [...map.values()];
-    return players.filter(p => p.played >= PROVISIONAL).sort(byRating)
-      .concat(players.filter(p => p.played < PROVISIONAL).sort(byRating));
   }
-
-  const fmtDate = new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-
-  let lastMatches = [];
-  let loadFailed = false;
-
-  async function loadStats() {
-    $('rankList').innerHTML = '<li class="stats-empty">Ranglijst laden...</li>';
-    $('gameList').innerHTML = '';
-    $('gamesMore').style.display = 'none';
-    try {
-      lastMatches = await store.matches();
-      loadFailed = false;
-    } catch (e) {
-      lastMatches = REMOTE ? lsGet(LS.pendingMatches, []).map(m => ({ ...m, pending: true })) : [];
-      loadFailed = true;
-    }
-    renderStats();
-  }
-
-  function renderSource() {
-    const pending = REMOTE ? lsGet(LS.pendingMatches, []).length : 0;
-    let html;
-    if (!REMOTE) {
-      html = '<span class="live off"></span>Niet gekoppeld aan de centrale ranglijst. Matches worden alleen in deze browser bewaard.';
-    } else if (loadFailed) {
-      html = '<span class="live off"></span>Geen verbinding met de centrale ranglijst. Probeer het straks opnieuw.';
-    } else {
-      html = '<span class="live"></span>Centrale ranglijst, voor iedereen hetzelfde. Matches verwijderen kan alleen via het beheer in Supabase.';
-    }
-    if (pending) html += ` ${pending} ${pending === 1 ? 'match wacht' : 'matches wachten'} nog op verzending.`;
-    $('statsSource').innerHTML = html;
-  }
-
-  function renderStats() {
-    renderSource();
-    const list = statsFilter === 'all' ? lastMatches
-      : lastMatches.filter(m => statsFilter === 'single' ? m.target === 1 : m.target > 1);
-    const players = computeStats(list);
-    const rankList = $('rankList'), gameList = $('gameList');
-
-    $('rankSummary').textContent = players.length ? `${players.length} ${players.length === 1 ? 'speler' : 'spelers'}` : '';
-    $('gamesSummary').textContent = list.length ? `${list.length} ${list.length === 1 ? 'match' : 'matches'}` : '';
-
-    if (!list.length) {
-      const msg = loadFailed
-        ? 'De ranglijst kon niet worden geladen. Controleer de verbinding en klik op Vernieuwen.'
-        : statsFilter === 'all'
-          ? 'Nog geen matches gespeeld. Speel een match uit en hij verschijnt hier.'
-          : statsFilter === 'single' ? 'Nog geen losse potjes gespeeld.' : 'Nog geen matches van meerdere punten gespeeld.';
-      rankList.innerHTML = `<li class="stats-empty">${msg}</li>`;
-      gameList.innerHTML = '';
-      $('gamesMore').style.display = 'none';
-      return;
-    }
-
-    const row = (p, pos) => {
-      const provisional = p.played < PROVISIONAL;
-      const d = Math.round(p.delta);
-      const delta = d > 0 ? `<span class="up">▲ ${d}</span>` : d < 0 ? `<span class="down">▼ ${-d}</span>` : '±0';
-      return `<li class="rank-row${pos === 1 ? ' top' : ''}${provisional ? ' provisional' : ''}">
-        <div class="rank-pos">${provisional ? '' : pos}</div>
-        <div>
-          <div class="rank-name">${esc(p.name)}</div>
-          <div class="rank-meta">${p.played} ${p.played === 1 ? 'match' : 'matches'}: ${p.won} gewonnen, ${p.lost} verloren</div>
-        </div>
-        <div class="rank-wins"><span class="num">${Math.round(p.rating)}</span><span class="lbl" title="Verschil door de laatste match">${delta}</span></div>
-      </li>`;
-    };
-    const established = players.filter(p => p.played >= PROVISIONAL);
-    const provisional = players.filter(p => p.played < PROVISIONAL);
-    rankList.innerHTML = established.map((p, i) => row(p, i + 1)).join('') +
-      (provisional.length ? `<li class="rank-divider">Voorlopig, nog geen ${PROVISIONAL} matches</li>` + provisional.map(p => row(p, 0)).join('') : '');
-
-    const sorted = list.slice().sort((a, b) => b.t - a.t);
-    const shown = showAll ? sorted : sorted.slice(0, LIST_PAGE);
-    gameList.innerHTML = shown.map(m => {
-      const n1 = m.s1 > m.s2 ? `<strong>${esc(m.p1)}</strong>` : esc(m.p1);
-      const n2 = m.s2 > m.s1 ? `<strong>${esc(m.p2)}</strong>` : esc(m.p2);
-      const kind = m.target > 1 ? `match tot ${m.target}` : 'los potje';
-      const extra = m.pending ? ', wacht op verzending' : '';
-      return `<li class="game-row">
-        <div>
-          <div class="game-match">${n1}<span class="score">${m.s1} – ${m.s2}</span>${n2}</div>
-          <div class="game-meta">${esc(fmtDate.format(new Date(m.t)))}, ${kind}${extra}</div>
-        </div>
-      </li>`;
-    }).join('');
-
-    const more = $('gamesMore');
-    if (sorted.length > LIST_PAGE) {
-      more.style.display = '';
-      more.textContent = showAll ? 'Toon minder' : `Toon alle ${sorted.length} matches`;
-    } else {
-      more.style.display = 'none';
-    }
-  }
-
-  function setStatus(text) { $('statsStatus').textContent = text; }
-
-  const statsOverlay = $('statsOverlay');
-  function openStats() {
-    showAll = false;
-    setStatus('');
-    statsOverlay.classList.add('open');
-    loadStats();
-  }
-  function closeStats() { statsOverlay.classList.remove('open'); }
-
-  $('btnStats').addEventListener('click', openStats);
-  $('winnerStatsBtn').addEventListener('click', openStats);
-  $('statsClose').addEventListener('click', closeStats);
-  $('btnRefresh').addEventListener('click', () => { setStatus(''); loadStats(); });
-  statsOverlay.addEventListener('click', (e) => { if (e.target === statsOverlay) closeStats(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStats(); });
-
-  $('statsFilter').addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    $('statsFilter').querySelectorAll('button').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    statsFilter = btn.dataset.filter;
-    showAll = false;
-    renderStats();
-  });
-
-  $('gamesMore').addEventListener('click', () => { showAll = !showAll; renderStats(); });
 
   // ---------- start ----------
   (function init() {
-    renderPlayerSelects();
-    const last = lsGet(LS.last, {});
-    selectName(1, last.p1);
-    selectName(2, last.p2);
-    if (TARGETS.includes(last.target)) { cfg.target = last.target; setTarget(cfg.target); }
+    const lastChoice = hall.last.get();
+    hall.init(lastChoice);
+    if (TARGETS.includes(lastChoice.target)) { cfg.target = lastChoice.target; setTarget(cfg.target); }
     refreshResume();
-    loadPlayers().then(() => {
-      if (!$('p1select').value) selectName(1, last.p1);
-      if (!$('p2select').value) selectName(2, last.p2);
-    });
-    flushPending().catch(() => {});
   })();
 })();
 </script>
