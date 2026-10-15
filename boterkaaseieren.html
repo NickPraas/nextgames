@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boter, kaas en eieren — Next Standard editie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ---- Next Standard styleguide ---- */
+    /* Brand */
+    --brand-blue:    #00F0FF;
+    --brand-green:   #00F098;
+    --blue-500:      #384980;
+    --blue-700:      #1E2745;
+    --blue-900:      #13192B;
+    /* System */
+    --white:         #FFFFFF;
+    --grey-300:      #F1F3F9;
+    --grey-400:      #E6E8EF;
+    --grey-700:      #E3E7F3;
+    --grey-900:      #D4D9EC;
+
+    /* ---- semantische tokens ---- */
+    --bg:            var(--grey-300);
+    --bg-card:       var(--white);
+    --ink:           var(--blue-900);
+    --ink-soft:      var(--blue-500);
+    --ink-faint:     #8B92AB;
+    --line:          rgba(19, 25, 43, 0.08);
+    --line-strong:   rgba(19, 25, 43, 0.16);
+
+    /* Speler 1 — cyaan (uit brand colors) */
+    --p1:            var(--brand-blue);
+    --p1-dark:       #00BCD4;          /* helder cyaan voor wanden — max contrast met navy */
+    --p1-soft:       #B3FAFF;
+
+    /* Speler 2 — navy (uit brand colors) */
+    --p2:            var(--blue-700);  /* Blue 700 als box-fill */
+    --p2-dark:       var(--blue-900);  /* Blue 900 voor max contrast op lijnen */
+    --p2-soft:       var(--grey-700);  /* lichtgrijs-blauw voor badges */
+
+    --radius:        14px;
+    --radius-sm:     8px;
+
+    /* fonts */
+    --font-display:  'Montserrat', 'Gilroy', sans-serif;
+    --font-body:     'Montserrat', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 40px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .brand-mark {
+    width: 36px; height: 36px;
+    background: var(--ink);
+    color: var(--brand-green);
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: -0.04em;
+  }
+
+  .tag-make {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .tag-make::before { content: '/ '; color: var(--brand-green); font-style: normal; font-weight: 800; }
+  .tag-make::after  { content: ' /'; color: var(--brand-green); font-style: normal; font-weight: 800; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 24px;
+    padding: 36px 32px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -60px; bottom: -60px;
+    width: 220px; height: 220px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.22;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    left: -40px; top: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-blue);
+    border-radius: 50%;
+    opacity: 0.12;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    margin-bottom: 12px;
+    font-weight: 600;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(36px, 6.5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    position: relative;
+  }
+  .hero h1 .slash { color: var(--brand-green); font-weight: 900; }
+  .hero-sub {
+    margin-top: 14px;
+    max-width: 480px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.55;
+    position: relative;
+    font-weight: 400;
+  }
+
+  /* ---------- setup ---------- */
+  .setup {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border: 1px solid var(--line);
+  }
+  .field label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .field input {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;
+    background: var(--bg);
+    color: var(--ink);
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
+  }
+
+  .field select {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 40px 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2313192B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color .15s, background-color .15s, box-shadow .15s;
+  }
+  .field select:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
+  }
+  .field .player-new { margin-top: 8px; }
+  .resume {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-left: 4px solid var(--brand-green);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+  }
+  .resume[hidden] { display: none; }
+  .resume-title { font-family: var(--font-display); font-weight: 800; font-style: italic; font-size: 16px; }
+  .resume-text { font-size: 13px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; }
+  .resume-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .resume-actions .btn { padding: 9px 14px; font-size: 13px; }
+  .setup-error { font-size: 14px; font-weight: 600; color: #C62F4B; }
+  .setup-error:empty { display: none; }
+
+  /* mode segmented */
+  .mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    gap: 4px;
+  }
+  .mode-toggle button {
+    border: none;
+    background: transparent;
+    padding: 12px 14px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all .18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .mode-toggle button .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    transition: background .18s;
+  }
+  .mode-toggle button.active {
+    background: var(--ink);
+    color: #fff;
+  }
+  .mode-toggle button.active .dot { background: var(--brand-blue); }
+
+  .player-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+
+  .size-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .size-chip {
+    flex: 1 1 auto;
+    min-width: 120px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line-strong);
+    background: var(--bg);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    transition: all .15s;
+  }
+  .size-chip strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .size-chip span {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .size-chip:hover { border-color: var(--ink); }
+  .size-chip.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .size-chip.active span { color: var(--brand-green); }
+
+  .btn-start {
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: transform .12s, background .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn-start:hover { background: #00d987; }
+  .btn-start:active { transform: scale(0.99); }
+  .btn-start .arrow {
+    display: inline-block;
+    transition: transform .18s;
+    font-style: normal;
+  }
+  .btn-start:hover .arrow { transform: translateX(4px); }
+
+  /* ---------- game ---------- */
+  .game { display: none; flex-direction: column; gap: 18px; }
+  .game.active { display: flex; }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+  }
+  .player-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    position: relative;
+    transition: all .25s;
+  }
+  .player-card.p1 { border-left: 4px solid var(--p1); }
+  .player-card.p2 { border-left: 4px solid var(--p2); }
+  .player-card.turn { transform: translateY(-2px); }
+  .player-card.p1.turn { box-shadow: 0 0 0 2px var(--p1-dark); border-color: var(--p1-dark); }
+  .player-card.p2.turn { box-shadow: 0 0 0 2px var(--p2-dark); border-color: var(--p2-dark); }
+
+  .player-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .player-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-top: 2px;
+    line-height: 1.1;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .player-score {
+    margin-top: 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .player-score .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 38px;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .player-score .of {
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  .turn-indicator {
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 130px;
+  }
+  .turn-indicator .who {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--brand-blue);
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .turn-indicator.is-p2 .who { color: var(--white); }
+  .turn-indicator .label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .turn-indicator .bonus {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 4px;
+    font-style: italic;
+    min-height: 14px;
+    font-weight: 500;
+  }
+
+
+  /* controls */
+  .controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .controls-left { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 11px 18px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink-soft); }
+  .btn.btn-ghost:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .rules-hint {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .rules-hint .slash { color: var(--brand-green); font-style: normal; font-weight: 800; }
+
+  /* winner */
+  .winner {
+    display: none;
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .winner.active { display: block; }
+  .winner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, var(--brand-green) 0%, transparent 50%);
+    opacity: 0.18;
+  }
+  .winner-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    position: relative;
+  }
+  .winner-name {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(32px, 6vw, 48px);
+    letter-spacing: -0.025em;
+    margin-top: 6px;
+    line-height: 1.05;
+    position: relative;
+  }
+  .winner-name.tie { color: var(--brand-green); }
+  .winner-score {
+    margin-top: 10px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    position: relative;
+    font-weight: 500;
+  }
+  .winner-tag {
+    margin-top: 18px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    color: var(--brand-green);
+    font-size: 18px;
+    position: relative;
+  }
+
+  /* footer */
+  .footer {
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer .vals { display: flex; gap: 12px; flex-wrap: wrap; }
+  .footer .vals span {
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .footer .vals span:nth-child(1) { color: var(--p1-dark); }
+  .footer .vals span:nth-child(2) { color: var(--brand-green); }
+  .footer .vals span:nth-child(3) { color: var(--ink-soft); }
+  .footer .vals span:nth-child(4) { color: var(--ink); }
+
+  /* ---------- uitleg knop ---------- */
+  .btn-uitleg {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-uitleg:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  /* ---------- modal ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(19,25,43,0.72);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(19,25,43,0.32);
+    position: relative;
+    animation: modal-in .22s ease-out;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+  .modal-header {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    right: -40px; bottom: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+  .modal-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: rgba(255,255,255,0.8);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: background .15s;
+    position: absolute;
+    z-index: 1;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.25); }
+  .modal-body {
+    padding: 24px 28px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .rule-block {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rule-icon {
+    font-size: 22px;
+    min-width: 32px;
+    text-align: center;
+    margin-top: 1px;
+  }
+  .rule-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+    color: var(--ink);
+  }
+  .rule-text {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .rule-text strong { color: var(--ink); font-weight: 700; }
+  .modal-btn-start {
+    display: block;
+    width: calc(100% - 56px);
+    margin: 20px 28px 24px;
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 800;
+    font-style: italic;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .modal-btn-start:hover { background: #00d987; }
+
+  /* ---------- statistieken ---------- */
+  .topbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .modal.modal-wide { max-width: 680px; }
+  .stats-filter { grid-template-columns: repeat(3, 1fr); }
+  .stats-filter button { font-size: 13px; padding: 10px 8px; }
+  .stats-section { display: flex; flex-direction: column; gap: 10px; }
+  .stats-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .stats-heading small {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .rank-list, .game-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .rank-row {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+  .rank-row.top { background: var(--ink); color: #fff; }
+  .rank-pos {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-faint);
+  }
+  .rank-row.top .rank-pos { color: var(--brand-green); }
+  .rank-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    word-break: break-word;
+  }
+  .rank-meta { font-size: 12px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; }
+  .rank-row.top .rank-meta { color: rgba(255,255,255,0.65); }
+  .rank-bar { height: 4px; background: var(--line-strong); border-radius: 2px; margin-top: 7px; overflow: hidden; }
+  .rank-row.top .rank-bar { background: rgba(255,255,255,0.15); }
+  .rank-bar span { display: block; height: 100%; background: var(--brand-green); border-radius: 2px; }
+  .rank-wins { text-align: right; line-height: 1; }
+  .rank-wins .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+  }
+  .rank-wins .lbl { display: block; font-size: 11px; color: var(--ink-soft); font-weight: 600; margin-top: 3px; }
+  .rank-wins .up { color: #00A86B; }
+  .rank-wins .down { color: #C62F4B; }
+  .rank-row.top .rank-wins .up { color: var(--brand-green); }
+  .rank-row.top .rank-wins .down { color: #FF8FA3; }
+  .rank-row.provisional { background: transparent; border: 1px dashed var(--line-strong); }
+  .rank-divider { font-size: 12px; color: var(--ink-faint); font-weight: 600; margin-top: 8px; }
+  .stats-note { font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; margin-top: -4px; }
+  .rank-row.top .rank-wins .lbl { color: rgba(255,255,255,0.65); }
+
+  .game-row {
+    display: grid;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .game-match { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+  .game-match strong { color: var(--ink); font-weight: 800; }
+  .game-match .score {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--ink);
+    margin: 0 6px;
+  }
+  .game-meta { font-size: 12px; color: var(--ink-faint); font-weight: 500; margin-top: 2px; }
+  .stats-empty {
+    padding: 22px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .stats-more { align-self: flex-start; }
+  .stats-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 18px 28px 24px;
+    border-top: 1px solid var(--line);
+    margin-top: 16px;
+  }
+  .stats-actions .btn { padding: 9px 14px; font-size: 13px; }
+  .stats-status { width: 100%; font-size: 13px; color: var(--ink-soft); font-weight: 500; min-height: 18px; }
+  .stats-status:empty { display: none; }
+  .stats-source { flex: 1 1 260px; font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; align-self: center; }
+  .stats-source .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-green); margin-right: 6px; vertical-align: 1px; }
+  .stats-source .off { background: var(--ink-faint); }
+
+  .winner-record {
+    white-space: pre-line;
+    line-height: 1.6;
+    margin-top: 14px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    position: relative;
+    font-weight: 600;
+  }
+  .winner-record:empty { display: none; }
+  .winner-stats-btn {
+    margin-top: 16px;
+    position: relative;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius-sm);
+    padding: 9px 16px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .winner-stats-btn:hover { background: var(--brand-green); border-color: var(--brand-green); color: var(--blue-900); }
+
+  @media (max-width: 640px) {
+    .player-row { grid-template-columns: 1fr; }
+    .scoreboard { grid-template-columns: 1fr; }
+    .turn-indicator { order: -1; }
+    .hero { padding: 28px 22px; }
+    .board-wrap { padding: 16px; }
+  }
+
+
+  /* ---------- boter, kaas en eieren ---------- */
+  .chip-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .chip-row.three { grid-template-columns: repeat(3, 1fr); }
+  .chip-row .size-chip { min-width: 0; }
+
+  .sym {
+    display: inline-grid;
+    place-items: center;
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    flex: none;
+  }
+  .sym svg { width: 14px; height: 14px; }
+  .sym-x { background: var(--p1); }
+  .sym-x line { stroke: var(--blue-900); stroke-width: 16; stroke-linecap: round; }
+  .sym-o { background: var(--p2); }
+  .sym-o circle { stroke: #fff; stroke-width: 16; fill: none; }
+
+  .board-wrap {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px 28px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid var(--line);
+  }
+  .board-meta {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .ttt {
+    width: min(100%, 420px);
+    aspect-ratio: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 8px;
+    background: var(--ink);
+    touch-action: manipulation;
+    user-select: none;
+  }
+  .cell {
+    background: var(--bg-card);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    position: relative;
+    transition: background .15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cell:disabled { cursor: default; }
+  .cell:focus-visible { outline: 3px solid var(--brand-green); outline-offset: -8px; }
+  .cell svg { width: 60%; height: 60%; overflow: visible; transition: opacity .25s; }
+
+  .mark-x line {
+    stroke: var(--p1-dark);
+    stroke-width: 13;
+    stroke-linecap: round;
+    stroke-dasharray: 80;
+    animation: draw-x .22s ease-out both;
+  }
+  .mark-x line:nth-child(2) { animation-delay: .1s; }
+  .mark-o circle {
+    stroke: var(--p2);
+    stroke-width: 13;
+    fill: none;
+    stroke-linecap: round;
+    stroke-dasharray: 190;
+    animation: draw-o .35s ease-out both;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+  @keyframes draw-x { from { stroke-dashoffset: 80; } to { stroke-dashoffset: 0; } }
+  @keyframes draw-o { from { stroke-dashoffset: 190; } to { stroke-dashoffset: 0; } }
+
+  .cell .ghost { opacity: 0; }
+  .cell .ghost line, .cell .ghost circle { animation: none; }
+  @media (hover: hover) {
+    .cell:not(:disabled):hover { background: var(--bg); }
+    .cell:not(:disabled):hover .ghost { opacity: 0.2; }
+  }
+
+  /* Verdwijnend: dit teken verdwijnt bij de volgende zet van deze speler */
+  .cell.fading svg { opacity: 0.3; }
+  .cell.fading .mark-x line, .cell.fading .mark-o circle { animation: none; }
+  .cell.fading::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 2px dashed var(--line-strong);
+    border-radius: 8px;
+    pointer-events: none;
+  }
+
+  .cell.win { background: var(--brand-green); }
+  .cell.win .mark-x line, .cell.win .mark-o circle { stroke: var(--blue-900); }
+  .ttt.over .cell:not(.win) svg { opacity: 0.3; }
+
+  .round-result {
+    display: none;
+    width: min(100%, 420px);
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    padding: 10px 10px 10px 18px;
+  }
+  .round-result.show { display: flex; }
+  .round-text {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .btn-next {
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .btn-next:hover { background: #00d987; }
+  .btn-next:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+  @media (max-width: 640px) {
+    .chip-row.three { grid-template-columns: 1fr; }
+    .board-wrap { padding: 18px 14px 20px; }
+    .ttt { gap: 6px; }
+    /* Compact scorebord zodat het bord direct in beeld staat */
+    .app.playing .hero { display: none; }
+    .scoreboard { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .turn-indicator {
+      order: -1;
+      grid-column: 1 / -1;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      padding: 10px 14px;
+      min-width: 0;
+    }
+    .turn-indicator .label { margin-bottom: 0; }
+    .turn-indicator .bonus { margin-top: 0; min-height: 0; }
+    .player-card { padding: 12px 14px; }
+    .player-name { font-size: 17px; }
+    .player-score { margin-top: 6px; }
+    .player-score .num { font-size: 28px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mark-x line, .mark-o circle { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div>Next Standard</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-uitleg" id="btnStats">Statistieken</button>
+      <button class="btn-uitleg" id="btnUitleg">? Uitleg</button>
+      <div class="tag-make">Make it work</div>
+    </div>
+  </div>
+
+  <!-- Uitleg modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Spelregels /</div>
+        <h2 class="modal-title" id="rulesTitle">Boter, kaas en eieren</h2>
+        <button class="modal-close" id="modalClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="rule-block">
+          <div class="rule-icon">🎯</div>
+          <div>
+            <div class="rule-title">Doel</div>
+            <div class="rule-text">Maak als eerste drie op een rij: horizontaal, verticaal of diagonaal. Speler 1 speelt met kruisjes, speler 2 met rondjes.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🔁</div>
+          <div>
+            <div class="rule-title">Reeksen</div>
+            <div class="rule-text">Je speelt een reeks: wie als eerste het gekozen aantal potjes wint, wint de reeks. Het eerste potje begint een willekeurige speler, daarna wisselt de beginner elk potje. Alleen de uitslag van de reeks telt voor de ranglijst.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">#</div>
+          <div>
+            <div class="rule-title">Klassiek</div>
+            <div class="rule-text">Het spel zoals je het kent. Is het bord vol zonder drie op een rij, dan is het <strong>gelijkspel</strong>. Dat potje telt niet mee voor de reeks.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">💨</div>
+          <div>
+            <div class="rule-title">Verdwijnend</div>
+            <div class="rule-text">Iedere speler heeft hooguit <strong>drie tekens</strong> op het bord. Zet je een vierde, dan verdwijnt je oudste. Het teken dat als volgende verdwijnt, is vaag en gestippeld. Gelijkspel bestaat hier niet.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🏆</div>
+          <div>
+            <div class="rule-title">Ranglijst</div>
+            <div class="rule-text">Elke gewonnen reeks levert Elo-punten op, meer als je een sterkere tegenstander verslaat. De ranglijst is gedeeld met iedereen die speelt.</div>
+          </div>
+        </div>
+      </div>
+      <button class="modal-btn-start" id="modalBtnStart">Begrepen — spelen maar <span style="font-style:normal">→</span></button>
+    </div>
+  </div>
+
+  <!-- Statistieken modal -->
+  <div class="modal-overlay" id="statsOverlay">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Wie is de baas? /</div>
+        <h2 class="modal-title" id="statsTitle">Statistieken</h2>
+        <button class="modal-close" id="statsClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="mode-toggle stats-filter" id="statsFilter">
+          <button class="active" data-filter="all"><span class="dot"></span>Alles</button>
+          <button data-filter="klassiek"><span class="dot"></span>Klassiek</button>
+          <button data-filter="verdwijnend"><span class="dot"></span>Verdwijnend</button>
+        </div>
+        <div class="stats-section">
+          <div class="stats-heading">Ranglijst <small id="rankSummary"></small></div>
+          <p class="stats-note">Gerangschikt op Elo-rating. Iedereen begint op 1000, en winnen van een sterkere tegenstander levert meer op. Na 3 reeksen tel je volwaardig mee.</p>
+          <ol class="rank-list" id="rankList"></ol>
+        </div>
+        <div class="stats-section">
+          <div class="stats-heading">Gespeelde reeksen <small id="gamesSummary"></small></div>
+          <ul class="game-list" id="gameList"></ul>
+          <button class="btn btn-ghost stats-more" id="gamesMore" style="display:none;">Toon alle reeksen</button>
+        </div>
+      </div>
+      <div class="stats-actions">
+        <div class="stats-source" id="statsSource"></div>
+        <button class="btn btn-ghost" id="btnRefresh">Vernieuwen</button>
+        <div class="stats-status" id="statsStatus" role="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">/ Pauzespel /</div>
+    <h1><span class="slash">/</span>Boter, kaas<br>&amp; eieren<span class="slash">/</span></h1>
+    <p class="hero-sub">Drie op een rij, op z'n Next Standards. Kies klassiek of verdwijnend, speel een reeks tegen een collega en klim op de ranglijst.</p>
+  </div>
+
+  <div id="setup" class="setup">
+
+    <div class="resume" id="resumeBox" hidden>
+      <div>
+        <div class="resume-title">Reeks nog bezig</div>
+        <div class="resume-text" id="resumeText"></div>
+      </div>
+      <div class="resume-actions">
+        <button class="btn" id="btnResume">Verder spelen</button>
+        <button class="btn btn-ghost" id="btnDiscard">Weggooien</button>
+      </div>
+    </div>
+
+    <div class="player-row">
+      <div class="field">
+        <label for="p1select">/ Speler 1, kruisjes /</label>
+        <select id="p1select"></select>
+        <input id="p1name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 1" hidden>
+      </div>
+      <div class="field">
+        <label for="p2select">/ Speler 2, rondjes /</label>
+        <select id="p2select"></select>
+        <input id="p2name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 2" hidden>
+      </div>
+    </div>
+
+    <div class="setup-error" id="setupError" role="alert"></div>
+
+    <div class="field">
+      <label>/ Spelvorm /</label>
+      <div class="chip-row" id="variantPicker">
+        <button class="size-chip active" data-variant="klassiek"><strong>Klassiek</strong><span>3 op een rij, gelijkspel kan</span></button>
+        <button class="size-chip" data-variant="verdwijnend"><strong>Verdwijnend</strong><span>max. 3 tekens, oudste verdwijnt</span></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>/ Reeks /</label>
+      <div class="chip-row three" id="targetPicker">
+        <button class="size-chip" data-target="2"><strong>Eerste tot 2</strong><span>snel</span></button>
+        <button class="size-chip active" data-target="3"><strong>Eerste tot 3</strong><span>standaard</span></button>
+        <button class="size-chip" data-target="5"><strong>Eerste tot 5</strong><span>voor de liefhebber</span></button>
+      </div>
+    </div>
+
+    <button class="btn-start" id="btnStart">
+      Let's make it work <span class="arrow">→</span>
+    </button>
+  </div>
+
+  <div id="game" class="game">
+    <div class="scoreboard">
+      <div class="player-card p1 turn" id="card1">
+        <div class="player-label">/ Speler 1 /</div>
+        <div class="player-name"><span class="sym sym-x" aria-label="kruisjes"><svg viewBox="0 0 100 100"><line x1="20" y1="20" x2="80" y2="80"/><line x1="80" y1="20" x2="20" y2="80"/></svg></span><span id="name1">Speler 1</span></div>
+        <div class="player-score"><span class="num" id="score1">0</span><span class="of" id="of1">/ 3</span></div>
+      </div>
+      <div class="turn-indicator" id="turnIndicator">
+        <div class="label" id="turnLabel">Aan zet</div>
+        <div class="who" id="turnName">—</div>
+        <div class="bonus" id="roundInfo"></div>
+      </div>
+      <div class="player-card p2" id="card2">
+        <div class="player-label">/ Speler 2 /</div>
+        <div class="player-name"><span class="sym sym-o" aria-label="rondjes"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="32"/></svg></span><span id="name2">Speler 2</span></div>
+        <div class="player-score"><span class="num" id="score2">0</span><span class="of" id="of2">/ 3</span></div>
+      </div>
+    </div>
+
+    <div class="board-wrap">
+      <div class="board-meta" id="boardMeta"></div>
+      <div class="ttt" id="ttt" role="group" aria-label="Speelbord"></div>
+      <div class="round-result" id="roundResult" role="status">
+        <div class="round-text" id="roundText"></div>
+        <button class="btn-next" id="btnNext">Volgend potje <span style="font-style:normal">→</span></button>
+      </div>
+    </div>
+
+    <div class="winner" id="winner">
+      <div class="winner-label">/ Reeks gewonnen /</div>
+      <div class="winner-name" id="winnerName">—</div>
+      <div class="winner-score" id="winnerScore"></div>
+      <div class="winner-record" id="winnerRecord"></div>
+      <div class="winner-tag">Make it work.</div>
+      <button class="winner-stats-btn" id="winnerStatsBtn">Bekijk statistieken</button>
+    </div>
+
+    <div class="controls">
+      <div class="controls-left">
+        <button class="btn" id="btnRestart">Nieuwe reeks</button>
+        <button class="btn btn-ghost" id="btnNew">Andere setup</button>
+      </div>
+      <div class="rules-hint" id="rulesHint"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="vals">
+      <span>Commitment</span>
+      <span>Lef</span>
+      <span>Uniek</span>
+      <span>Bruisend</span>
+    </div>
+    <div>© Boter, kaas en eieren · Next Standard editie</div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- uitleg modal ----------
+  const overlay = $('modalOverlay');
+  $('btnUitleg').addEventListener('click', () => overlay.classList.add('open'));
+  $('modalClose').addEventListener('click', () => overlay.classList.remove('open'));
+  $('modalBtnStart').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+
+  // ---------- spel ----------
+  const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  const MAX_MARKS = 3;
+  const VARIANTS = { klassiek: 'Klassiek', verdwijnend: 'Verdwijnend' };
+  const TARGETS = [2, 3, 5];
+
+  let cfg = { p1: '', p2: '', variant: 'klassiek', target: 3 };
+  let series = null;   // { wins1, wins2, draws, round, first }
+  let round = null;    // { board, turn, moves, done, win, winner }
+
+  function setChoice(containerId, attr, value) {
+    $(containerId).querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset[attr] === String(value)));
+  }
+  $('variantPicker').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    cfg.variant = btn.dataset.variant;
+    setChoice('variantPicker', 'variant', cfg.variant);
+  });
+  $('targetPicker').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    cfg.target = parseInt(btn.dataset.target, 10);
+    setChoice('targetPicker', 'target', cfg.target);
+  });
+
+  // Bord: negen knoppen, eenmalig opgebouwd.
+  const boardEl = $('ttt');
+  const cells = [];
+  for (let i = 0; i < 9; i++) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'cell';
+    b.dataset.i = i;
+    boardEl.appendChild(b);
+    cells.push(b);
+  }
+  boardEl.addEventListener('click', (e) => {
+    const b = e.target.closest('.cell');
+    if (b) play(parseInt(b.dataset.i, 10));
+  });
+
+  const SVG_X = '<svg viewBox="0 0 100 100" class="mark mark-x" aria-hidden="true"><line x1="22" y1="22" x2="78" y2="78"/><line x1="78" y1="22" x2="22" y2="78"/></svg>';
+  const SVG_O = '<svg viewBox="0 0 100 100" class="mark mark-o" aria-hidden="true"><circle cx="50" cy="50" r="29"/></svg>';
+  const ghostOf = (p) => (p === 1 ? SVG_X : SVG_O).replace('class="mark ', 'class="ghost mark ');
+  const rendered = Array(9).fill(null);
+  const nameOf = (p) => p === 1 ? cfg.p1 : cfg.p2;
+
+  function render() {
+    const fadeIdx = (cfg.variant === 'verdwijnend' && !round.done && round.moves[round.turn].length >= MAX_MARKS)
+      ? round.moves[round.turn][0] : -1;
+
+    cells.forEach((cell, i) => {
+      const owner = round.board[i];
+      const key = owner ? 'p' + owner : (round.done ? 'leeg' : 'g' + round.turn);
+      if (rendered[i] !== key) {
+        cell.innerHTML = owner === 1 ? SVG_X : owner === 2 ? SVG_O : (round.done ? '' : ghostOf(round.turn));
+        rendered[i] = key;
+      }
+      cell.disabled = round.done || !!owner;
+      cell.classList.toggle('fading', i === fadeIdx);
+      cell.classList.toggle('win', !!round.win && round.win.includes(i));
+      const what = owner === 1 ? `kruisje van ${cfg.p1}` : owner === 2 ? `rondje van ${cfg.p2}` : 'leeg';
+      cell.setAttribute('aria-label', `Rij ${Math.floor(i / 3) + 1}, kolom ${i % 3 + 1}: ${what}` +
+        (i === fadeIdx ? ', verdwijnt bij de volgende zet' : ''));
+    });
+    boardEl.classList.toggle('over', round.done);
+
+    $('score1').textContent = series.wins1;
+    $('score2').textContent = series.wins2;
+    $('of1').textContent = `/ ${cfg.target}`;
+    $('of2').textContent = `/ ${cfg.target}`;
+    $('card1').classList.toggle('turn', !round.done && round.turn === 1);
+    $('card2').classList.toggle('turn', !round.done && round.turn === 2);
+    $('turnIndicator').classList.toggle('is-p2', !round.done && round.turn === 2);
+    $('turnLabel').textContent = round.done ? 'Potje voorbij' : 'Aan zet';
+    $('turnName').textContent = round.done ? '—' : nameOf(round.turn);
+    $('roundInfo').textContent = `Potje ${series.round + 1}` + (series.draws ? `, ${series.draws}× gelijk` : '');
+  }
+
+  function play(i) {
+    if (!round || round.done || round.board[i]) return;
+    const p = round.turn;
+    if (cfg.variant === 'verdwijnend' && round.moves[p].length >= MAX_MARKS) {
+      round.board[round.moves[p].shift()] = 0;
+    }
+    round.board[i] = p;
+    round.moves[p].push(i);
+
+    const win = LINES.find(l => l.every(j => round.board[j] === p));
+    if (win) {
+      round.done = true; round.win = win; round.winner = p;
+      if (p === 1) series.wins1++; else series.wins2++;
+    } else if (round.board.every(v => v)) {
+      round.done = true; round.winner = 0;
+      series.draws++;
+    } else {
+      round.turn = 3 - p;
+    }
+    render();
+    if (round.done) endRound(); else saveProgress();
+  }
+
+  function startRound() {
+    const starter = series.round % 2 === 0 ? series.first : 3 - series.first;
+    round = { board: Array(9).fill(0), turn: starter, moves: { 1: [], 2: [] }, done: false, win: null, winner: null };
+    rendered.fill(null);
+    $('roundResult').classList.remove('show');
+    render();
+    saveProgress();
+  }
+
+  function showRoundResult() {
+    const w = round.winner;
+    $('roundText').textContent = w ? `${nameOf(w)} wint dit potje` : 'Gelijkspel, telt niet mee';
+    $('roundResult').classList.add('show');
+    $('btnNext').focus({ preventScroll: true });
+  }
+
+  function endRound() {
+    if (series.wins1 >= cfg.target || series.wins2 >= cfg.target) { finishSeries(); return; }
+    saveProgress();
+    showRoundResult();
+  }
+
+  $('btnNext').addEventListener('click', () => {
+    if (!round || !round.done || series.done) return;
+    series.round++;
+    startRound();
+  });
+
+  function beginSeries(saved) {
+    document.querySelector('.app').classList.add('playing');
+    $('setup').style.display = 'none';
+    $('game').classList.add('active');
+    $('winner').classList.remove('active');
+    $('winnerRecord').textContent = '';
+    recordToken++;
+    $('roundResult').classList.remove('show');
+    $('name1').textContent = cfg.p1;
+    $('name2').textContent = cfg.p2;
+    $('boardMeta').textContent = `${VARIANTS[cfg.variant]}, eerste tot ${cfg.target}`;
+    $('rulesHint').innerHTML = cfg.variant === 'verdwijnend'
+      ? '<span class="slash">/</span> Max. 3 tekens: je oudste verdwijnt <span class="slash">/</span>'
+      : '<span class="slash">/</span> Drie op een rij wint het potje <span class="slash">/</span>';
+
+    if (saved) {
+      series = saved.series;
+      round = saved.round;
+      rendered.fill(null);
+      render();
+      if (round.done) showRoundResult();
+    } else {
+      clearProgress();
+      series = { wins1: 0, wins2: 0, draws: 0, round: 0, first: Math.random() < 0.5 ? 1 : 2, done: false };
+      startRound();
+    }
+  }
+
+  function finishSeries() {
+    series.done = true;
+    clearProgress();
+    $('roundResult').classList.remove('show');
+    const w = series.wins1 > series.wins2 ? 1 : 2;
+    $('winnerName').textContent = `${nameOf(w)} wint de reeks`;
+    $('winnerScore').textContent = `${cfg.p1} ${series.wins1} – ${series.wins2} ${cfg.p2}` +
+      (series.draws ? `, ${series.draws}× gelijk` : '');
+    $('winner').classList.add('active');
+    recordMatch();
+  }
+
+  const seriesBusy = () => series && !series.done &&
+    (series.round > 0 || (round && (round.moves[1].length || round.moves[2].length)));
+
+  $('btnRestart').addEventListener('click', () => {
+    if (seriesBusy() && !confirm('De huidige reeks stoppen en opnieuw beginnen? Deze reeks telt dan niet mee.')) return;
+    beginSeries();
+  });
+
+  $('btnNew').addEventListener('click', () => {
+    document.querySelector('.app').classList.remove('playing');
+    $('game').classList.remove('active');
+    $('setup').style.display = 'flex';
+    $('winner').classList.remove('active');
+    refreshResume();
+  });
+
+  $('btnStart').addEventListener('click', () => {
+    const p1 = chosenName(1);
+    const p2 = chosenName(2);
+    const err = validateNames(p1, p2);
+    if (err) { $('setupError').textContent = err; return; }
+    $('setupError').textContent = '';
+    cfg.p1 = p1;
+    cfg.p2 = p2;
+    adoptTypedNames();
+    beginSeries();
+  });
+
+  // ---------- lopende reeks bewaren ----------
+  const PROGRESS_KEY = 'ns-bke:progress:v1';
+  const PROGRESS_MAX_AGE = 12 * 60 * 60 * 1000;
+
+  function saveProgress() {
+    if (!series || series.done) return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify({ t: Date.now(), cfg: { ...cfg }, series, round }));
+    } catch (e) { /* opslag niet beschikbaar: dan maar zonder hervatten */ }
+  }
+
+  function clearProgress() {
+    try { localStorage.removeItem(PROGRESS_KEY); } catch (e) { /* niets te doen */ }
+  }
+
+  function loadProgress() {
+    try {
+      const p = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+      if (!p || !p.cfg || !p.series || !p.round || Date.now() - p.t > PROGRESS_MAX_AGE) return null;
+      const c = p.cfg, s = p.series, r = p.round;
+      const ok = typeof c.p1 === 'string' && c.p1 && typeof c.p2 === 'string' && c.p2 &&
+        VARIANTS[c.variant] && TARGETS.includes(c.target) &&
+        [s.wins1, s.wins2, s.draws, s.round].every(Number.isInteger) &&
+        s.wins1 < c.target && s.wins2 < c.target && (s.first === 1 || s.first === 2) &&
+        Array.isArray(r.board) && r.board.length === 9 && r.board.every(v => v === 0 || v === 1 || v === 2) &&
+        (r.turn === 1 || r.turn === 2) && r.moves && Array.isArray(r.moves[1]) && Array.isArray(r.moves[2]);
+      return ok ? p : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function refreshResume() {
+    const p = loadProgress();
+    $('resumeBox').hidden = !p;
+    if (!p) return;
+    const c = p.cfg, s = p.series;
+    $('resumeText').textContent = `${c.p1} ${s.wins1} – ${s.wins2} ${c.p2}, ${VARIANTS[c.variant].toLowerCase()}, eerste tot ${c.target}`;
+  }
+
+  $('btnResume').addEventListener('click', () => {
+    const p = loadProgress();
+    if (!p) { refreshResume(); return; }
+    Object.assign(cfg, p.cfg);
+    beginSeries(p);
+  });
+  $('btnDiscard').addEventListener('click', () => { clearProgress(); refreshResume(); });
+
+  // ---------- centrale ranglijst ----------
+  // Zelfde Supabase-project als Kamertje verhuren. De spelerslijst wordt gedeeld.
+  const CONFIG = {
+    supabaseUrl: 'https://wyqhmnzykmmasuncbdmp.supabase.co',
+    supabaseKey: 'sb_publishable_jGT0Zoe1bCNHQ_DffHhmDw_z7ehX-Zk'
+  };
+  const GAME_ID = 'boter-kaas-en-eieren';
+
+  // Vaste spelers in het keuzelijstje. Nieuwe namen die iemand typt, worden
+  // na de eerste afgeronde reeks centraal toegevoegd.
+  const COLLEAGUES = [
+    'Albrecht', 'Coen', 'Didi', 'Gerwin', 'Hannah', 'Jacco', 'Jeroen', 'Lars', 'Marit', 'Milan',
+    'Niek', 'Nick', 'Nikos', 'Numan', 'Sam', 'Stefan', 'Stephan', 'Steven', 'Thijs'
+  ];
+
+  const REMOTE = !!(CONFIG.supabaseUrl && CONFIG.supabaseKey);
+  const LIST_PAGE = 15;
+  const NEW = '__new__';
+  const LS = {
+    matches: 'ns-bke:matches:v1',
+    players: 'ns-bke:players:v1',
+    pendingMatches: 'ns-bke:pending-matches:v1',
+    pendingPlayers: 'ns-bke:pending-players:v1',
+    playersCache: 'ns-bke:players-cache:v1',
+    last: 'ns-bke:last-choice:v1'
+  };
+
+  let statsFilter = 'all';
+  let showAll = false;
+  let recordToken = 0;
+  let knownPlayers = [];
+  const sessionNames = new Map();
+
+  const keyOf = (n) => String(n).trim().toLowerCase();
+  const cleanName = (v) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 14);
+  const esc = (t) => String(t).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const lsGet = (k, fallback) => {
+    try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; }
+    catch (e) { return fallback; }
+  };
+  const lsSet = (k, v) => {
+    try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+    catch (e) { return false; }
+  };
+  const uuid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() :
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+
+  const isValidMatch = (m) => m && typeof m.id === 'string' && typeof m.p1 === 'string' && typeof m.p2 === 'string' &&
+    Number.isFinite(m.s1) && Number.isFinite(m.s2) && Number.isFinite(m.t);
+
+  // ---------- opslag ----------
+  async function rest(path, opts = {}) {
+    const res = await fetch(`${CONFIG.supabaseUrl.replace(/\/+$/, '')}/rest/v1/${path}`, {
+      ...opts,
+      headers: { apikey: CONFIG.supabaseKey, 'Content-Type': 'application/json', ...(opts.headers || {}) }
+    });
+    if (!res.ok) {
+      const err = new Error(`HTTP ${res.status}`);
+      err.status = res.status;
+      throw err;
+    }
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  // Fouten waarbij opnieuw proberen zin heeft (geen verbinding, server, configuratie).
+  const retryable = (e) => !e.status || e.status >= 500 || [401, 403, 404, 408, 429].includes(e.status);
+
+  const fromRow = (r) => ({
+    id: r.id, t: Date.parse(r.played_at), variant: r.variant, target: r.target,
+    p1: r.p1, p2: r.p2, s1: r.score1, s2: r.score2, draws: r.draws || 0
+  });
+  const toRow = (m) => ({
+    id: m.id, game: GAME_ID, variant: m.variant, target: m.target, played_at: new Date(m.t).toISOString(),
+    p1: m.p1, p2: m.p2, score1: m.s1, score2: m.s2, draws: m.draws
+  });
+
+  function insertMatch(m) {
+    return rest('matches', {
+      method: 'POST',
+      headers: { Prefer: 'return=minimal,resolution=ignore-duplicates' },
+      body: JSON.stringify(toRow(m))
+    });
+  }
+
+  async function insertPlayer(name) {
+    try {
+      await rest('players', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ name }) });
+      return true;
+    } catch (e) {
+      if (e.status === 409) return true;   // bestaat al
+      if (retryable(e)) throw e;
+      return false;                        // ongeldige naam: niet opnieuw proberen
+    }
+  }
+
+  async function flushPending() {
+    if (!REMOTE) return;
+    const matches = lsGet(LS.pendingMatches, []);
+    if (matches.length) {
+      const left = [];
+      for (const m of matches) {
+        try { await insertMatch(m); } catch (e) { if (retryable(e)) left.push(m); }
+      }
+      lsSet(LS.pendingMatches, left);
+    }
+    const names = lsGet(LS.pendingPlayers, []);
+    if (names.length) {
+      const left = [];
+      for (const n of names) {
+        try { await insertPlayer(n); } catch (e) { left.push(n); }
+      }
+      lsSet(LS.pendingPlayers, left);
+    }
+  }
+
+  const store = {
+    async matches() {
+      if (!REMOTE) return lsGet(LS.matches, []).filter(isValidMatch);
+      await flushPending();
+      const out = [];
+      const page = 1000;
+      for (let off = 0; ; off += page) {
+        const rows = await rest(`matches?select=*&game=eq.${GAME_ID}&order=played_at.asc&limit=${page}&offset=${off}`);
+        out.push(...rows.map(fromRow));
+        if (rows.length < page) break;
+      }
+      const ids = new Set(out.map(m => m.id));
+      const pending = lsGet(LS.pendingMatches, []).filter(m => !ids.has(m.id)).map(m => ({ ...m, pending: true }));
+      return out.concat(pending);
+    },
+
+    async addMatch(m) {
+      if (!REMOTE) {
+        const all = lsGet(LS.matches, []);
+        all.push(m);
+        return { saved: lsSet(LS.matches, all) };
+      }
+      try {
+        await insertMatch(m);
+        return { saved: true };
+      } catch (e) {
+        if (!retryable(e)) return { saved: false };
+        const pending = lsGet(LS.pendingMatches, []);
+        pending.push(m);
+        lsSet(LS.pendingMatches, pending);
+        return { saved: false, queued: true };
+      }
+    },
+
+    async players() {
+      if (!REMOTE) return lsGet(LS.players, []);
+      const pending = lsGet(LS.pendingPlayers, []);
+      try {
+        const rows = await rest('players?select=name');
+        const names = rows.map(r => r.name);
+        lsSet(LS.playersCache, names);
+        return names.concat(pending);
+      } catch (e) {
+        return lsGet(LS.playersCache, []).concat(pending);
+      }
+    },
+
+    async addPlayer(name) {
+      if (!REMOTE) {
+        const list = lsGet(LS.players, []);
+        if (!list.some(n => keyOf(n) === keyOf(name))) { list.push(name); lsSet(LS.players, list); }
+        return;
+      }
+      try {
+        await insertPlayer(name);
+      } catch (e) {
+        const pending = lsGet(LS.pendingPlayers, []);
+        if (!pending.some(n => keyOf(n) === keyOf(name))) { pending.push(name); lsSet(LS.pendingPlayers, pending); }
+      }
+    }
+  };
+
+  // ---------- spelerskeuze ----------
+  function sortedNames(list) {
+    const m = new Map();
+    list.forEach(n => {
+      const c = cleanName(n);
+      const k = keyOf(c);
+      if (c && k !== 'claude' && !m.has(k)) m.set(k, c);
+    });
+    return [...m.values()].sort((a, b) => a.localeCompare(b, 'nl', { sensitivity: 'base' }));
+  }
+
+  let playerNames = [];
+  function renderPlayerSelects() {
+    playerNames = sortedNames(COLLEAGUES.concat(knownPlayers, [...sessionNames.values()]));
+    [1, 2].forEach(n => {
+      const sel = $(`p${n}select`);
+      const keep = sel.value;
+      sel.innerHTML = '<option value="">Kies een speler</option>' +
+        playerNames.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('') +
+        `<option value="${NEW}">+ Andere naam typen</option>`;
+      if (keep === NEW || playerNames.includes(keep)) sel.value = keep;
+    });
+  }
+
+  function selectName(n, name) {
+    const sel = $(`p${n}select`), inp = $(`p${n}name`);
+    if (name && playerNames.includes(name)) {
+      sel.value = name;
+      inp.hidden = true;
+      inp.value = '';
+    }
+  }
+
+  function chosenName(n) {
+    const sel = $(`p${n}select`);
+    if (sel.value !== NEW) return sel.value;
+    const typed = cleanName($(`p${n}name`).value);
+    const existing = playerNames.find(x => keyOf(x) === keyOf(typed));
+    return existing || typed;
+  }
+
+  function validateNames(p1, p2) {
+    const typing = (n) => $(`p${n}select`).value === NEW;
+    if (!p1) return typing(1) ? 'Typ een naam voor speler 1.' : 'Kies speler 1, of typ een andere naam.';
+    if (!p2) return typing(2) ? 'Typ een naam voor speler 2.' : 'Kies speler 2, of typ een andere naam.';
+    if (keyOf(p1) === keyOf(p2)) return 'Kies twee verschillende spelers.';
+    if (keyOf(p1) === 'claude' || keyOf(p2) === 'claude') return 'De naam Claude is gereserveerd. Kies een andere naam.';
+    return '';
+  }
+
+  // Getypte namen direct in de lijst zetten en de keuze op dit apparaat onthouden.
+  function adoptTypedNames() {
+    [cfg.p1, cfg.p2].forEach(n => {
+      if (!playerNames.some(x => keyOf(x) === keyOf(n))) sessionNames.set(keyOf(n), n);
+    });
+    renderPlayerSelects();
+    selectName(1, cfg.p1);
+    selectName(2, cfg.p2);
+    lsSet(LS.last, { p1: cfg.p1, p2: cfg.p2, variant: cfg.variant, target: cfg.target });
+  }
+
+  [1, 2].forEach(n => {
+    $(`p${n}select`).addEventListener('change', () => {
+      const isNew = $(`p${n}select`).value === NEW;
+      const inp = $(`p${n}name`);
+      inp.hidden = !isNew;
+      if (isNew) inp.focus();
+      $('setupError').textContent = '';
+    });
+    $(`p${n}name`).addEventListener('input', () => { $('setupError').textContent = ''; });
+  });
+
+  async function loadPlayers() {
+    knownPlayers = await store.players();
+    renderPlayerSelects();
+  }
+
+  // ---------- reeks vastleggen ----------
+  async function recordMatch() {
+    const token = ++recordToken;
+    const rec = $('winnerRecord');
+    rec.textContent = 'Opslaan...';
+    const m = {
+      id: uuid(), t: Date.now(), variant: cfg.variant, target: cfg.target,
+      p1: cfg.p1, p2: cfg.p2, s1: series.wins1, s2: series.wins2, draws: series.draws
+    };
+    const p1 = cfg.p1, p2 = cfg.p2;
+    const res = await store.addMatch(m);
+
+    // Nieuwe namen pas na een afgeronde reeks opslaan, zo blijven tikfouten uit de lijst.
+    for (const n of [p1, p2]) {
+      const k = keyOf(n);
+      if (sessionNames.has(k)) {
+        await store.addPlayer(n);
+        sessionNames.delete(k);
+        if (!knownPlayers.some(x => keyOf(x) === k)) knownPlayers.push(n);
+      }
+    }
+
+    let all = null;
+    if (res.saved) { try { all = await store.matches(); } catch (e) { all = null; } }
+    if (token !== recordToken) return;
+
+    if (res.queued) {
+      rec.textContent = 'Geen verbinding met de ranglijst. Deze reeks wordt verstuurd zodra de verbinding terug is.';
+    } else if (!res.saved) {
+      rec.textContent = 'Deze reeks kon niet worden opgeslagen.';
+    } else if (!all) {
+      rec.textContent = 'Opgeslagen in de ranglijst.';
+    } else {
+      const h = headToHead(all, p1, p2);
+      const total = h.w1 + h.w2;
+      const line1 = total <= 1
+        ? 'Eerste reeks tussen jullie, opgeslagen in de ranglijst.'
+        : `Onderling na ${total} reeksen: ${p1} ${h.w1} – ${h.w2} ${p2}`;
+      const stats = computeStats(all);
+      const fmt = (name) => {
+        const p = stats.find(x => keyOf(x.name) === keyOf(name));
+        if (!p) return '';
+        const d = Math.round(p.delta);
+        return `${name} ${Math.round(p.rating)} (${d >= 0 ? '+' : '−'}${Math.abs(d)})`;
+      };
+      rec.textContent = `${line1}\nRating: ${fmt(p1)}, ${fmt(p2)}`;
+    }
+  }
+
+  function headToHead(all, n1, n2) {
+    const k1 = keyOf(n1), k2 = keyOf(n2);
+    let w1 = 0, w2 = 0;
+    for (const m of all) {
+      const a = keyOf(m.p1), b = keyOf(m.p2);
+      let x, y;
+      if (a === k1 && b === k2) { x = m.s1; y = m.s2; }
+      else if (a === k2 && b === k1) { x = m.s2; y = m.s1; }
+      else continue;
+      if (x > y) w1++; else if (y > x) w2++;
+    }
+    return { w1, w2 };
+  }
+
+  // ---------- statistieken ----------
+  // Elo-rating: iedereen start op 1000. Nieuwe spelers bewegen sneller (hogere K),
+  // zodat ze na een paar reeksen op hun niveau zitten.
+  const ELO_START = 1000;
+  const PROVISIONAL = 3;
+  const kFactor = (p) => p.played < 10 ? 40 : 24;
+
+  function computeStats(all) {
+    const map = new Map();
+    const get = (name) => {
+      const k = keyOf(name);
+      if (!map.has(k)) map.set(k, { name, played: 0, won: 0, lost: 0, rating: ELO_START, delta: 0 });
+      const p = map.get(k);
+      p.name = name; // meest recente schrijfwijze
+      return p;
+    };
+    all.slice().sort((a, b) => a.t - b.t).forEach(m => {
+      if (m.s1 === m.s2) return; // kan niet bij een afgeronde reeks
+      const a = get(m.p1), b = get(m.p2);
+      const sa = m.s1 > m.s2 ? 1 : 0;
+      const ea = 1 / (1 + Math.pow(10, (b.rating - a.rating) / 400));
+      const da = kFactor(a) * (sa - ea);
+      const db = kFactor(b) * ((1 - sa) - (1 - ea));
+      a.rating += da; b.rating += db;
+      a.delta = da; b.delta = db;
+      a.played++; b.played++;
+      if (sa === 1) { a.won++; b.lost++; } else { b.won++; a.lost++; }
+    });
+    const byRating = (x, y) => y.rating - x.rating || y.played - x.played || x.name.localeCompare(y.name, 'nl');
+    const players = [...map.values()];
+    return players.filter(p => p.played >= PROVISIONAL).sort(byRating)
+      .concat(players.filter(p => p.played < PROVISIONAL).sort(byRating));
+  }
+
+  const fmtDate = new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+  let lastMatches = [];
+  let loadFailed = false;
+
+  async function loadStats() {
+    $('rankList').innerHTML = '<li class="stats-empty">Ranglijst laden...</li>';
+    $('gameList').innerHTML = '';
+    $('gamesMore').style.display = 'none';
+    try {
+      lastMatches = await store.matches();
+      loadFailed = false;
+    } catch (e) {
+      lastMatches = REMOTE ? lsGet(LS.pendingMatches, []).map(m => ({ ...m, pending: true })) : [];
+      loadFailed = true;
+    }
+    renderStats();
+  }
+
+  function renderSource() {
+    const pending = REMOTE ? lsGet(LS.pendingMatches, []).length : 0;
+    let html;
+    if (!REMOTE) {
+      html = '<span class="live off"></span>Niet gekoppeld aan de centrale ranglijst. Reeksen worden alleen in deze browser bewaard.';
+    } else if (loadFailed) {
+      html = '<span class="live off"></span>Geen verbinding met de centrale ranglijst. Probeer het straks opnieuw.';
+    } else {
+      html = '<span class="live"></span>Centrale ranglijst, voor iedereen hetzelfde. Reeksen verwijderen kan alleen via het beheer in Supabase.';
+    }
+    if (pending) html += ` ${pending} ${pending === 1 ? 'reeks wacht' : 'reeksen wachten'} nog op verzending.`;
+    $('statsSource').innerHTML = html;
+  }
+
+  function renderStats() {
+    renderSource();
+    const list = statsFilter === 'all' ? lastMatches : lastMatches.filter(m => m.variant === statsFilter);
+    const players = computeStats(list);
+    const rankList = $('rankList'), gameList = $('gameList');
+
+    $('rankSummary').textContent = players.length ? `${players.length} ${players.length === 1 ? 'speler' : 'spelers'}` : '';
+    $('gamesSummary').textContent = list.length ? `${list.length} ${list.length === 1 ? 'reeks' : 'reeksen'}` : '';
+
+    if (!list.length) {
+      const msg = loadFailed
+        ? 'De ranglijst kon niet worden geladen. Controleer de verbinding en klik op Vernieuwen.'
+        : statsFilter === 'all'
+          ? 'Nog geen reeksen gespeeld. Speel een reeks uit en hij verschijnt hier.'
+          : `Nog geen reeksen in de spelvorm ${VARIANTS[statsFilter].toLowerCase()}.`;
+      rankList.innerHTML = `<li class="stats-empty">${msg}</li>`;
+      gameList.innerHTML = '';
+      $('gamesMore').style.display = 'none';
+      return;
+    }
+
+    const row = (p, pos) => {
+      const provisional = p.played < PROVISIONAL;
+      const d = Math.round(p.delta);
+      const delta = d > 0 ? `<span class="up">▲ ${d}</span>` : d < 0 ? `<span class="down">▼ ${-d}</span>` : '±0';
+      return `<li class="rank-row${pos === 1 ? ' top' : ''}${provisional ? ' provisional' : ''}">
+        <div class="rank-pos">${provisional ? '' : pos}</div>
+        <div>
+          <div class="rank-name">${esc(p.name)}</div>
+          <div class="rank-meta">${p.played} ${p.played === 1 ? 'reeks' : 'reeksen'}: ${p.won} gewonnen, ${p.lost} verloren</div>
+        </div>
+        <div class="rank-wins"><span class="num">${Math.round(p.rating)}</span><span class="lbl" title="Verschil door de laatste reeks">${delta}</span></div>
+      </li>`;
+    };
+    const established = players.filter(p => p.played >= PROVISIONAL);
+    const provisional = players.filter(p => p.played < PROVISIONAL);
+    rankList.innerHTML = established.map((p, i) => row(p, i + 1)).join('') +
+      (provisional.length ? `<li class="rank-divider">Voorlopig, nog geen ${PROVISIONAL} reeksen</li>` + provisional.map(p => row(p, 0)).join('') : '');
+
+    const sorted = list.slice().sort((a, b) => b.t - a.t);
+    const shown = showAll ? sorted : sorted.slice(0, LIST_PAGE);
+    gameList.innerHTML = shown.map(m => {
+      const n1 = m.s1 > m.s2 ? `<strong>${esc(m.p1)}</strong>` : esc(m.p1);
+      const n2 = m.s2 > m.s1 ? `<strong>${esc(m.p2)}</strong>` : esc(m.p2);
+      const variant = VARIANTS[m.variant] ? VARIANTS[m.variant].toLowerCase() : esc(m.variant || '');
+      const extra = (m.target ? `, eerste tot ${m.target}` : '') + (m.draws ? `, ${m.draws}× gelijk` : '') +
+        (m.pending ? ', wacht op verzending' : '');
+      return `<li class="game-row">
+        <div>
+          <div class="game-match">${n1}<span class="score">${m.s1} – ${m.s2}</span>${n2}</div>
+          <div class="game-meta">${esc(fmtDate.format(new Date(m.t)))}, ${variant}${extra}</div>
+        </div>
+      </li>`;
+    }).join('');
+
+    const more = $('gamesMore');
+    if (sorted.length > LIST_PAGE) {
+      more.style.display = '';
+      more.textContent = showAll ? 'Toon minder' : `Toon alle ${sorted.length} reeksen`;
+    } else {
+      more.style.display = 'none';
+    }
+  }
+
+  function setStatus(text) { $('statsStatus').textContent = text; }
+
+  const statsOverlay = $('statsOverlay');
+  function openStats() {
+    showAll = false;
+    setStatus('');
+    statsOverlay.classList.add('open');
+    loadStats();
+  }
+  function closeStats() { statsOverlay.classList.remove('open'); }
+
+  $('btnStats').addEventListener('click', openStats);
+  $('winnerStatsBtn').addEventListener('click', openStats);
+  $('statsClose').addEventListener('click', closeStats);
+  $('btnRefresh').addEventListener('click', () => { setStatus(''); loadStats(); });
+  statsOverlay.addEventListener('click', (e) => { if (e.target === statsOverlay) closeStats(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStats(); });
+
+  $('statsFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    $('statsFilter').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    statsFilter = btn.dataset.filter;
+    showAll = false;
+    renderStats();
+  });
+
+  $('gamesMore').addEventListener('click', () => { showAll = !showAll; renderStats(); });
+
+  // ---------- start ----------
+  (function init() {
+    renderPlayerSelects();
+    const last = lsGet(LS.last, {});
+    selectName(1, last.p1);
+    selectName(2, last.p2);
+    if (VARIANTS[last.variant]) { cfg.variant = last.variant; setChoice('variantPicker', 'variant', cfg.variant); }
+    if (TARGETS.includes(last.target)) { cfg.target = last.target; setChoice('targetPicker', 'target', cfg.target); }
+    refreshResume();
+    loadPlayers().then(() => {
+      if (!$('p1select').value) selectName(1, last.p1);
+      if (!$('p2select').value) selectName(2, last.p2);
+    });
+    flushPending().catch(() => {});
+  })();
+})();
+</script>
+</body>
+</html>
