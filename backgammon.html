@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backgammon — Next Standard editie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ---- Next Standard styleguide ---- */
+    /* Brand */
+    --brand-blue:    #00F0FF;
+    --brand-green:   #00F098;
+    --blue-500:      #384980;
+    --blue-700:      #1E2745;
+    --blue-900:      #13192B;
+    /* System */
+    --white:         #FFFFFF;
+    --grey-300:      #F1F3F9;
+    --grey-400:      #E6E8EF;
+    --grey-700:      #E3E7F3;
+    --grey-900:      #D4D9EC;
+
+    /* ---- semantische tokens ---- */
+    --bg:            var(--grey-300);
+    --bg-card:       var(--white);
+    --ink:           var(--blue-900);
+    --ink-soft:      var(--blue-500);
+    --ink-faint:     #8B92AB;
+    --line:          rgba(19, 25, 43, 0.08);
+    --line-strong:   rgba(19, 25, 43, 0.16);
+
+    /* Speler 1 — cyaan (uit brand colors) */
+    --p1:            var(--brand-blue);
+    --p1-dark:       #00BCD4;          /* helder cyaan voor wanden — max contrast met navy */
+    --p1-soft:       #B3FAFF;
+
+    /* Speler 2 — navy (uit brand colors) */
+    --p2:            var(--blue-700);  /* Blue 700 als box-fill */
+    --p2-dark:       var(--blue-900);  /* Blue 900 voor max contrast op lijnen */
+    --p2-soft:       var(--grey-700);  /* lichtgrijs-blauw voor badges */
+
+    --radius:        14px;
+    --radius-sm:     8px;
+
+    /* fonts */
+    --font-display:  'Montserrat', 'Gilroy', sans-serif;
+    --font-body:     'Montserrat', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 40px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .brand-mark {
+    width: 36px; height: 36px;
+    background: var(--ink);
+    color: var(--brand-green);
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: -0.04em;
+  }
+
+  .tag-make {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .tag-make::before { content: '/ '; color: var(--brand-green); font-style: normal; font-weight: 800; }
+  .tag-make::after  { content: ' /'; color: var(--brand-green); font-style: normal; font-weight: 800; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 24px;
+    padding: 36px 32px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -60px; bottom: -60px;
+    width: 220px; height: 220px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.22;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    left: -40px; top: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-blue);
+    border-radius: 50%;
+    opacity: 0.12;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    margin-bottom: 12px;
+    font-weight: 600;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(36px, 6.5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    position: relative;
+  }
+  .hero h1 .slash { color: var(--brand-green); font-weight: 900; }
+  .hero-sub {
+    margin-top: 14px;
+    max-width: 480px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.55;
+    position: relative;
+    font-weight: 400;
+  }
+
+  /* ---------- setup ---------- */
+  .setup {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border: 1px solid var(--line);
+  }
+  .field label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .field input {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;
+    background: var(--bg);
+    color: var(--ink);
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
+  }
+
+  .field select {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 40px 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2313192B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color .15s, background-color .15s, box-shadow .15s;
+  }
+  .field select:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
+  }
+  .field .player-new { margin-top: 8px; }
+  .resume {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-left: 4px solid var(--brand-green);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+  }
+  .resume[hidden] { display: none; }
+  .resume-title { font-family: var(--font-display); font-weight: 800; font-style: italic; font-size: 16px; }
+  .resume-text { font-size: 13px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; }
+  .resume-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .resume-actions .btn { padding: 9px 14px; font-size: 13px; }
+  .setup-error { font-size: 14px; font-weight: 600; color: #C62F4B; }
+  .setup-error:empty { display: none; }
+
+  /* mode segmented */
+  .mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    gap: 4px;
+  }
+  .mode-toggle button {
+    border: none;
+    background: transparent;
+    padding: 12px 14px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all .18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .mode-toggle button .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    transition: background .18s;
+  }
+  .mode-toggle button.active {
+    background: var(--ink);
+    color: #fff;
+  }
+  .mode-toggle button.active .dot { background: var(--brand-blue); }
+
+  .player-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+
+  .size-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .size-chip {
+    flex: 1 1 auto;
+    min-width: 120px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line-strong);
+    background: var(--bg);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    transition: all .15s;
+  }
+  .size-chip strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .size-chip span {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .size-chip:hover { border-color: var(--ink); }
+  .size-chip.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .size-chip.active span { color: var(--brand-green); }
+
+  .btn-start {
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: transform .12s, background .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn-start:hover { background: #00d987; }
+  .btn-start:active { transform: scale(0.99); }
+  .btn-start .arrow {
+    display: inline-block;
+    transition: transform .18s;
+    font-style: normal;
+  }
+  .btn-start:hover .arrow { transform: translateX(4px); }
+
+  /* ---------- game ---------- */
+  .game { display: none; flex-direction: column; gap: 18px; }
+  .game.active { display: flex; }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+  }
+  .player-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    position: relative;
+    transition: all .25s;
+  }
+  .player-card.p1 { border-left: 4px solid var(--p1); }
+  .player-card.p2 { border-left: 4px solid var(--p2); }
+  .player-card.turn { transform: translateY(-2px); }
+  .player-card.p1.turn { box-shadow: 0 0 0 2px var(--p1-dark); border-color: var(--p1-dark); }
+  .player-card.p2.turn { box-shadow: 0 0 0 2px var(--p2-dark); border-color: var(--p2-dark); }
+
+  .player-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .player-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-top: 2px;
+    line-height: 1.1;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .player-score {
+    margin-top: 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .player-score .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 38px;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .player-score .of {
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  .turn-indicator {
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 130px;
+  }
+  .turn-indicator .who {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--brand-blue);
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .turn-indicator.is-p2 .who { color: var(--white); }
+  .turn-indicator .label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .turn-indicator .bonus {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 4px;
+    font-style: italic;
+    min-height: 14px;
+    font-weight: 500;
+  }
+
+
+  /* controls */
+  .controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .controls-left { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 11px 18px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink-soft); }
+  .btn.btn-ghost:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .rules-hint {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .rules-hint .slash { color: var(--brand-green); font-style: normal; font-weight: 800; }
+
+  /* winner */
+  .winner {
+    display: none;
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .winner.active { display: block; }
+  .winner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, var(--brand-green) 0%, transparent 50%);
+    opacity: 0.18;
+  }
+  .winner-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    position: relative;
+  }
+  .winner-name {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(32px, 6vw, 48px);
+    letter-spacing: -0.025em;
+    margin-top: 6px;
+    line-height: 1.05;
+    position: relative;
+  }
+  .winner-name.tie { color: var(--brand-green); }
+  .winner-score {
+    margin-top: 10px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    position: relative;
+    font-weight: 500;
+  }
+  .winner-tag {
+    margin-top: 18px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    color: var(--brand-green);
+    font-size: 18px;
+    position: relative;
+  }
+
+  /* footer */
+  .footer {
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer .vals { display: flex; gap: 12px; flex-wrap: wrap; }
+  .footer .vals span {
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .footer .vals span:nth-child(1) { color: var(--p1-dark); }
+  .footer .vals span:nth-child(2) { color: var(--brand-green); }
+  .footer .vals span:nth-child(3) { color: var(--ink-soft); }
+  .footer .vals span:nth-child(4) { color: var(--ink); }
+
+  /* ---------- uitleg knop ---------- */
+  .btn-uitleg {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-uitleg:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  /* ---------- modal ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(19,25,43,0.72);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(19,25,43,0.32);
+    position: relative;
+    animation: modal-in .22s ease-out;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+  .modal-header {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    right: -40px; bottom: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+  .modal-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: rgba(255,255,255,0.8);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: background .15s;
+    position: absolute;
+    z-index: 1;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.25); }
+  .modal-body {
+    padding: 24px 28px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .rule-block {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rule-icon {
+    font-size: 22px;
+    min-width: 32px;
+    text-align: center;
+    margin-top: 1px;
+  }
+  .rule-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+    color: var(--ink);
+  }
+  .rule-text {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .rule-text strong { color: var(--ink); font-weight: 700; }
+  .modal-btn-start {
+    display: block;
+    width: calc(100% - 56px);
+    margin: 20px 28px 24px;
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 800;
+    font-style: italic;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .modal-btn-start:hover { background: #00d987; }
+
+  /* ---------- statistieken ---------- */
+  .topbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .modal.modal-wide { max-width: 680px; }
+  .stats-filter { grid-template-columns: repeat(3, 1fr); }
+  .stats-filter button { font-size: 13px; padding: 10px 8px; }
+  .stats-section { display: flex; flex-direction: column; gap: 10px; }
+  .stats-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .stats-heading small {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .rank-list, .game-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .rank-row {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+  .rank-row.top { background: var(--ink); color: #fff; }
+  .rank-pos {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-faint);
+  }
+  .rank-row.top .rank-pos { color: var(--brand-green); }
+  .rank-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    word-break: break-word;
+  }
+  .rank-meta { font-size: 12px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; }
+  .rank-row.top .rank-meta { color: rgba(255,255,255,0.65); }
+  .rank-bar { height: 4px; background: var(--line-strong); border-radius: 2px; margin-top: 7px; overflow: hidden; }
+  .rank-row.top .rank-bar { background: rgba(255,255,255,0.15); }
+  .rank-bar span { display: block; height: 100%; background: var(--brand-green); border-radius: 2px; }
+  .rank-wins { text-align: right; line-height: 1; }
+  .rank-wins .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+  }
+  .rank-wins .lbl { display: block; font-size: 11px; color: var(--ink-soft); font-weight: 600; margin-top: 3px; }
+  .rank-wins .up { color: #00A86B; }
+  .rank-wins .down { color: #C62F4B; }
+  .rank-row.top .rank-wins .up { color: var(--brand-green); }
+  .rank-row.top .rank-wins .down { color: #FF8FA3; }
+  .rank-row.provisional { background: transparent; border: 1px dashed var(--line-strong); }
+  .rank-divider { font-size: 12px; color: var(--ink-faint); font-weight: 600; margin-top: 8px; }
+  .stats-note { font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; margin-top: -4px; }
+  .rank-row.top .rank-wins .lbl { color: rgba(255,255,255,0.65); }
+
+  .game-row {
+    display: grid;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .game-match { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+  .game-match strong { color: var(--ink); font-weight: 800; }
+  .game-match .score {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--ink);
+    margin: 0 6px;
+  }
+  .game-meta { font-size: 12px; color: var(--ink-faint); font-weight: 500; margin-top: 2px; }
+  .stats-empty {
+    padding: 22px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .stats-more { align-self: flex-start; }
+  .stats-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 18px 28px 24px;
+    border-top: 1px solid var(--line);
+    margin-top: 16px;
+  }
+  .stats-actions .btn { padding: 9px 14px; font-size: 13px; }
+  .stats-status { width: 100%; font-size: 13px; color: var(--ink-soft); font-weight: 500; min-height: 18px; }
+  .stats-status:empty { display: none; }
+  .stats-source { flex: 1 1 260px; font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; align-self: center; }
+  .stats-source .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-green); margin-right: 6px; vertical-align: 1px; }
+  .stats-source .off { background: var(--ink-faint); }
+
+  .winner-record {
+    white-space: pre-line;
+    line-height: 1.6;
+    margin-top: 14px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    position: relative;
+    font-weight: 600;
+  }
+  .winner-record:empty { display: none; }
+  .winner-stats-btn {
+    margin-top: 16px;
+    position: relative;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius-sm);
+    padding: 9px 16px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .winner-stats-btn:hover { background: var(--brand-green); border-color: var(--brand-green); color: var(--blue-900); }
+
+  @media (max-width: 640px) {
+    .player-row { grid-template-columns: 1fr; }
+    .scoreboard { grid-template-columns: 1fr; }
+    .turn-indicator { order: -1; }
+    .hero { padding: 28px 22px; }
+    .board-wrap { padding: 16px; }
+  }
+
+
+  /* ---------- backgammon ---------- */
+  .chip-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .chip-row .size-chip { min-width: 0; }
+
+  .chk-badge {
+    display: inline-block;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    flex: none;
+  }
+  .chk-badge.p1 { background: var(--p1); border: 2px solid var(--p1-dark); }
+  .chk-badge.p2 { background: var(--blue-900); border: 2px solid var(--grey-900); box-shadow: 0 0 0 1px var(--blue-900); }
+  .player-sub { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin-top: 4px; }
+
+  .board-wrap {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border: 1px solid var(--line);
+  }
+  .board-meta {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .bg-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 14px;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .dice { display: flex; gap: 8px; align-items: center; min-height: 44px; min-width: 44px; }
+  .die { width: 42px; height: 42px; display: block; transition: opacity .2s; }
+  .die rect { stroke-width: 2; }
+  .die.p1 rect { fill: var(--p1); stroke: var(--p1-dark); }
+  .die.p1 circle { fill: var(--blue-900); }
+  .die.p2 rect { fill: var(--blue-900); stroke: var(--blue-500); }
+  .die.p2 circle { fill: #fff; }
+  .die.used { opacity: 0.25; }
+  .die.rolled { animation: die-roll .45s ease-out; }
+  @keyframes die-roll {
+    0% { transform: rotate(-200deg) scale(0.5); opacity: 0; }
+    70% { transform: rotate(12deg) scale(1.08); opacity: 1; }
+    100% { transform: none; }
+  }
+  .bg-msg { flex: 1 1 220px; font-size: 14px; font-weight: 600; color: var(--ink-soft); line-height: 1.4; }
+  .bg-msg strong { color: var(--ink); }
+  .bg-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bg-actions .btn { padding: 10px 14px; font-size: 13px; }
+  .btn:disabled, .btn-next:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+  .btn-next {
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s, box-shadow .15s;
+  }
+  .btn-next:hover { background: #00d987; }
+  .btn-next:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+  .btn-next.pulse { box-shadow: 0 0 0 4px rgba(0,240,152,0.35); }
+
+  .bg-board { width: 100%; height: auto; display: block; user-select: none; touch-action: manipulation; }
+  .bg-board .frame { fill: var(--blue-900); }
+  .bg-board .felt { fill: var(--grey-300); }
+  .bg-board .tri-a { fill: var(--blue-500); }
+  .bg-board .tri-b { fill: var(--grey-900); }
+  .bg-board .bar { fill: var(--blue-700); }
+  .bg-board .tray { fill: var(--blue-700); }
+  .bg-board .tray.dest { fill: var(--brand-green); }
+  .bg-board .dest-tri { fill: var(--brand-green); opacity: 0.55; }
+  .bg-board .chk { stroke-width: 2.5; transition: filter .15s; }
+  .bg-board .chk1 { fill: var(--p1); stroke: var(--p1-dark); }
+  .bg-board .chk2 { fill: var(--blue-900); stroke: var(--grey-900); }
+  .bg-board .chk.movable { stroke: var(--brand-green); stroke-width: 5; }
+  .bg-board .chk.selected { stroke: var(--brand-green); stroke-width: 7; filter: drop-shadow(0 0 6px rgba(0,240,152,0.9)); }
+  .bg-board .ghost { fill: none; stroke: var(--brand-green); stroke-width: 3; stroke-dasharray: 6 5; }
+  .bg-board .cnt { font-family: var(--font-display); font-weight: 900; font-style: italic; font-size: 22px; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .bg-board .cnt.c1 { fill: var(--blue-900); }
+  .bg-board .cnt.c2 { fill: #fff; }
+  .bg-board .off1 { fill: var(--p1); }
+  .bg-board .off2 { fill: var(--grey-900); }
+  .bg-board .tray-lbl { font-family: var(--font-body); font-weight: 700; font-size: 15px; fill: rgba(255,255,255,0.75); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+  .bg-board .last-dot { fill: var(--brand-green); stroke: var(--blue-900); stroke-width: 2; }
+  .bg-board .hit { fill: transparent; cursor: pointer; }
+  .bg-board .hit.off { cursor: default; }
+
+  .round-result {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius-sm);
+    padding: 10px 10px 10px 18px;
+  }
+  .round-result.show { display: flex; }
+  .round-text {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+
+  @media (max-width: 640px) {
+    .chip-row { grid-template-columns: 1fr 1fr; }
+    .board-wrap { padding: 10px; }
+    .app.playing .hero { display: none; }
+    .scoreboard { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .turn-indicator {
+      order: -1;
+      grid-column: 1 / -1;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+      padding: 10px 14px;
+      min-width: 0;
+    }
+    .turn-indicator .label { margin-bottom: 0; }
+    .turn-indicator .bonus { margin-top: 0; min-height: 0; }
+    .player-card { padding: 12px 14px; }
+    .player-name { font-size: 17px; }
+    .player-score { margin-top: 6px; }
+    .player-score .num { font-size: 28px; }
+    .die { width: 36px; height: 36px; }
+    .bg-panel { padding: 8px 10px; gap: 8px; }
+    .bg-msg { order: 3; flex-basis: 100%; font-size: 13px; }
+    .bg-actions .btn, .bg-actions .btn-next { padding: 9px 12px; font-size: 13px; }
+    .player-sub { font-size: 11px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .die.rolled { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">N</div>
+      <div>Next Standard</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-uitleg" id="btnStats">Statistieken</button>
+      <button class="btn-uitleg" id="btnUitleg">? Uitleg</button>
+      <div class="tag-make">Make it work</div>
+    </div>
+  </div>
+
+  <!-- Uitleg modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Spelregels /</div>
+        <h2 class="modal-title" id="rulesTitle">Backgammon</h2>
+        <button class="modal-close" id="modalClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="rule-block">
+          <div class="rule-icon">🎯</div>
+          <div>
+            <div class="rule-title">Doel</div>
+            <div class="rule-text">Breng als eerste al je 15 schijven naar je thuisvak en haal ze daarna van het bord. Speler 1 (cyaan) loopt tegen de klok in naar <strong>rechtsonder</strong>, speler 2 (navy) met de klok mee naar <strong>rechtsboven</strong>.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🎲</div>
+          <div>
+            <div class="rule-title">Een beurt</div>
+            <div class="rule-text">Gooi twee stenen en zet met elke steen een schijf, of één schijf met beide. Bij dubbel gooien speel je vier keer. Je mag niet landen op een punt met twee of meer schijven van de ander. Gebruik zoveel mogelijk stenen; kan er maar één, dan de hoogste. Het spel laat alleen toegestane zetten toe.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">💥</div>
+          <div>
+            <div class="rule-title">Slaan en de balk</div>
+            <div class="rule-text">Land je op een losse schijf van de ander, dan gaat die naar de balk in het midden. Wie een schijf op de balk heeft, moet die eerst terugzetten in het thuisvak van de tegenstander.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🏁</div>
+          <div>
+            <div class="rule-title">Uitnemen en punten</div>
+            <div class="rule-text">Staan al je schijven thuis, dan mag je ze van het bord halen. Een gewone winst is <strong>1 punt</strong>. Heeft de ander nog niets uitgenomen: <strong>gammon, 2 punten</strong>. Staat er dan ook nog een schijf op de balk of in jouw thuisvak: <strong>backgammon, 3 punten</strong>.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">👆</div>
+          <div>
+            <div class="rule-title">Bediening</div>
+            <div class="rule-text">Tik een schijf aan; de punten waar hij heen mag lichten groen op. Tik het doel aan om te zetten. Dubbelklikken zet meteen met de hoogste steen. Een zet terugnemen kan tot je op <strong>Beurt klaar</strong> klikt.</div>
+          </div>
+        </div>
+      </div>
+      <button class="modal-btn-start" id="modalBtnStart">Begrepen — spelen maar <span style="font-style:normal">→</span></button>
+    </div>
+  </div>
+
+  <!-- Statistieken modal -->
+  <div class="modal-overlay" id="statsOverlay">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Wie is de baas? /</div>
+        <h2 class="modal-title" id="statsTitle">Statistieken</h2>
+        <button class="modal-close" id="statsClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="mode-toggle stats-filter" id="statsFilter">
+          <button class="active" data-filter="all"><span class="dot"></span>Alles</button>
+          <button data-filter="single"><span class="dot"></span>Losse potjes</button>
+          <button data-filter="match"><span class="dot"></span>Matches</button>
+        </div>
+        <div class="stats-section">
+          <div class="stats-heading">Ranglijst <small id="rankSummary"></small></div>
+          <p class="stats-note">Gerangschikt op Elo-rating. Iedereen begint op 1000, en winnen van een sterkere tegenstander levert meer op. Na 3 matches tel je volwaardig mee.</p>
+          <ol class="rank-list" id="rankList"></ol>
+        </div>
+        <div class="stats-section">
+          <div class="stats-heading">Gespeelde matches <small id="gamesSummary"></small></div>
+          <ul class="game-list" id="gameList"></ul>
+          <button class="btn btn-ghost stats-more" id="gamesMore" style="display:none;">Toon alle matches</button>
+        </div>
+      </div>
+      <div class="stats-actions">
+        <div class="stats-source" id="statsSource"></div>
+        <button class="btn btn-ghost" id="btnRefresh">Vernieuwen</button>
+        <div class="stats-status" id="statsStatus" role="status"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">/ Pauzespel /</div>
+    <h1><span class="slash">/</span>Back&shy;gammon<span class="slash">/</span></h1>
+    <p class="hero-sub">Dobbelen, slaan en als eerste thuis zijn. Een klassieker met geluk én lef, op z'n Next Standards. Speel een match tegen een collega en klim op de ranglijst.</p>
+  </div>
+
+  <div id="setup" class="setup">
+
+    <div class="resume" id="resumeBox" hidden>
+      <div>
+        <div class="resume-title">Match nog bezig</div>
+        <div class="resume-text" id="resumeText"></div>
+      </div>
+      <div class="resume-actions">
+        <button class="btn" id="btnResume">Verder spelen</button>
+        <button class="btn btn-ghost" id="btnDiscard">Weggooien</button>
+      </div>
+    </div>
+
+    <div class="player-row">
+      <div class="field">
+        <label for="p1select">/ Speler 1, cyaan /</label>
+        <select id="p1select"></select>
+        <input id="p1name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 1" hidden>
+      </div>
+      <div class="field">
+        <label for="p2select">/ Speler 2, navy /</label>
+        <select id="p2select"></select>
+        <input id="p2name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 2" hidden>
+      </div>
+    </div>
+
+    <div class="setup-error" id="setupError" role="alert"></div>
+
+    <div class="field">
+      <label>/ Lengte /</label>
+      <div class="chip-row" id="targetPicker">
+        <button class="size-chip" data-target="1"><strong>Los potje</strong><span>1 potje, snel klaar</span></button>
+        <button class="size-chip active" data-target="3"><strong>Tot 3 punten</strong><span>standaard</span></button>
+        <button class="size-chip" data-target="5"><strong>Tot 5 punten</strong><span>voor een lange pauze</span></button>
+        <button class="size-chip" data-target="7"><strong>Tot 7 punten</strong><span>toernooiwaardig</span></button>
+      </div>
+    </div>
+
+    <button class="btn-start" id="btnStart">
+      Let's make it work <span class="arrow">→</span>
+    </button>
+  </div>
+
+  <div id="game" class="game">
+    <div class="scoreboard">
+      <div class="player-card p1 turn" id="card1">
+        <div class="player-label">/ Speler 1 /</div>
+        <div class="player-name"><span class="chk-badge p1" aria-hidden="true"></span><span id="name1">Speler 1</span></div>
+        <div class="player-score"><span class="num" id="score1">0</span><span class="of" id="of1">/ 3</span></div>
+        <div class="player-sub" id="sub1"></div>
+      </div>
+      <div class="turn-indicator" id="turnIndicator">
+        <div class="label" id="turnLabel">Aan zet</div>
+        <div class="who" id="turnName">—</div>
+        <div class="bonus" id="roundInfo"></div>
+      </div>
+      <div class="player-card p2" id="card2">
+        <div class="player-label">/ Speler 2 /</div>
+        <div class="player-name"><span class="chk-badge p2" aria-hidden="true"></span><span id="name2">Speler 2</span></div>
+        <div class="player-score"><span class="num" id="score2">0</span><span class="of" id="of2">/ 3</span></div>
+        <div class="player-sub" id="sub2"></div>
+      </div>
+    </div>
+
+    <div class="board-wrap">
+      <div class="board-meta" id="boardMeta"></div>
+      <div class="bg-panel">
+        <div class="dice" id="dice"></div>
+        <div class="bg-msg" id="bgMsg" role="status"></div>
+        <div class="bg-actions">
+          <button class="btn btn-ghost" id="btnUndo">Ongedaan maken</button>
+          <button class="btn-next" id="btnRoll">Gooien</button>
+          <button class="btn-next" id="btnDone">Beurt klaar</button>
+        </div>
+      </div>
+      <svg class="bg-board" id="bgBoard" viewBox="0 0 872 640" aria-label="Backgammonbord" role="img"></svg>
+      <div class="round-result" id="roundResult">
+        <div class="round-text" id="roundText"></div>
+        <button class="btn-next" id="btnNext">Volgend potje <span style="font-style:normal">→</span></button>
+      </div>
+    </div>
+
+    <div class="winner" id="winner">
+      <div class="winner-label">/ Match gewonnen /</div>
+      <div class="winner-name" id="winnerName">—</div>
+      <div class="winner-score" id="winnerScore"></div>
+      <div class="winner-record" id="winnerRecord"></div>
+      <div class="winner-tag">Make it work.</div>
+      <button class="winner-stats-btn" id="winnerStatsBtn">Bekijk statistieken</button>
+    </div>
+
+    <div class="controls">
+      <div class="controls-left">
+        <button class="btn" id="btnRestart">Nieuwe match</button>
+        <button class="btn btn-ghost" id="btnNew">Andere setup</button>
+      </div>
+      <div class="rules-hint" id="rulesHint"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="vals">
+      <span>Commitment</span>
+      <span>Lef</span>
+      <span>Uniek</span>
+      <span>Bruisend</span>
+    </div>
+    <div>© Backgammon · Next Standard editie</div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- uitleg modal ----------
+  const overlay = $('modalOverlay');
+  $('btnUitleg').addEventListener('click', () => overlay.classList.add('open'));
+  $('modalClose').addEventListener('click', () => overlay.classList.remove('open'));
+  $('modalBtnStart').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+
+  // ---------- spelregels (los van de weergave) ----------
+  // Bord: b[0..23]. Positief = schijven van speler 1, negatief = speler 2.
+  // Speler 1 loopt van 23 naar 0 (thuisvak 0-5), speler 2 van 0 naar 23 (thuisvak 18-23).
+  const BG = (() => {
+    const start = () => {
+      const b = Array(24).fill(0);
+      b[23] = 2; b[12] = 5; b[7] = 3; b[5] = 5;
+      b[0] = -2; b[11] = -5; b[16] = -3; b[18] = -5;
+      return { b, bar: [0, 0, 0], off: [0, 0, 0] };
+    };
+    const clone = (s) => ({ b: s.b.slice(), bar: s.bar.slice(), off: s.off.slice() });
+    const own = (s, p, i) => p === 1 ? Math.max(0, s.b[i]) : Math.max(0, -s.b[i]);
+    const opp = (s, p, i) => p === 1 ? Math.max(0, -s.b[i]) : Math.max(0, s.b[i]);
+    const inHome = (p, i) => p === 1 ? i <= 5 : i >= 18;
+
+    function allHome(s, p) {
+      if (s.bar[p]) return false;
+      for (let i = 0; i < 24; i++) if (own(s, p, i) && !inHome(p, i)) return false;
+      return true;
+    }
+
+    // Alle losse zetten met één steen.
+    function singleMoves(s, p, d) {
+      const out = [];
+      if (s.bar[p]) {
+        const to = p === 1 ? 24 - d : d - 1;
+        if (opp(s, p, to) < 2) out.push({ from: 'bar', to, die: d });
+        return out;
+      }
+      const dir = p === 1 ? -1 : 1;
+      const home = allHome(s, p);
+      for (let i = 0; i < 24; i++) {
+        if (!own(s, p, i)) continue;
+        const to = i + dir * d;
+        if (to >= 0 && to <= 23) {
+          if (opp(s, p, to) < 2) out.push({ from: i, to, die: d });
+        } else if (home) {
+          const exact = p === 1 ? to === -1 : to === 24;
+          if (exact) {
+            out.push({ from: i, to: 'off', die: d });
+          } else {
+            // Te hoog gegooid: alleen met de verst afgelegen schijf.
+            let further = false;
+            if (p === 1) { for (let j = i + 1; j <= 5; j++) if (own(s, p, j)) { further = true; break; } }
+            else { for (let j = i - 1; j >= 18; j--) if (own(s, p, j)) { further = true; break; } }
+            if (!further) out.push({ from: i, to: 'off', die: d });
+          }
+        }
+      }
+      return out;
+    }
+
+    // Voert een zet uit (wijzigt s). Geeft true terug bij een geslagen schijf.
+    function apply(s, p, m) {
+      const sign = p === 1 ? 1 : -1;
+      let hit = false;
+      if (m.from === 'bar') s.bar[p]--; else s.b[m.from] -= sign;
+      if (m.to === 'off') {
+        s.off[p]++;
+      } else {
+        if (opp(s, p, m.to) === 1) { s.b[m.to] = 0; s.bar[3 - p]++; hit = true; }
+        s.b[m.to] += sign;
+      }
+      return hit;
+    }
+
+    const key = (s) => s.b.join(',') + '|' + s.bar[1] + ',' + s.bar[2] + '|' + s.off[1] + ',' + s.off[2];
+    const without = (rem, d) => { const r = rem.slice(); r.splice(r.indexOf(d), 1); return r; };
+
+    // Hoeveel stenen er vanaf deze stand nog maximaal te spelen zijn.
+    function maxDepth(s, p, rem, memo) {
+      if (!rem.length) return 0;
+      const mk = key(s) + '#' + rem.slice().sort().join('');
+      if (memo.has(mk)) return memo.get(mk);
+      let best = 0;
+      for (const d of new Set(rem)) {
+        for (const m of singleMoves(s, p, d)) {
+          const ns = clone(s);
+          apply(ns, p, m);
+          best = Math.max(best, 1 + maxDepth(ns, p, without(rem, d), memo));
+          if (best === rem.length) break;
+        }
+        if (best === rem.length) break;
+      }
+      memo.set(mk, best);
+      return best;
+    }
+
+    // Wat een worp aan het begin van de beurt oplevert: hoeveel stenen gespeeld moeten
+    // worden, en of er een verplichte steen is (één van twee speelbaar: de hoogste).
+    function turnInfo(s, p, dice) {
+      const memo = new Map();
+      const maxLen = maxDepth(s, p, dice, memo);
+      let requiredDie = null;
+      if (maxLen === 1 && dice.length === 2 && dice[0] !== dice[1]) {
+        const big = Math.max(dice[0], dice[1]);
+        requiredDie = singleMoves(s, p, big).length ? big : Math.min(dice[0], dice[1]);
+      }
+      return { maxLen, requiredDie, memo };
+    }
+
+    // Toegestane volgende zetten: na de zet moet de rest van de beurt nog volledig kunnen.
+    function legalNext(s, p, rem, need, requiredDie, memo) {
+      if (need <= 0) return [];
+      const out = [];
+      for (const d of new Set(rem)) {
+        if (requiredDie && d !== requiredDie) continue;
+        for (const m of singleMoves(s, p, d)) {
+          const ns = clone(s);
+          apply(ns, p, m);
+          if (1 + maxDepth(ns, p, without(rem, d), memo || new Map()) >= need) out.push(m);
+        }
+      }
+      return out;
+    }
+
+    // Controle-variant: alle volledige beurten uitschrijven (alleen voor tests).
+    function sequences(s, p, dice) {
+      let all = [];
+      let maxLen = 0;
+      const rec = (st, rem, seq) => {
+        let moved = false;
+        for (const d of new Set(rem)) {
+          for (const m of singleMoves(st, p, d)) {
+            moved = true;
+            const ns = clone(st);
+            apply(ns, p, m);
+            rec(ns, without(rem, d), seq.concat([m]));
+          }
+        }
+        if (!moved) {
+          if (seq.length > maxLen) { maxLen = seq.length; all = []; }
+          if (seq.length === maxLen) all.push(seq);
+        }
+      };
+      rec(s, dice.slice(), []);
+      if (maxLen === 1 && dice.length === 2 && dice[0] !== dice[1]) {
+        const big = Math.max(...all.map(q => q[0].die));
+        all = all.filter(q => q[0].die === big);
+      }
+      return { seqs: maxLen ? all : [], maxLen };
+    }
+
+    function pips(s, p) {
+      let n = s.bar[p] * 25;
+      for (let i = 0; i < 24; i++) n += own(s, p, i) * (p === 1 ? i + 1 : 24 - i);
+      return n;
+    }
+
+    // Punten voor de winnaar: 1 (gewoon), 2 (gammon), 3 (backgammon).
+    function points(s, winner) {
+      const l = 3 - winner;
+      if (s.off[l] > 0) return 1;
+      if (s.bar[l] > 0) return 3;
+      for (let i = 0; i < 24; i++) if (own(s, l, i) && inHome(winner, i)) return 3;
+      return 2;
+    }
+
+    function count(s, p) {
+      let n = s.bar[p] + s.off[p];
+      for (let i = 0; i < 24; i++) n += own(s, p, i);
+      return n;
+    }
+
+    return { start, clone, own, opp, allHome, singleMoves, apply, without, turnInfo, legalNext, maxDepth, sequences, pips, points, count };
+  })();
+
+  // ---------- spelverloop ----------
+  const TARGETS = [1, 3, 5, 7];
+  let cfg = { p1: '', p2: '', target: 3 };
+  let match = null;   // { score1, score2, game, done }
+  let g = null;       // potje: { pos, phase, turn, dice, turnStart, played, history, info, lastTurn, opening, result }
+  let sel = null;     // gekozen schijf: index of 'bar'
+  let rolledNow = false;
+
+  const nameOf = (p) => p === 1 ? cfg.p1 : cfg.p2;
+  const rnd6 = () => {
+    if (window.crypto && crypto.getRandomValues) {
+      const a = new Uint8Array(1);
+      do { crypto.getRandomValues(a); } while (a[0] >= 252);
+      return 1 + (a[0] % 6);
+    }
+    return 1 + Math.floor(Math.random() * 6);
+  };
+
+  $('targetPicker').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    cfg.target = parseInt(btn.dataset.target, 10);
+    $('targetPicker').querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+  });
+  const setTarget = (t) => $('targetPicker').querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.target === String(t)));
+
+  // Stenen die nog over zijn deze beurt
+  const remaining = () => {
+    let rem = g.dice.slice();
+    g.played.forEach(m => { rem = BG.without(rem, m.die); });
+    return rem;
+  };
+  const need = () => g.info ? g.info.maxLen - g.played.length : 0;
+  const nextMoves = () => (g.phase === 'move' && need() > 0)
+    ? BG.legalNext(g.pos, g.turn, remaining(), need(), g.info.requiredDie, g.info.memo) : [];
+
+  // Bestemmingen voor de gekozen schijf, ook met meerdere stenen achter elkaar.
+  function destinations(from) {
+    const out = new Map();
+    const queue = [{ pos: g.pos, rem: remaining(), need: need(), at: from, path: [] }];
+    while (queue.length) {
+      const q = queue.shift();
+      if (q.need <= 0) continue;
+      const opts = BG.legalNext(q.pos, g.turn, q.rem, q.need, g.info.requiredDie, g.info.memo).filter(m => m.from === q.at);
+      for (const m of opts) {
+        const k = String(m.to);
+        const path = q.path.concat([m]);
+        if (!out.has(k)) out.set(k, path);
+        if (m.to !== 'off') {
+          const ns = BG.clone(q.pos);
+          BG.apply(ns, g.turn, m);
+          queue.push({ pos: ns, rem: BG.without(q.rem, m.die), need: q.need - 1, at: m.to, path });
+        }
+      }
+    }
+    return out;
+  }
+
+  function newGame() {
+    g = {
+      pos: BG.start(), phase: 'opening', turn: 0, dice: [], turnStart: null, played: [], history: [],
+      info: null, lastTurn: null, opening: null, result: null
+    };
+    sel = null;
+    $('roundResult').classList.remove('show');
+    render();
+    saveProgress();
+  }
+
+  function startTurn(p, dice) {
+    g.turn = p;
+    g.dice = dice;
+    g.turnStart = BG.clone(g.pos);
+    g.played = [];
+    g.history = [];
+    g.info = BG.turnInfo(g.pos, p, dice);
+    g.phase = 'move';
+    sel = null;
+    autoSelect();
+  }
+
+  function roll() {
+    if (g.phase === 'opening') {
+      const a = rnd6(), b = rnd6();
+      g.opening = [a, b];
+      rolledNow = true;
+      if (a === b) { render(); saveProgress(); return; }
+      startTurn(a > b ? 1 : 2, [a, b]);
+    } else if (g.phase === 'roll') {
+      const a = rnd6(), b = rnd6();
+      g.opening = null;
+      rolledNow = true;
+      startTurn(g.turn, a === b ? [a, a, a, a] : [a, b]);
+    } else {
+      return;
+    }
+    render();
+    saveProgress();
+  }
+
+  function autoSelect() {
+    const srcs = [...new Set(nextMoves().map(m => String(m.from)))];
+    sel = srcs.length === 1 ? (srcs[0] === 'bar' ? 'bar' : parseInt(srcs[0], 10)) : null;
+  }
+
+  function playPath(path) {
+    for (const m of path) {
+      g.history.push(BG.clone(g.pos));
+      BG.apply(g.pos, g.turn, m);
+      g.played.push(m);
+      if (g.pos.off[g.turn] === 15) { gameOver(g.turn); return; }
+    }
+    // Handig bij meerdere zetten met dezelfde schijf: blijft geselecteerd als hij nog kan.
+    const last = path[path.length - 1];
+    const srcs = new Set(nextMoves().map(m => String(m.from)));
+    if (last.to !== 'off' && srcs.has(String(last.to))) sel = last.to;
+    else autoSelect();
+    render();
+    saveProgress();
+  }
+
+  function undo() {
+    if (g.phase !== 'move' || !g.played.length) return;
+    g.pos = g.history.pop();
+    g.played.pop();
+    sel = null;
+    autoSelect();
+    render();
+    saveProgress();
+  }
+
+  function endTurn() {
+    if (g.phase !== 'move' || need() > 0) return;
+    g.lastTurn = { p: g.turn, tos: g.played.map(m => m.to).filter(t => t !== 'off') };
+    g.turn = 3 - g.turn;
+    g.phase = 'roll';
+    g.dice = [];
+    g.played = [];
+    g.history = [];
+    g.info = null;
+    sel = null;
+    render();
+    saveProgress();
+  }
+
+  const RESULT_NAME = { 1: 'gewone winst', 2: 'gammon', 3: 'backgammon' };
+
+  function gameOver(w) {
+    const pts = BG.points(g.pos, w);
+    g.phase = 'over';
+    g.result = { w, pts };
+    sel = null;
+    if (w === 1) match.score1 += pts; else match.score2 += pts;
+    render();
+    if (match.score1 >= cfg.target || match.score2 >= cfg.target) { finishMatch(); return; }
+    saveProgress();
+    showRoundResult();
+  }
+
+  function showRoundResult() {
+    const { w, pts } = g.result;
+    $('roundText').textContent = `${nameOf(w)} wint met een ${RESULT_NAME[pts]} (${pts} ${pts === 1 ? 'punt' : 'punten'})`;
+    $('roundResult').classList.add('show');
+    $('btnNext').focus({ preventScroll: true });
+  }
+
+  $('btnNext').addEventListener('click', () => {
+    if (!g || g.phase !== 'over' || match.done) return;
+    match.game++;
+    newGame();
+  });
+
+  function finishMatch() {
+    match.done = true;
+    clearProgress();
+    $('roundResult').classList.remove('show');
+    const w = match.score1 > match.score2 ? 1 : 2;
+    const { pts } = g.result;
+    $('winnerName').textContent = cfg.target === 1 ? `${nameOf(w)} wint` : `${nameOf(w)} wint de match`;
+    $('winnerScore').textContent = `${cfg.p1} ${match.score1} – ${match.score2} ${cfg.p2}` +
+      (pts > 1 ? `, afgesloten met een ${RESULT_NAME[pts]}` : '');
+    $('winner').classList.add('active');
+    recordMatch();
+  }
+
+  // ---------- weergave ----------
+  const G = { W: 872, H: 640, m: 14, pw: 60, r: 27, half: 360, barW: 48, trayGap: 12, trayW: 64, triH: 250 };
+  G.lx = G.m; G.bx = G.m + G.half; G.rx = G.bx + G.barW; G.tx = G.rx + G.half + G.trayGap;
+  const colOf = (i) => { const n = i + 1; return n >= 13 ? n - 13 : 12 - n; };
+  const isTop = (i) => i >= 12;
+  const colX = (c) => c < 6 ? G.lx + c * G.pw : G.rx + (c - 6) * G.pw;
+  const stackY = (i, k) => isTop(i) ? G.m + G.r + k * 2 * G.r : G.H - G.m - G.r - k * 2 * G.r;
+
+  const PIPS = { 1: [[50, 50]], 2: [[28, 28], [72, 72]], 3: [[28, 28], [50, 50], [72, 72]],
+    4: [[28, 28], [72, 28], [28, 72], [72, 72]], 5: [[28, 28], [72, 28], [50, 50], [28, 72], [72, 72]],
+    6: [[28, 26], [72, 26], [28, 50], [72, 50], [28, 74], [72, 74]] };
+  const dieSvg = (v, p, used, anim) =>
+    `<svg class="die p${p}${used ? ' used' : ''}${anim ? ' rolled' : ''}" viewBox="0 0 100 100" aria-label="${v}"><rect x="4" y="4" width="92" height="92" rx="18"/>` +
+    PIPS[v].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9"/>`).join('') + '</svg>';
+
+  function renderDice() {
+    const box = $('dice');
+    const anim = rolledNow;
+    rolledNow = false;
+    if (g.phase === 'opening' && g.opening) {
+      box.innerHTML = dieSvg(g.opening[0], 1, false, anim) + dieSvg(g.opening[1], 2, false, anim);
+    } else if (g.phase === 'move' && g.dice.length) {
+      let usedLeft = g.played.map(m => m.die);
+      box.innerHTML = g.dice.map(d => {
+        const i = usedLeft.indexOf(d);
+        const used = i >= 0;
+        if (used) usedLeft.splice(i, 1);
+        return dieSvg(d, g.turn, used, anim);
+      }).join('');
+    } else {
+      box.innerHTML = '';
+    }
+  }
+
+  function message() {
+    if (g.phase === 'opening') {
+      if (g.opening && g.opening[0] === g.opening[1]) return `Allebei ${g.opening[0]} gegooid. Gooi opnieuw om te bepalen wie begint.`;
+      return 'Gooi om te bepalen wie begint. De hoogste mag beginnen met beide stenen.';
+    }
+    if (g.phase === 'roll') return `<strong>${esc(nameOf(g.turn))}</strong>, gooi de stenen.`;
+    if (g.phase === 'over') return '';
+    const intro = (g.opening && !g.played.length)
+      ? `${esc(cfg.p1)} gooit ${g.opening[0]}, ${esc(cfg.p2)} gooit ${g.opening[1]}: <strong>${esc(nameOf(g.turn))}</strong> begint. ` : '';
+    if (g.info.maxLen === 0) return intro + 'Geen zet mogelijk met deze worp. Klik op Beurt klaar.';
+    if (need() === 0) return intro + 'Alle zetten gedaan. Klik op <strong>Beurt klaar</strong>.';
+    const partial = (g.info.maxLen < g.dice.length && !g.played.length)
+      ? ` Er ${g.info.maxLen === 1 ? 'kan maar één steen' : `kunnen maar ${g.info.maxLen} stenen`} gespeeld worden.` : '';
+    if (g.pos.bar[g.turn]) return intro + 'Zet eerst je geslagen schijf terug op het bord.' + partial;
+    if (sel !== null) return intro + 'Kies waar de schijf heen gaat.' + partial;
+    return intro + 'Kies een schijf om te zetten.' + partial;
+  }
+
+  function render() {
+    const nexts = nextMoves();
+    const sources = new Set(nexts.map(m => String(m.from)));
+    const dests = sel !== null ? destinations(sel) : new Map();
+    $('bgBoard').innerHTML = boardSvg(sources, dests);
+    renderDice();
+    $('bgMsg').innerHTML = message();
+
+    $('btnRoll').textContent = g.phase === 'opening' ? 'Openingsworp' : 'Gooien';
+    $('btnRoll').hidden = !(g.phase === 'opening' || g.phase === 'roll');
+    $('btnDone').hidden = g.phase !== 'move';
+    $('btnDone').disabled = g.phase !== 'move' || need() > 0;
+    $('btnDone').classList.toggle('pulse', g.phase === 'move' && need() === 0);
+    $('btnUndo').hidden = g.phase !== 'move';
+    $('btnUndo').disabled = g.phase !== 'move' || !g.played.length;
+
+    $('score1').textContent = match.score1;
+    $('score2').textContent = match.score2;
+    $('of1').textContent = `/ ${cfg.target}`;
+    $('of2').textContent = `/ ${cfg.target}`;
+    $('sub1').textContent = `${BG.pips(g.pos, 1)} pips, ${g.pos.off[1]} uit · thuis rechtsonder`;
+    $('sub2').textContent = `${BG.pips(g.pos, 2)} pips, ${g.pos.off[2]} uit · thuis rechtsboven`;
+    const active = (g.phase === 'move' || g.phase === 'roll') ? g.turn : 0;
+    $('card1').classList.toggle('turn', active === 1);
+    $('card2').classList.toggle('turn', active === 2);
+    $('turnIndicator').classList.toggle('is-p2', active === 2);
+    $('turnLabel').textContent = g.phase === 'over' ? 'Potje voorbij' : g.phase === 'opening' ? 'Openingsworp' : 'Aan zet';
+    $('turnName').textContent = active ? nameOf(active) : '—';
+    $('roundInfo').textContent = cfg.target > 1 ? `Potje ${match.game + 1}` : 'Los potje';
+  }
+
+  function boardSvg(sources, dests) {
+    const { W, H, m, pw, r, half, barW, trayW, triH } = G;
+    const pos = g.pos;
+    let h = `<rect x="0" y="0" width="${W}" height="${H}" rx="16" class="frame"/>`;
+    h += `<rect x="${G.lx}" y="${m}" width="${half}" height="${H - 2 * m}" rx="6" class="felt"/>`;
+    h += `<rect x="${G.rx}" y="${m}" width="${half}" height="${H - 2 * m}" rx="6" class="felt"/>`;
+    h += `<rect x="${G.bx}" y="${m}" width="${barW}" height="${H - 2 * m}" class="bar"/>`;
+    const trayH = (H - 2 * m) / 2 - 4;
+    const offDest = dests.has('off');
+    h += `<rect x="${G.tx}" y="${m}" width="${trayW}" height="${trayH}" rx="6" class="tray${offDest && g.turn === 2 ? ' dest' : ''}"/>`;
+    h += `<rect x="${G.tx}" y="${H - m - trayH}" width="${trayW}" height="${trayH}" rx="6" class="tray${offDest && g.turn === 1 ? ' dest' : ''}"/>`;
+
+    // Punten
+    for (let i = 0; i < 24; i++) {
+      const c = colOf(i), x = colX(c);
+      const pts = isTop(i)
+        ? `${x + 1},${m} ${x + pw - 1},${m} ${x + pw / 2},${m + triH}`
+        : `${x + 1},${H - m} ${x + pw - 1},${H - m} ${x + pw / 2},${H - m - triH}`;
+      h += `<polygon points="${pts}" class="${c % 2 === 0 ? 'tri-a' : 'tri-b'}"/>`;
+      if (dests.has(String(i))) h += `<polygon points="${pts}" class="dest-tri"/>`;
+    }
+
+    // Schijven op de punten
+    for (let i = 0; i < 24; i++) {
+      const n = Math.abs(pos.b[i]);
+      const cx = colX(colOf(i)) + pw / 2;
+      if (n) {
+        const p = pos.b[i] > 0 ? 1 : 2;
+        const show = Math.min(n, 5);
+        for (let k = 0; k < show; k++) {
+          const top = k === show - 1;
+          let cls = `chk chk${p}`;
+          if (top && p === g.turn && sources.has(String(i))) cls += sel === i ? ' selected' : ' movable';
+          h += `<circle cx="${cx}" cy="${stackY(i, k)}" r="${r - 1}" class="${cls}"/>`;
+        }
+        if (n > 5) h += `<text x="${cx}" y="${stackY(i, 4)}" class="cnt c${p}">${n}</text>`;
+      }
+      if (dests.has(String(i))) {
+        const mine = g.turn === 1 ? Math.max(0, pos.b[i]) : Math.max(0, -pos.b[i]);
+        h += `<circle cx="${cx}" cy="${stackY(i, Math.min(mine, 4))}" r="${r - 3}" class="ghost"/>`;
+      }
+    }
+
+    // Laatste beurt van de tegenstander
+    if (g.lastTurn && (g.phase === 'roll' || g.phase === 'move') && g.lastTurn.p !== g.turn) {
+      new Set(g.lastTurn.tos).forEach(i => {
+        const cx = colX(colOf(i)) + pw / 2;
+        const cy = isTop(i) ? m + triH + 14 : H - m - triH - 14;
+        h += `<circle cx="${cx}" cy="${cy}" r="6" class="last-dot"/>`;
+      });
+    }
+
+    // Balk: speler 1 boven, speler 2 onder
+    const cxBar = G.bx + barW / 2;
+    [1, 2].forEach(p => {
+      const n = pos.bar[p];
+      const show = Math.min(n, 3);
+      for (let k = 0; k < show; k++) {
+        const cy = p === 1 ? H / 2 - 40 - k * 2 * (r - 4) : H / 2 + 40 + k * 2 * (r - 4);
+        let cls = `chk chk${p}`;
+        if (k === show - 1 && p === g.turn && sources.has('bar')) cls += sel === 'bar' ? ' selected' : ' movable';
+        h += `<circle cx="${cxBar}" cy="${cy}" r="${r - 5}" class="${cls}"/>`;
+      }
+      if (n > 3) {
+        const cy = p === 1 ? H / 2 - 40 - 2 * 2 * (r - 4) : H / 2 + 40 + 2 * 2 * (r - 4);
+        h += `<text x="${cxBar}" y="${cy}" class="cnt c${p}">${n}</text>`;
+      }
+    });
+
+    // Uitgenomen schijven
+    for (let k = 0; k < pos.off[2]; k++) h += `<rect x="${G.tx + 7}" y="${m + 6 + k * 15}" width="${trayW - 14}" height="12" rx="4" class="off2"/>`;
+    for (let k = 0; k < pos.off[1]; k++) h += `<rect x="${G.tx + 7}" y="${H - m - 18 - k * 15}" width="${trayW - 14}" height="12" rx="4" class="off1"/>`;
+    if (!pos.off[2]) h += `<text x="${G.tx + trayW / 2}" y="${m + trayH / 2}" class="tray-lbl">uit</text>`;
+    if (!pos.off[1]) h += `<text x="${G.tx + trayW / 2}" y="${H - m - trayH / 2}" class="tray-lbl">uit</text>`;
+
+    // Klikvlakken bovenop
+    for (let i = 0; i < 24; i++) {
+      const x = colX(colOf(i));
+      const y = isTop(i) ? m : H / 2;
+      h += `<rect x="${x}" y="${y}" width="${pw}" height="${H / 2 - m}" class="hit" data-loc="${i}"/>`;
+    }
+    h += `<rect x="${G.bx}" y="${m}" width="${barW}" height="${H - 2 * m}" class="hit" data-loc="bar"/>`;
+    h += `<rect x="${G.tx}" y="${m}" width="${trayW}" height="${H - 2 * m}" class="hit${offDest ? '' : ' off'}" data-loc="off"/>`;
+    return h;
+  }
+
+  function locFrom(e) {
+    const t = e.target.closest('[data-loc]');
+    if (!t) return null;
+    const v = t.dataset.loc;
+    return v === 'bar' || v === 'off' ? v : parseInt(v, 10);
+  }
+
+  $('bgBoard').addEventListener('click', (e) => {
+    if (!g || g.phase !== 'move' || need() <= 0) return;
+    const loc = locFrom(e);
+    if (loc === null) return;
+    if (sel !== null) {
+      const path = destinations(sel).get(String(loc));
+      if (path) { playPath(path); return; }
+    }
+    const sources = new Set(nextMoves().map(m => String(m.from)));
+    sel = (sources.has(String(loc)) && sel !== loc) ? loc : null;
+    render();
+  });
+
+  // Dubbelklik: direct zetten met de hoogste steen.
+  $('bgBoard').addEventListener('dblclick', (e) => {
+    if (!g || g.phase !== 'move' || need() <= 0) return;
+    const loc = locFrom(e);
+    if (loc === null || loc === 'off') return;
+    const opts = nextMoves().filter(m => String(m.from) === String(loc)).sort((a, b) => b.die - a.die);
+    if (opts.length) playPath([opts[0]]);
+  });
+
+  $('btnRoll').addEventListener('click', roll);
+  $('btnUndo').addEventListener('click', undo);
+  $('btnDone').addEventListener('click', endTurn);
+
+  function beginMatch(saved) {
+    document.querySelector('.app').classList.add('playing');
+    $('setup').style.display = 'none';
+    $('game').classList.add('active');
+    $('winner').classList.remove('active');
+    $('winnerRecord').textContent = '';
+    recordToken++;
+    $('roundResult').classList.remove('show');
+    $('name1').textContent = cfg.p1;
+    $('name2').textContent = cfg.p2;
+    $('boardMeta').textContent = cfg.target === 1 ? 'Los potje' : `Match tot ${cfg.target} punten`;
+    $('rulesHint').innerHTML = '<span class="slash">/</span> Gebruik zoveel mogelijk stenen, de balk gaat voor <span class="slash">/</span>';
+
+    if (saved) {
+      match = saved.match;
+      const s = saved.g;
+      g = { pos: s.pos, phase: s.phase, turn: s.turn, dice: s.dice || [], turnStart: s.turnStart, played: [], history: [],
+        info: null, lastTurn: s.lastTurn || null, opening: s.opening || null, result: s.result || null };
+      if (g.phase === 'move') {
+        g.pos = BG.clone(s.turnStart);
+        g.info = BG.turnInfo(g.pos, g.turn, g.dice);
+        for (const mv of s.played) { g.history.push(BG.clone(g.pos)); BG.apply(g.pos, g.turn, mv); g.played.push(mv); }
+      }
+      sel = null;
+      if (g.phase === 'move') autoSelect();
+      render();
+      if (g.phase === 'over') showRoundResult();
+    } else {
+      clearProgress();
+      match = { score1: 0, score2: 0, game: 0, done: false };
+      newGame();
+    }
+  }
+
+  const matchBusy = () => match && !match.done && (match.game > 0 || (g && g.phase !== 'opening'));
+
+  $('btnRestart').addEventListener('click', () => {
+    if (matchBusy() && !confirm('De huidige match stoppen en opnieuw beginnen? Deze match telt dan niet mee.')) return;
+    beginMatch();
+  });
+
+  $('btnNew').addEventListener('click', () => {
+    document.querySelector('.app').classList.remove('playing');
+    $('game').classList.remove('active');
+    $('setup').style.display = 'flex';
+    $('winner').classList.remove('active');
+    refreshResume();
+  });
+
+  $('btnStart').addEventListener('click', () => {
+    const p1 = chosenName(1);
+    const p2 = chosenName(2);
+    const err = validateNames(p1, p2);
+    if (err) { $('setupError').textContent = err; return; }
+    $('setupError').textContent = '';
+    cfg.p1 = p1;
+    cfg.p2 = p2;
+    adoptTypedNames();
+    beginMatch();
+  });
+
+  // ---------- lopende match bewaren ----------
+  const PROGRESS_KEY = 'ns-bg:progress:v1';
+  const PROGRESS_MAX_AGE = 24 * 60 * 60 * 1000;
+
+  function saveProgress() {
+    if (!match || match.done || !g) return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+        t: Date.now(), cfg: { ...cfg }, match,
+        g: { pos: g.pos, phase: g.phase, turn: g.turn, dice: g.dice, turnStart: g.turnStart, played: g.played,
+          lastTurn: g.lastTurn, opening: g.opening, result: g.result }
+      }));
+    } catch (e) { /* opslag niet beschikbaar: dan maar zonder hervatten */ }
+  }
+
+  function clearProgress() {
+    try { localStorage.removeItem(PROGRESS_KEY); } catch (e) { /* niets te doen */ }
+  }
+
+  function validPos(s) {
+    return s && Array.isArray(s.b) && s.b.length === 24 && s.b.every(Number.isInteger) &&
+      Array.isArray(s.bar) && Array.isArray(s.off) && BG.count(s, 1) === 15 && BG.count(s, 2) === 15;
+  }
+
+  function loadProgress() {
+    try {
+      const p = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+      if (!p || !p.cfg || !p.match || !p.g || Date.now() - p.t > PROGRESS_MAX_AGE) return null;
+      const c = p.cfg, mt = p.match, s = p.g;
+      const ok = typeof c.p1 === 'string' && c.p1 && typeof c.p2 === 'string' && c.p2 && TARGETS.includes(c.target) &&
+        Number.isInteger(mt.score1) && Number.isInteger(mt.score2) && mt.score1 < c.target && mt.score2 < c.target &&
+        ['opening', 'roll', 'move', 'over'].includes(s.phase) && validPos(s.pos) &&
+        (s.phase !== 'move' || (validPos(s.turnStart) && Array.isArray(s.dice) && Array.isArray(s.played) && (s.turn === 1 || s.turn === 2))) &&
+        (s.phase !== 'roll' || s.turn === 1 || s.turn === 2) &&
+        (s.phase !== 'over' || (s.result && (s.result.w === 1 || s.result.w === 2)));
+      return ok ? p : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function refreshResume() {
+    const p = loadProgress();
+    $('resumeBox').hidden = !p;
+    if (!p) return;
+    const c = p.cfg, mt = p.match;
+    $('resumeText').textContent = `${c.p1} ${mt.score1} – ${mt.score2} ${c.p2}, ` + (c.target === 1 ? 'los potje' : `match tot ${c.target}`);
+  }
+
+  $('btnResume').addEventListener('click', () => {
+    const p = loadProgress();
+    if (!p) { refreshResume(); return; }
+    Object.assign(cfg, p.cfg);
+    beginMatch(p);
+  });
+  $('btnDiscard').addEventListener('click', () => { clearProgress(); refreshResume(); });
+
+  // ---------- centrale ranglijst ----------
+  // Zelfde Supabase-project als Kamertje verhuren. De spelerslijst wordt gedeeld.
+  const CONFIG = {
+    supabaseUrl: 'https://wyqhmnzykmmasuncbdmp.supabase.co',
+    supabaseKey: 'sb_publishable_jGT0Zoe1bCNHQ_DffHhmDw_z7ehX-Zk'
+  };
+  const GAME_ID = 'backgammon';
+  const VARIANT = 'zonder-kubus';
+
+  // Vaste spelers in het keuzelijstje. Nieuwe namen die iemand typt, worden
+  // na de eerste afgeronde match centraal toegevoegd.
+  const COLLEAGUES = [
+    'Albrecht', 'Coen', 'Didi', 'Gerwin', 'Hannah', 'Jacco', 'Jeroen', 'Lars', 'Marit', 'Milan',
+    'Niek', 'Nick', 'Nikos', 'Numan', 'Sam', 'Stefan', 'Stephan', 'Steven', 'Thijs'
+  ];
+
+  const REMOTE = !!(CONFIG.supabaseUrl && CONFIG.supabaseKey);
+  const LIST_PAGE = 15;
+  const NEW = '__new__';
+  const LS = {
+    matches: 'ns-bg:matches:v1',
+    players: 'ns-bg:players:v1',
+    pendingMatches: 'ns-bg:pending-matches:v1',
+    pendingPlayers: 'ns-bg:pending-players:v1',
+    playersCache: 'ns-bg:players-cache:v1',
+    last: 'ns-bg:last-choice:v1'
+  };
+
+  let statsFilter = 'all';
+  let showAll = false;
+  let recordToken = 0;
+  let knownPlayers = [];
+  const sessionNames = new Map();
+
+  const keyOf = (n) => String(n).trim().toLowerCase();
+  const cleanName = (v) => String(v || '').replace(/\s+/g, ' ').trim().slice(0, 14);
+  const esc = (t) => String(t).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const lsGet = (k, fallback) => {
+    try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? fallback : v; }
+    catch (e) { return fallback; }
+  };
+  const lsSet = (k, v) => {
+    try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+    catch (e) { return false; }
+  };
+  const uuid = () => (window.crypto && crypto.randomUUID) ? crypto.randomUUID() :
+    'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+
+  const isValidMatch = (m) => m && typeof m.id === 'string' && typeof m.p1 === 'string' && typeof m.p2 === 'string' &&
+    Number.isFinite(m.s1) && Number.isFinite(m.s2) && Number.isFinite(m.t);
+
+  // ---------- opslag ----------
+  async function rest(path, opts = {}) {
+    const res = await fetch(`${CONFIG.supabaseUrl.replace(/\/+$/, '')}/rest/v1/${path}`, {
+      ...opts,
+      headers: { apikey: CONFIG.supabaseKey, 'Content-Type': 'application/json', ...(opts.headers || {}) }
+    });
+    if (!res.ok) {
+      const err = new Error(`HTTP ${res.status}`);
+      err.status = res.status;
+      throw err;
+    }
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  // Fouten waarbij opnieuw proberen zin heeft (geen verbinding, server, configuratie).
+  const retryable = (e) => !e.status || e.status >= 500 || [401, 403, 404, 408, 429].includes(e.status);
+
+  const fromRow = (r) => ({
+    id: r.id, t: Date.parse(r.played_at), variant: r.variant, target: r.target,
+    p1: r.p1, p2: r.p2, s1: r.score1, s2: r.score2, draws: r.draws || 0
+  });
+  const toRow = (m) => ({
+    id: m.id, game: GAME_ID, variant: VARIANT, target: m.target, played_at: new Date(m.t).toISOString(),
+    p1: m.p1, p2: m.p2, score1: m.s1, score2: m.s2, draws: m.draws
+  });
+
+  function insertMatch(m) {
+    return rest('matches', {
+      method: 'POST',
+      headers: { Prefer: 'return=minimal,resolution=ignore-duplicates' },
+      body: JSON.stringify(toRow(m))
+    });
+  }
+
+  async function insertPlayer(name) {
+    try {
+      await rest('players', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify({ name }) });
+      return true;
+    } catch (e) {
+      if (e.status === 409) return true;   // bestaat al
+      if (retryable(e)) throw e;
+      return false;                        // ongeldige naam: niet opnieuw proberen
+    }
+  }
+
+  async function flushPending() {
+    if (!REMOTE) return;
+    const matches = lsGet(LS.pendingMatches, []);
+    if (matches.length) {
+      const left = [];
+      for (const m of matches) {
+        try { await insertMatch(m); } catch (e) { if (retryable(e)) left.push(m); }
+      }
+      lsSet(LS.pendingMatches, left);
+    }
+    const names = lsGet(LS.pendingPlayers, []);
+    if (names.length) {
+      const left = [];
+      for (const n of names) {
+        try { await insertPlayer(n); } catch (e) { left.push(n); }
+      }
+      lsSet(LS.pendingPlayers, left);
+    }
+  }
+
+  const store = {
+    async matches() {
+      if (!REMOTE) return lsGet(LS.matches, []).filter(isValidMatch);
+      await flushPending();
+      const out = [];
+      const page = 1000;
+      for (let off = 0; ; off += page) {
+        const rows = await rest(`matches?select=*&game=eq.${GAME_ID}&order=played_at.asc&limit=${page}&offset=${off}`);
+        out.push(...rows.map(fromRow));
+        if (rows.length < page) break;
+      }
+      const ids = new Set(out.map(m => m.id));
+      const pending = lsGet(LS.pendingMatches, []).filter(m => !ids.has(m.id)).map(m => ({ ...m, pending: true }));
+      return out.concat(pending);
+    },
+
+    async addMatch(m) {
+      if (!REMOTE) {
+        const all = lsGet(LS.matches, []);
+        all.push(m);
+        return { saved: lsSet(LS.matches, all) };
+      }
+      try {
+        await insertMatch(m);
+        return { saved: true };
+      } catch (e) {
+        if (!retryable(e)) return { saved: false };
+        const pending = lsGet(LS.pendingMatches, []);
+        pending.push(m);
+        lsSet(LS.pendingMatches, pending);
+        return { saved: false, queued: true };
+      }
+    },
+
+    async players() {
+      if (!REMOTE) return lsGet(LS.players, []);
+      const pending = lsGet(LS.pendingPlayers, []);
+      try {
+        const rows = await rest('players?select=name');
+        const names = rows.map(r => r.name);
+        lsSet(LS.playersCache, names);
+        return names.concat(pending);
+      } catch (e) {
+        return lsGet(LS.playersCache, []).concat(pending);
+      }
+    },
+
+    async addPlayer(name) {
+      if (!REMOTE) {
+        const list = lsGet(LS.players, []);
+        if (!list.some(n => keyOf(n) === keyOf(name))) { list.push(name); lsSet(LS.players, list); }
+        return;
+      }
+      try {
+        await insertPlayer(name);
+      } catch (e) {
+        const pending = lsGet(LS.pendingPlayers, []);
+        if (!pending.some(n => keyOf(n) === keyOf(name))) { pending.push(name); lsSet(LS.pendingPlayers, pending); }
+      }
+    }
+  };
+
+  // ---------- spelerskeuze ----------
+  function sortedNames(list) {
+    const m = new Map();
+    list.forEach(n => {
+      const c = cleanName(n);
+      const k = keyOf(c);
+      if (c && k !== 'claude' && !m.has(k)) m.set(k, c);
+    });
+    return [...m.values()].sort((a, b) => a.localeCompare(b, 'nl', { sensitivity: 'base' }));
+  }
+
+  let playerNames = [];
+  function renderPlayerSelects() {
+    playerNames = sortedNames(COLLEAGUES.concat(knownPlayers, [...sessionNames.values()]));
+    [1, 2].forEach(n => {
+      const sel = $(`p${n}select`);
+      const keep = sel.value;
+      sel.innerHTML = '<option value="">Kies een speler</option>' +
+        playerNames.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('') +
+        `<option value="${NEW}">+ Andere naam typen</option>`;
+      if (keep === NEW || playerNames.includes(keep)) sel.value = keep;
+    });
+  }
+
+  function selectName(n, name) {
+    const sel = $(`p${n}select`), inp = $(`p${n}name`);
+    if (name && playerNames.includes(name)) {
+      sel.value = name;
+      inp.hidden = true;
+      inp.value = '';
+    }
+  }
+
+  function chosenName(n) {
+    const sel = $(`p${n}select`);
+    if (sel.value !== NEW) return sel.value;
+    const typed = cleanName($(`p${n}name`).value);
+    const existing = playerNames.find(x => keyOf(x) === keyOf(typed));
+    return existing || typed;
+  }
+
+  function validateNames(p1, p2) {
+    const typing = (n) => $(`p${n}select`).value === NEW;
+    if (!p1) return typing(1) ? 'Typ een naam voor speler 1.' : 'Kies speler 1, of typ een andere naam.';
+    if (!p2) return typing(2) ? 'Typ een naam voor speler 2.' : 'Kies speler 2, of typ een andere naam.';
+    if (keyOf(p1) === keyOf(p2)) return 'Kies twee verschillende spelers.';
+    if (keyOf(p1) === 'claude' || keyOf(p2) === 'claude') return 'De naam Claude is gereserveerd. Kies een andere naam.';
+    return '';
+  }
+
+  // Getypte namen direct in de lijst zetten en de keuze op dit apparaat onthouden.
+  function adoptTypedNames() {
+    [cfg.p1, cfg.p2].forEach(n => {
+      if (!playerNames.some(x => keyOf(x) === keyOf(n))) sessionNames.set(keyOf(n), n);
+    });
+    renderPlayerSelects();
+    selectName(1, cfg.p1);
+    selectName(2, cfg.p2);
+    lsSet(LS.last, { p1: cfg.p1, p2: cfg.p2, target: cfg.target });
+  }
+
+  [1, 2].forEach(n => {
+    $(`p${n}select`).addEventListener('change', () => {
+      const isNew = $(`p${n}select`).value === NEW;
+      const inp = $(`p${n}name`);
+      inp.hidden = !isNew;
+      if (isNew) inp.focus();
+      $('setupError').textContent = '';
+    });
+    $(`p${n}name`).addEventListener('input', () => { $('setupError').textContent = ''; });
+  });
+
+  async function loadPlayers() {
+    knownPlayers = await store.players();
+    renderPlayerSelects();
+  }
+
+  // ---------- match vastleggen ----------
+  async function recordMatch() {
+    const token = ++recordToken;
+    const rec = $('winnerRecord');
+    rec.textContent = 'Opslaan...';
+    const m = {
+      id: uuid(), t: Date.now(), variant: VARIANT, target: cfg.target,
+      p1: cfg.p1, p2: cfg.p2, s1: match.score1, s2: match.score2, draws: 0
+    };
+    const p1 = cfg.p1, p2 = cfg.p2;
+    const res = await store.addMatch(m);
+
+    // Nieuwe namen pas na een afgeronde match opslaan, zo blijven tikfouten uit de lijst.
+    for (const n of [p1, p2]) {
+      const k = keyOf(n);
+      if (sessionNames.has(k)) {
+        await store.addPlayer(n);
+        sessionNames.delete(k);
+        if (!knownPlayers.some(x => keyOf(x) === k)) knownPlayers.push(n);
+      }
+    }
+
+    let all = null;
+    if (res.saved) { try { all = await store.matches(); } catch (e) { all = null; } }
+    if (token !== recordToken) return;
+
+    if (res.queued) {
+      rec.textContent = 'Geen verbinding met de ranglijst. Deze match wordt verstuurd zodra de verbinding terug is.';
+    } else if (!res.saved) {
+      rec.textContent = 'Deze match kon niet worden opgeslagen.';
+    } else if (!all) {
+      rec.textContent = 'Opgeslagen in de ranglijst.';
+    } else {
+      const h = headToHead(all, p1, p2);
+      const total = h.w1 + h.w2;
+      const line1 = total <= 1
+        ? 'Eerste match tussen jullie, opgeslagen in de ranglijst.'
+        : `Onderling na ${total} matches: ${p1} ${h.w1} – ${h.w2} ${p2}`;
+      const stats = computeStats(all);
+      const fmt = (name) => {
+        const p = stats.find(x => keyOf(x.name) === keyOf(name));
+        if (!p) return '';
+        const d = Math.round(p.delta);
+        return `${name} ${Math.round(p.rating)} (${d >= 0 ? '+' : '−'}${Math.abs(d)})`;
+      };
+      rec.textContent = `${line1}\nRating: ${fmt(p1)}, ${fmt(p2)}`;
+    }
+  }
+
+  function headToHead(all, n1, n2) {
+    const k1 = keyOf(n1), k2 = keyOf(n2);
+    let w1 = 0, w2 = 0;
+    for (const m of all) {
+      const a = keyOf(m.p1), b = keyOf(m.p2);
+      let x, y;
+      if (a === k1 && b === k2) { x = m.s1; y = m.s2; }
+      else if (a === k2 && b === k1) { x = m.s2; y = m.s1; }
+      else continue;
+      if (x > y) w1++; else if (y > x) w2++;
+    }
+    return { w1, w2 };
+  }
+
+  // ---------- statistieken ----------
+  // Elo-rating: iedereen start op 1000. Nieuwe spelers bewegen sneller (hogere K),
+  // zodat ze na een paar matches op hun niveau zitten.
+  const ELO_START = 1000;
+  const PROVISIONAL = 3;
+  const kFactor = (p) => p.played < 10 ? 40 : 24;
+
+  function computeStats(all) {
+    const map = new Map();
+    const get = (name) => {
+      const k = keyOf(name);
+      if (!map.has(k)) map.set(k, { name, played: 0, won: 0, lost: 0, rating: ELO_START, delta: 0 });
+      const p = map.get(k);
+      p.name = name; // meest recente schrijfwijze
+      return p;
+    };
+    all.slice().sort((a, b) => a.t - b.t).forEach(m => {
+      if (m.s1 === m.s2) return; // kan niet bij een afgeronde match
+      const a = get(m.p1), b = get(m.p2);
+      const sa = m.s1 > m.s2 ? 1 : 0;
+      const ea = 1 / (1 + Math.pow(10, (b.rating - a.rating) / 400));
+      const da = kFactor(a) * (sa - ea);
+      const db = kFactor(b) * ((1 - sa) - (1 - ea));
+      a.rating += da; b.rating += db;
+      a.delta = da; b.delta = db;
+      a.played++; b.played++;
+      if (sa === 1) { a.won++; b.lost++; } else { b.won++; a.lost++; }
+    });
+    const byRating = (x, y) => y.rating - x.rating || y.played - x.played || x.name.localeCompare(y.name, 'nl');
+    const players = [...map.values()];
+    return players.filter(p => p.played >= PROVISIONAL).sort(byRating)
+      .concat(players.filter(p => p.played < PROVISIONAL).sort(byRating));
+  }
+
+  const fmtDate = new Intl.DateTimeFormat('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+
+  let lastMatches = [];
+  let loadFailed = false;
+
+  async function loadStats() {
+    $('rankList').innerHTML = '<li class="stats-empty">Ranglijst laden...</li>';
+    $('gameList').innerHTML = '';
+    $('gamesMore').style.display = 'none';
+    try {
+      lastMatches = await store.matches();
+      loadFailed = false;
+    } catch (e) {
+      lastMatches = REMOTE ? lsGet(LS.pendingMatches, []).map(m => ({ ...m, pending: true })) : [];
+      loadFailed = true;
+    }
+    renderStats();
+  }
+
+  function renderSource() {
+    const pending = REMOTE ? lsGet(LS.pendingMatches, []).length : 0;
+    let html;
+    if (!REMOTE) {
+      html = '<span class="live off"></span>Niet gekoppeld aan de centrale ranglijst. Matches worden alleen in deze browser bewaard.';
+    } else if (loadFailed) {
+      html = '<span class="live off"></span>Geen verbinding met de centrale ranglijst. Probeer het straks opnieuw.';
+    } else {
+      html = '<span class="live"></span>Centrale ranglijst, voor iedereen hetzelfde. Matches verwijderen kan alleen via het beheer in Supabase.';
+    }
+    if (pending) html += ` ${pending} ${pending === 1 ? 'match wacht' : 'matches wachten'} nog op verzending.`;
+    $('statsSource').innerHTML = html;
+  }
+
+  function renderStats() {
+    renderSource();
+    const list = statsFilter === 'all' ? lastMatches
+      : lastMatches.filter(m => statsFilter === 'single' ? m.target === 1 : m.target > 1);
+    const players = computeStats(list);
+    const rankList = $('rankList'), gameList = $('gameList');
+
+    $('rankSummary').textContent = players.length ? `${players.length} ${players.length === 1 ? 'speler' : 'spelers'}` : '';
+    $('gamesSummary').textContent = list.length ? `${list.length} ${list.length === 1 ? 'match' : 'matches'}` : '';
+
+    if (!list.length) {
+      const msg = loadFailed
+        ? 'De ranglijst kon niet worden geladen. Controleer de verbinding en klik op Vernieuwen.'
+        : statsFilter === 'all'
+          ? 'Nog geen matches gespeeld. Speel een match uit en hij verschijnt hier.'
+          : statsFilter === 'single' ? 'Nog geen losse potjes gespeeld.' : 'Nog geen matches van meerdere punten gespeeld.';
+      rankList.innerHTML = `<li class="stats-empty">${msg}</li>`;
+      gameList.innerHTML = '';
+      $('gamesMore').style.display = 'none';
+      return;
+    }
+
+    const row = (p, pos) => {
+      const provisional = p.played < PROVISIONAL;
+      const d = Math.round(p.delta);
+      const delta = d > 0 ? `<span class="up">▲ ${d}</span>` : d < 0 ? `<span class="down">▼ ${-d}</span>` : '±0';
+      return `<li class="rank-row${pos === 1 ? ' top' : ''}${provisional ? ' provisional' : ''}">
+        <div class="rank-pos">${provisional ? '' : pos}</div>
+        <div>
+          <div class="rank-name">${esc(p.name)}</div>
+          <div class="rank-meta">${p.played} ${p.played === 1 ? 'match' : 'matches'}: ${p.won} gewonnen, ${p.lost} verloren</div>
+        </div>
+        <div class="rank-wins"><span class="num">${Math.round(p.rating)}</span><span class="lbl" title="Verschil door de laatste match">${delta}</span></div>
+      </li>`;
+    };
+    const established = players.filter(p => p.played >= PROVISIONAL);
+    const provisional = players.filter(p => p.played < PROVISIONAL);
+    rankList.innerHTML = established.map((p, i) => row(p, i + 1)).join('') +
+      (provisional.length ? `<li class="rank-divider">Voorlopig, nog geen ${PROVISIONAL} matches</li>` + provisional.map(p => row(p, 0)).join('') : '');
+
+    const sorted = list.slice().sort((a, b) => b.t - a.t);
+    const shown = showAll ? sorted : sorted.slice(0, LIST_PAGE);
+    gameList.innerHTML = shown.map(m => {
+      const n1 = m.s1 > m.s2 ? `<strong>${esc(m.p1)}</strong>` : esc(m.p1);
+      const n2 = m.s2 > m.s1 ? `<strong>${esc(m.p2)}</strong>` : esc(m.p2);
+      const kind = m.target > 1 ? `match tot ${m.target}` : 'los potje';
+      const extra = m.pending ? ', wacht op verzending' : '';
+      return `<li class="game-row">
+        <div>
+          <div class="game-match">${n1}<span class="score">${m.s1} – ${m.s2}</span>${n2}</div>
+          <div class="game-meta">${esc(fmtDate.format(new Date(m.t)))}, ${kind}${extra}</div>
+        </div>
+      </li>`;
+    }).join('');
+
+    const more = $('gamesMore');
+    if (sorted.length > LIST_PAGE) {
+      more.style.display = '';
+      more.textContent = showAll ? 'Toon minder' : `Toon alle ${sorted.length} matches`;
+    } else {
+      more.style.display = 'none';
+    }
+  }
+
+  function setStatus(text) { $('statsStatus').textContent = text; }
+
+  const statsOverlay = $('statsOverlay');
+  function openStats() {
+    showAll = false;
+    setStatus('');
+    statsOverlay.classList.add('open');
+    loadStats();
+  }
+  function closeStats() { statsOverlay.classList.remove('open'); }
+
+  $('btnStats').addEventListener('click', openStats);
+  $('winnerStatsBtn').addEventListener('click', openStats);
+  $('statsClose').addEventListener('click', closeStats);
+  $('btnRefresh').addEventListener('click', () => { setStatus(''); loadStats(); });
+  statsOverlay.addEventListener('click', (e) => { if (e.target === statsOverlay) closeStats(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeStats(); });
+
+  $('statsFilter').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    $('statsFilter').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    statsFilter = btn.dataset.filter;
+    showAll = false;
+    renderStats();
+  });
+
+  $('gamesMore').addEventListener('click', () => { showAll = !showAll; renderStats(); });
+
+  // ---------- start ----------
+  (function init() {
+    renderPlayerSelects();
+    const last = lsGet(LS.last, {});
+    selectName(1, last.p1);
+    selectName(2, last.p2);
+    if (TARGETS.includes(last.target)) { cfg.target = last.target; setTarget(cfg.target); }
+    refreshResume();
+    loadPlayers().then(() => {
+      if (!$('p1select').value) selectName(1, last.p1);
+      if (!$('p2select').value) selectName(2, last.p2);
+    });
+    flushPending().catch(() => {});
+  })();
+})();
+</script>
+</body>
+</html>
