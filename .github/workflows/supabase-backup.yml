@@ -53,6 +53,7 @@ jobs:
           export_table "players?select=name,created_at&order=name.asc" /tmp/backup/kamertje-players.json
           export_table "games?select=*&order=played_at.asc,id.asc" /tmp/backup/kamertje-games.json
           export_table "matches?select=*&order=played_at.asc,id.asc" /tmp/backup/speelhal-matches.json
+          export_table "multi_results?select=*&order=played_at.asc,id.asc" /tmp/backup/speelhal-multi-results.json
 
           # Pas overschrijven als alles gelukt is
           mkdir -p backup
