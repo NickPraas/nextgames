@@ -6,645 +6,2156 @@
 <title>Mens erger je niet — Next Standard editie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,800;1,900&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#EEF2F5; --card:#FFFFFF; --ink:#11263B; --ink-soft:#5A6B7A; --ink-faint:#9AA8B4;
-    --line:rgba(17,38,59,0.08); --line-strong:rgba(17,38,59,0.16);
-    --accent:#15B49A; --accent-dark:#0C6E5E; --blue:#1F4FA0; --blue-dark:#16336B;
-    --p-blue:#1F4FA0; --p-blue-soft:#D6E0F2; --p-blue-dark:#16336B;
-    --p-mint:#15B49A; --p-mint-soft:#CDEFE8; --p-mint-dark:#0C6E5E;
-    --p-bord:#8C2238; --p-bord-soft:#EBD2D8; --p-bord-dark:#5C0F22;
-    --p-oker:#C9962B; --p-oker-soft:#F1E4C2; --p-oker-dark:#85610F;
-    --radius:16px; --radius-sm:10px;
+  :root {
+    /* ---- Next Standard styleguide ---- */
+    /* Brand */
+    --brand-blue:    #00F0FF;
+    --brand-green:   #00F098;
+    --blue-500:      #384980;
+    --blue-700:      #1E2745;
+    --blue-900:      #13192B;
+    /* System */
+    --white:         #FFFFFF;
+    --grey-300:      #F1F3F9;
+    --grey-400:      #E6E8EF;
+    --grey-700:      #E3E7F3;
+    --grey-900:      #D4D9EC;
+
+    /* ---- semantische tokens ---- */
+    --bg:            var(--grey-300);
+    --bg-card:       var(--white);
+    --ink:           var(--blue-900);
+    --ink-soft:      var(--blue-500);
+    --ink-faint:     #8B92AB;
+    --line:          rgba(19, 25, 43, 0.08);
+    --line-strong:   rgba(19, 25, 43, 0.16);
+
+    /* Speler 1 — cyaan (uit brand colors) */
+    --p1:            var(--brand-blue);
+    --p1-dark:       #00BCD4;          /* helder cyaan voor wanden — max contrast met navy */
+    --p1-soft:       #B3FAFF;
+
+    /* Speler 2 — navy (uit brand colors) */
+    --p2:            var(--blue-700);  /* Blue 700 als box-fill */
+    --p2-dark:       var(--blue-900);  /* Blue 900 voor max contrast op lijnen */
+    --p2-soft:       var(--grey-700);  /* lichtgrijs-blauw voor badges */
+
+    --radius:        14px;
+    --radius-sm:     8px;
+
+    /* fonts */
+    --font-display:  'Montserrat', 'Gilroy', sans-serif;
+    --font-body:     'Montserrat', system-ui, sans-serif;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--bg);color:var(--ink);font-family:'Manrope',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
-  body{display:flex;flex-direction:column;align-items:center;padding:24px 16px 36px}
-  .app{width:100%;max-width:760px;display:flex;flex-direction:column;gap:18px}
 
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .brand{display:flex;align-items:center;gap:11px}
-  .brand-mark{width:38px;height:38px;background:var(--ink);color:var(--accent);border-radius:11px;display:grid;place-items:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;letter-spacing:-0.04em}
-  .brand-txt{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.02em;line-height:1}
-  .brand-txt small{display:block;font-family:'Manrope';font-weight:600;font-size:11px;color:var(--ink-faint);letter-spacing:.04em;text-transform:uppercase;margin-top:3px}
-  .tag{font-family:'Bricolage Grotesque',sans-serif;font-style:italic;font-weight:700;font-size:14px;color:var(--accent-dark)}
-  .topbar-right{display:flex;align-items:center;gap:10px}
-  .ghost-btn{border:1.5px solid var(--line-strong);background:transparent;color:var(--ink);font-family:'Manrope';font-weight:700;font-size:13px;padding:8px 13px;border-radius:10px;cursor:pointer;transition:.15s}
-  .ghost-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink)}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .hero h1{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(28px,7vw,46px);line-height:.98;letter-spacing:-0.03em}
-  .hero h1 .slash{color:var(--accent)}
-  .hero p{color:var(--ink-soft);font-weight:500;margin-top:8px;font-size:14px}
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 1px 0 rgba(17,38,59,.02),0 10px 30px -20px rgba(17,38,59,.25)}
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 40px;
+  }
 
-  .setup{padding:22px}
-  .setup .label{font-family:'Bricolage Grotesque';font-weight:700;font-size:13px;letter-spacing:.02em;margin-bottom:10px;display:flex;align-items:center;gap:7px}
-  .setup .label::before{content:"/";color:var(--accent);font-weight:800}
-  .seg{display:flex;gap:8px;margin-bottom:20px}
-  .seg button{flex:1;padding:13px 0;border:1.5px solid var(--line-strong);background:#fff;border-radius:12px;font-family:'Bricolage Grotesque';font-weight:700;font-size:17px;color:var(--ink-soft);cursor:pointer;transition:.15s}
-  .seg button.active{background:var(--ink);color:#fff;border-color:var(--ink)}
-  #modeSeg{margin-bottom:8px}
-  #modeSeg button{font-size:14px;padding:13px 6px}
-  .mode-note{font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-bottom:22px;line-height:1.45}
-  .players-cfg{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
-  .pl-row{display:flex;align-items:center;gap:11px}
-  .pl-dot{width:26px;height:26px;border-radius:50%;flex:0 0 26px;box-shadow:inset 0 -2px 4px rgba(0,0,0,.18)}
-  .pl-row input{flex:1;padding:11px 13px;border:1.5px solid var(--line-strong);border-radius:10px;font-family:'Manrope';font-weight:600;font-size:14px;color:var(--ink);background:#fff}
-  .pl-row input:focus{outline:none;border-color:var(--accent)}
-  .pl-tag{font-family:'Bricolage Grotesque';font-weight:700;font-size:12px;color:var(--ink-faint);width:64px;flex:0 0 64px}
+  .app {
+    width: 100%;
+    max-width: 880px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 
-  .toggle-row{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1.5px dashed var(--line-strong);border-radius:12px;margin-bottom:22px;cursor:pointer}
-  .toggle-row .sw{flex:0 0 46px;width:46px;height:27px;border-radius:14px;background:var(--line-strong);position:relative;transition:.2s;margin-top:1px}
-  .toggle-row .sw::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-  .toggle-row.on .sw{background:var(--p-bord)}
-  .toggle-row.on .sw::after{transform:translateX(19px)}
-  .toggle-row .ttl{font-family:'Bricolage Grotesque';font-weight:700;font-size:14px;display:flex;align-items:center;gap:7px}
-  .toggle-row .sub{font-size:12.5px;color:var(--ink-soft);font-weight:500;margin-top:3px;line-height:1.4}
-  .badge-x{background:var(--p-bord);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;letter-spacing:.04em}
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
 
-  .start-btn{width:100%;padding:16px;border:none;border-radius:13px;background:var(--accent);color:#04261F;font-family:'Bricolage Grotesque';font-weight:800;font-size:17px;letter-spacing:-0.01em;cursor:pointer;transition:.15s;box-shadow:0 8px 20px -10px var(--accent)}
-  .start-btn:hover{transform:translateY(-1px);background:#13a690}
-  .start-hint{text-align:center;color:var(--ink-faint);font-size:12px;font-weight:600;margin-top:11px}
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .brand-mark {
+    width: 36px; height: 36px;
+    background: var(--ink);
+    color: var(--brand-green);
+    border-radius: 10px;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: -0.04em;
+  }
 
-  #game{display:none}
-  .turn-bar{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--ink);transition:border-color .2s}
-  .turn-bar .who{display:flex;align-items:center;gap:11px;flex:1;min-width:0}
-  .turn-bar .tdot{width:30px;height:30px;border-radius:50%;flex:0 0 30px;box-shadow:inset 0 -2px 5px rgba(0,0,0,.2)}
-  .turn-bar .tname{font-family:'Bricolage Grotesque';font-weight:800;font-size:18px;line-height:1;letter-spacing:-0.02em}
-  .turn-bar .tmsg{font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-top:3px;min-height:15px}
+  .tag-make {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .tag-make::before { content: '/ '; color: var(--brand-green); font-style: normal; font-weight: 800; }
+  .tag-make::after  { content: ' /'; color: var(--brand-green); font-style: normal; font-weight: 800; }
 
-  .die-wrap{display:flex;align-items:center;gap:12px}
-  .die{width:54px;height:54px;border-radius:13px;background:#fff;border:1.5px solid var(--line-strong);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:9px;box-shadow:0 4px 12px -6px rgba(17,38,59,.4)}
-  .die span{width:9px;height:9px;border-radius:50%;background:var(--ink);align-self:center;justify-self:center;opacity:0}
-  .die span.on{opacity:1}
-  .die.rolling{animation:shake .18s linear infinite}
-  @keyframes shake{0%{transform:translate(0,0) rotate(0)}25%{transform:translate(-2px,1px) rotate(-4deg)}75%{transform:translate(2px,-1px) rotate(4deg)}100%{transform:translate(0,0)}}
-  .roll-btn{padding:14px 20px;border:none;border-radius:12px;background:var(--ink);color:#fff;font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;cursor:pointer;transition:.15s;white-space:nowrap}
-  .roll-btn:hover:not(:disabled){background:var(--blue)}
-  .roll-btn:disabled{opacity:.4;cursor:default}
+  /* ---------- hero ---------- */
+  .hero {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 24px;
+    padding: 36px 32px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -60px; bottom: -60px;
+    width: 220px; height: 220px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.22;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    left: -40px; top: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-blue);
+    border-radius: 50%;
+    opacity: 0.12;
+  }
+  .hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    margin-bottom: 12px;
+    font-weight: 600;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(36px, 6.5vw, 56px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    position: relative;
+  }
+  .hero h1 .slash { color: var(--brand-green); font-weight: 900; }
+  .hero-sub {
+    margin-top: 14px;
+    max-width: 480px;
+    font-size: 15px;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.55;
+    position: relative;
+    font-weight: 400;
+  }
 
-  .board-card{padding:14px;display:flex;justify-content:center}
-  svg#board{width:100%;max-width:520px;height:auto;display:block;touch-action:manipulation}
-  .pawn{transition:opacity .12s}
+  /* ---------- setup ---------- */
+  .setup {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border: 1px solid var(--line);
+  }
+  .field label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .field input {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 500;
+    background: var(--bg);
+    color: var(--ink);
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
+  }
 
-  .score-row{display:flex;gap:8px;flex-wrap:wrap}
-  .score-chip{flex:1;min-width:120px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:10px}
-  .score-chip .sdot{width:18px;height:18px;border-radius:50%;flex:0 0 18px;box-shadow:inset 0 -1px 3px rgba(0,0,0,.2)}
-  .score-chip .sname{font-family:'Bricolage Grotesque';font-weight:700;font-size:13px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .score-chip .scount{font-family:'Bricolage Grotesque';font-weight:800;font-size:14px;color:var(--ink-soft)}
-  .score-chip.active{border-color:var(--ink);box-shadow:0 0 0 2px var(--ink) inset}
+  .field select {
+    width: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 40px 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    background-color: var(--bg);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2313192B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color .15s, background-color .15s, box-shadow .15s;
+  }
+  .field select:focus {
+    outline: none;
+    border-color: var(--brand-green);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(0,240,152,0.18);
+  }
+  .field .player-new { margin-top: 8px; }
+  .resume {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-left: 4px solid var(--brand-green);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+  }
+  .resume[hidden] { display: none; }
+  .resume-title { font-family: var(--font-display); font-weight: 800; font-style: italic; font-size: 16px; }
+  .resume-text { font-size: 13px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; }
+  .resume-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .resume-actions .btn { padding: 9px 14px; font-size: 13px; }
+  .setup-error { font-size: 14px; font-weight: 600; color: #C62F4B; }
+  .setup-error:empty { display: none; }
 
-  .game-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-  .values{display:flex;gap:7px;flex-wrap:wrap}
-  .values span{font-family:'Bricolage Grotesque';font-style:italic;font-weight:700;font-size:12px;color:var(--ink-faint)}
-  .values span::before{content:"/";color:var(--accent);font-style:normal;margin-right:2px}
+  /* mode segmented */
+  .mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    gap: 4px;
+  }
+  .mode-toggle button {
+    border: none;
+    background: transparent;
+    padding: 12px 14px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ink-soft);
+    transition: all .18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .mode-toggle button .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    transition: background .18s;
+  }
+  .mode-toggle button.active {
+    background: var(--ink);
+    color: #fff;
+  }
+  .mode-toggle button.active .dot { background: var(--brand-blue); }
 
-  .overlay{position:fixed;inset:0;background:rgba(17,38,59,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
-  .overlay.show{display:flex}
-  .modal{background:var(--card);border-radius:18px;max-width:440px;width:100%;padding:26px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5);max-height:86vh;overflow:auto}
-  .modal h2{font-family:'Bricolage Grotesque';font-weight:800;font-size:22px;letter-spacing:-0.02em;margin-bottom:4px}
-  .modal h2 .slash{color:var(--accent)}
-  .modal .lead{color:var(--ink-soft);font-size:13px;font-weight:500;margin-bottom:16px}
-  .rule{display:flex;gap:11px;margin-bottom:13px;font-size:13.5px;line-height:1.45}
-  .rule .n{flex:0 0 24px;width:24px;height:24px;border-radius:7px;background:var(--accent);color:#04261F;font-family:'Bricolage Grotesque';font-weight:800;font-size:12px;display:grid;place-items:center;margin-top:1px}
-  .rule b{font-weight:800}
-  .modal .x-note{font-size:12px;color:var(--p-bord);font-weight:700;background:var(--p-bord-soft);padding:10px 12px;border-radius:10px;margin-top:6px}
-  .modal-close{width:100%;margin-top:18px;padding:13px;border:none;border-radius:11px;background:var(--ink);color:#fff;font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;cursor:pointer}
+  .player-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
 
-  .win-card{text-align:center}
-  .win-trophy{font-size:46px;margin-bottom:6px}
-  .win-card h2{font-size:28px}
-  .win-name{font-family:'Bricolage Grotesque';font-weight:800;font-size:34px;letter-spacing:-0.03em;margin:6px 0 4px}
-  .win-sub{color:var(--ink-soft);font-weight:600;font-size:14px;margin-bottom:20px}
-  .win-btns{display:flex;gap:10px}
-  .win-btns button{flex:1;padding:14px;border-radius:12px;font-family:'Bricolage Grotesque';font-weight:800;font-size:15px;cursor:pointer;border:1.5px solid var(--line-strong);background:#fff;color:var(--ink)}
-  .win-btns button.primary{background:var(--accent);border-color:var(--accent);color:#04261F}
+
+  .size-picker {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .size-chip {
+    flex: 1 1 auto;
+    min-width: 120px;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line-strong);
+    background: var(--bg);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    transition: all .15s;
+  }
+  .size-chip strong {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .size-chip span {
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .size-chip:hover { border-color: var(--ink); }
+  .size-chip.active {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .size-chip.active span { color: var(--brand-green); }
+
+  .btn-start {
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    font-style: italic;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: transform .12s, background .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .btn-start:hover { background: #00d987; }
+  .btn-start:active { transform: scale(0.99); }
+  .btn-start .arrow {
+    display: inline-block;
+    transition: transform .18s;
+    font-style: normal;
+  }
+  .btn-start:hover .arrow { transform: translateX(4px); }
+
+  /* ---------- game ---------- */
+  .game { display: none; flex-direction: column; gap: 18px; }
+  .game.active { display: flex; }
+
+  .scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 14px;
+    align-items: stretch;
+  }
+  .player-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    position: relative;
+    transition: all .25s;
+  }
+  .player-card.p1 { border-left: 4px solid var(--p1); }
+  .player-card.p2 { border-left: 4px solid var(--p2); }
+  .player-card.turn { transform: translateY(-2px); }
+  .player-card.p1.turn { box-shadow: 0 0 0 2px var(--p1-dark); border-color: var(--p1-dark); }
+  .player-card.p2.turn { box-shadow: 0 0 0 2px var(--p2-dark); border-color: var(--p2-dark); }
+
+  .player-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .player-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    margin-top: 2px;
+    line-height: 1.1;
+    word-break: break-word;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .player-score {
+    margin-top: 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .player-score .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 38px;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .player-score .of {
+    font-size: 13px;
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+
+  .turn-indicator {
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-width: 130px;
+  }
+  .turn-indicator .who {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: var(--brand-blue);
+    transition: color .2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .turn-indicator.is-p2 .who { color: var(--white); }
+  .turn-indicator .label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .turn-indicator .bonus {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    margin-top: 4px;
+    font-style: italic;
+    min-height: 14px;
+    font-weight: 500;
+  }
+
+
+  /* controls */
+  .controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .controls-left { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    background: var(--bg-card);
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    padding: 11px 18px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .btn.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink-soft); }
+  .btn.btn-ghost:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  .rules-hint {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-weight: 500;
+  }
+  .rules-hint .slash { color: var(--brand-green); font-style: normal; font-weight: 800; }
+
+  /* winner */
+  .winner {
+    display: none;
+    background: var(--ink);
+    color: #fff;
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .winner.active { display: block; }
+  .winner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, var(--brand-green) 0%, transparent 50%);
+    opacity: 0.18;
+  }
+  .winner-label {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    position: relative;
+  }
+  .winner-name {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: clamp(32px, 6vw, 48px);
+    letter-spacing: -0.025em;
+    margin-top: 6px;
+    line-height: 1.05;
+    position: relative;
+  }
+  .winner-name.tie { color: var(--brand-green); }
+  .winner-score {
+    margin-top: 10px;
+    font-size: 16px;
+    color: rgba(255,255,255,0.7);
+    position: relative;
+    font-weight: 500;
+  }
+  .winner-tag {
+    margin-top: 18px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    color: var(--brand-green);
+    font-size: 18px;
+    position: relative;
+  }
+
+  /* footer */
+  .footer {
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer .vals { display: flex; gap: 12px; flex-wrap: wrap; }
+  .footer .vals span {
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .footer .vals span:nth-child(1) { color: var(--p1-dark); }
+  .footer .vals span:nth-child(2) { color: var(--brand-green); }
+  .footer .vals span:nth-child(3) { color: var(--ink-soft); }
+  .footer .vals span:nth-child(4) { color: var(--ink); }
+
+  /* ---------- uitleg knop ---------- */
+  .btn-uitleg {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-soft);
+    border-radius: var(--radius-sm);
+    padding: 8px 14px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-uitleg:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+
+  /* ---------- modal ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(19,25,43,0.72);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal {
+    background: var(--bg-card);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(19,25,43,0.32);
+    position: relative;
+    animation: modal-in .22s ease-out;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.97); }
+    to   { opacity: 1; transform: none; }
+  }
+  .modal-header {
+    background: var(--blue-900);
+    color: #fff;
+    border-radius: 20px 20px 0 0;
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .modal-header::after {
+    content: '';
+    position: absolute;
+    right: -40px; bottom: -40px;
+    width: 140px; height: 140px;
+    background: var(--brand-green);
+    border-radius: 50%;
+    opacity: 0.18;
+  }
+  .modal-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-green);
+    font-weight: 700;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .modal-title {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: rgba(255,255,255,0.8);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: background .15s;
+    position: absolute;
+    z-index: 1;
+  }
+  .modal-close:hover { background: rgba(255,255,255,0.25); }
+  .modal-body {
+    padding: 24px 28px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .rule-block {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .rule-icon {
+    font-size: 22px;
+    min-width: 32px;
+    text-align: center;
+    margin-top: 1px;
+  }
+  .rule-title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    margin-bottom: 3px;
+    color: var(--ink);
+  }
+  .rule-text {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .rule-text strong { color: var(--ink); font-weight: 700; }
+  .modal-btn-start {
+    display: block;
+    width: calc(100% - 56px);
+    margin: 20px 28px 24px;
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 800;
+    font-style: italic;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .modal-btn-start:hover { background: #00d987; }
+
+  /* ---------- statistieken ---------- */
+  .topbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .modal.modal-wide { max-width: 680px; }
+  .stats-filter { grid-template-columns: repeat(3, 1fr); }
+  .stats-filter button { font-size: 13px; padding: 10px 8px; }
+  .stats-section { display: flex; flex-direction: column; gap: 10px; }
+  .stats-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+  }
+  .stats-heading small {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .rank-list, .game-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .rank-row {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+  .rank-row.top { background: var(--ink); color: #fff; }
+  .rank-pos {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--ink-faint);
+  }
+  .rank-row.top .rank-pos { color: var(--brand-green); }
+  .rank-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    word-break: break-word;
+  }
+  .rank-meta { font-size: 12px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; }
+  .rank-row.top .rank-meta { color: rgba(255,255,255,0.65); }
+  .rank-bar { height: 4px; background: var(--line-strong); border-radius: 2px; margin-top: 7px; overflow: hidden; }
+  .rank-row.top .rank-bar { background: rgba(255,255,255,0.15); }
+  .rank-bar span { display: block; height: 100%; background: var(--brand-green); border-radius: 2px; }
+  .rank-wins { text-align: right; line-height: 1; }
+  .rank-wins .num {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 28px;
+    letter-spacing: -0.03em;
+  }
+  .rank-wins .lbl { display: block; font-size: 11px; color: var(--ink-soft); font-weight: 600; margin-top: 3px; }
+  .rank-wins .up { color: #00A86B; }
+  .rank-wins .down { color: #C62F4B; }
+  .rank-row.top .rank-wins .up { color: var(--brand-green); }
+  .rank-row.top .rank-wins .down { color: #FF8FA3; }
+  .rank-row.provisional { background: transparent; border: 1px dashed var(--line-strong); }
+  .rank-divider { font-size: 12px; color: var(--ink-faint); font-weight: 600; margin-top: 8px; }
+  .stats-note { font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; margin-top: -4px; }
+  .rank-row.top .rank-wins .lbl { color: rgba(255,255,255,0.65); }
+
+  .game-row {
+    display: grid;
+    gap: 10px;
+    align-items: center;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+  .game-match { font-size: 14px; font-weight: 500; color: var(--ink-soft); }
+  .game-match strong { color: var(--ink); font-weight: 800; }
+  .game-match .score {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--ink);
+    margin: 0 6px;
+  }
+  .game-meta { font-size: 12px; color: var(--ink-faint); font-weight: 500; margin-top: 2px; }
+  .stats-empty {
+    padding: 22px;
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius-sm);
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 500;
+    line-height: 1.5;
+  }
+  .stats-more { align-self: flex-start; }
+  .stats-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 18px 28px 24px;
+    border-top: 1px solid var(--line);
+    margin-top: 16px;
+  }
+  .stats-actions .btn { padding: 9px 14px; font-size: 13px; }
+  .stats-status { width: 100%; font-size: 13px; color: var(--ink-soft); font-weight: 500; min-height: 18px; }
+  .stats-status:empty { display: none; }
+  .stats-source { flex: 1 1 260px; font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.5; align-self: center; }
+  .stats-source .live { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--brand-green); margin-right: 6px; vertical-align: 1px; }
+  .stats-source .off { background: var(--ink-faint); }
+
+  .winner-record {
+    white-space: pre-line;
+    line-height: 1.6;
+    margin-top: 14px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    position: relative;
+    font-weight: 600;
+  }
+  .winner-record:empty { display: none; }
+  .winner-stats-btn {
+    margin-top: 16px;
+    position: relative;
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: var(--radius-sm);
+    padding: 9px 16px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .winner-stats-btn:hover { background: var(--brand-green); border-color: var(--brand-green); color: var(--blue-900); }
+
+  @media (max-width: 640px) {
+    .player-row { grid-template-columns: 1fr; }
+    .scoreboard { grid-template-columns: 1fr; }
+    .turn-indicator { order: -1; }
+    .hero { padding: 28px 22px; }
+    .board-wrap { padding: 16px; }
+  }
+
+
+  .level-toggle { grid-template-columns: repeat(3, 1fr); }
+  .mode-toggle button[data-mode="ai"].active .dot { background: var(--p2-soft); }
+  .ai-card {
+    background: var(--bg);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+  }
+  .ai-card .ai-mark {
+    width: 30px; height: 30px;
+    background: var(--p2);
+    color: var(--white);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 16px;
+  }
+  .ai-card .ai-info { line-height: 1.2; }
+  .ai-card .ai-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .ai-card .ai-meta {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 1px;
+    font-weight: 500;
+  }
+
+  .turn-indicator .thinking {
+    display: inline-flex;
+    gap: 3px;
+    margin-left: 2px;
+  }
+  .turn-indicator .thinking span {
+    width: 5px; height: 5px;
+    background: var(--white);
+    border-radius: 50%;
+    animation: dot-bounce 1.2s infinite ease-in-out;
+  }
+  .turn-indicator .thinking span:nth-child(2) { animation-delay: .15s; }
+  .turn-indicator .thinking span:nth-child(3) { animation-delay: .3s; }
+  @keyframes dot-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+
+  /* ---------- mens erger je niet ---------- */
+  .count-toggle { grid-template-columns: repeat(3, 1fr); }
+  .seat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+  .seat-grid .field[hidden] { display: none; }
+  .field label.seat-label { display: flex; align-items: center; gap: 8px; }
+  .seat-dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; flex: none; box-shadow: inset 0 -2px 2px rgba(0,0,0,.18); }
+  .field-note { font-size: 13px; color: var(--ink-soft); font-weight: 500; line-height: 1.45; margin-top: 8px; }
+  .field-note strong { color: var(--ink); }
+  [hidden] { display: none !important; }
+
+  .seats-bar { display: grid; gap: 10px; grid-template-columns: repeat(var(--n, 4), 1fr); }
+  .seat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--seat);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    transition: transform .2s, box-shadow .2s;
+    min-width: 0;
+  }
+  .seat-card.turn { transform: translateY(-2px); box-shadow: 0 0 0 2px var(--seat); }
+  .seat-card.done { opacity: .75; }
+  .seat-name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .seat-meta { font-size: 12px; color: var(--ink-soft); font-weight: 600; margin-top: 3px; display: flex; align-items: center; gap: 6px; }
+  .seat-pips { display: inline-flex; gap: 3px; }
+  .seat-pips i { width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); display: block; }
+  .seat-pips i.in { background: var(--seat); }
+  .place-badge {
+    margin-left: auto;
+    background: var(--ink);
+    color: var(--brand-green);
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    font-size: 12px;
+    border-radius: 999px;
+    padding: 2px 8px;
+  }
+
+  .play-panel {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--seat, var(--ink));
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .die {
+    width: 52px; height: 52px; flex: none;
+    border-radius: 12px;
+    background: #fff;
+    border: 2px solid var(--ink);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    padding: 7px;
+    gap: 2px;
+  }
+  .die span { border-radius: 50%; }
+  .die span.on { background: var(--ink); }
+  .die.rolling { animation: die-shake .1s linear infinite; }
+  .die.empty { border-style: dashed; border-color: var(--line-strong); }
+  @keyframes die-shake { 0% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } 100% { transform: rotate(-8deg); } }
+  .play-text { flex: 1; min-width: 0; }
+  .play-who { font-family: var(--font-display); font-weight: 800; font-style: italic; font-size: 18px; color: var(--seat-dark, var(--ink)); }
+  .play-msg { font-size: 14px; color: var(--ink-soft); font-weight: 500; margin-top: 2px; line-height: 1.4; min-height: 20px; }
+  .btn-roll {
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 12px 20px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    cursor: pointer;
+    flex: none;
+    transition: background .15s, opacity .15s;
+  }
+  .btn-roll:hover { background: #00d987; }
+  .btn-roll:disabled { opacity: .35; cursor: default; }
+  .btn-roll:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+  .board-wrap {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    border: 1px solid var(--line);
+  }
+  .mejn-board { width: min(100%, 560px); height: auto; display: block; user-select: none; touch-action: manipulation; }
+  .mejn-board .pawn { transition: filter .15s; }
+  .mejn-board .pawn.can { cursor: pointer; }
+  .mejn-board .pawn:focus { outline: none; }
+  .mejn-board .pawn:focus-visible .pawn-body { stroke: var(--brand-green); stroke-width: 4; }
+
+  .winner-places { list-style: none; margin: 14px auto 0; max-width: 340px; position: relative; display: flex; flex-direction: column; gap: 6px; text-align: left; }
+  .winner-places li { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.07); border-radius: 10px; padding: 8px 12px; font-weight: 600; }
+  .winner-places .pl { font-family: var(--font-display); font-weight: 900; font-style: italic; color: var(--brand-green); width: 22px; }
+  .winner-places .seat-dot { width: 12px; height: 12px; }
+  .winner-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; position: relative; }
+  .winner-actions .winner-stats-btn { margin-top: 16px; }
+  .btn-next {
+    background: var(--brand-green);
+    color: var(--blue-900);
+    border: none;
+    border-radius: var(--radius-sm);
+    padding: 11px 18px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: 15px;
+    cursor: pointer;
+    position: relative;
+    margin-top: 16px;
+  }
+  .btn-next:hover { background: #00d987; }
+
+  @media (max-width: 640px) {
+    .seat-grid { grid-template-columns: 1fr; }
+    .seats-bar { grid-template-columns: 1fr 1fr; }
+    .app.playing .hero { display: none; }
+    .board-wrap { padding: 6px; }
+    .play-panel { flex-wrap: wrap; }
+    .play-text { flex-basis: calc(100% - 70px); }
+    .btn-roll { width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .die.rolling { animation: none; }
+  }
 </style>
 </head>
 <body>
+
 <div class="app">
 
   <div class="topbar">
     <div class="brand">
       <div class="brand-mark">N</div>
-      <div class="brand-txt">Next Standard<small>Spel</small></div>
+      <div>Next Standard</div>
     </div>
-    <div class="topbar-right">
-      <span class="tag">Make it work</span>
-      <button class="ghost-btn" id="btnHelp">? Uitleg</button>
+    <div class="topbar-actions">
+      <button class="btn-uitleg" id="btnStats">Statistieken</button>
+      <button class="btn-uitleg" id="btnUitleg">? Uitleg</button>
+      <div class="tag-make">Make it work</div>
+    </div>
+  </div>
+
+  <!-- Uitleg modal -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rulesTitle">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Spelregels /</div>
+        <h2 class="modal-title" id="rulesTitle">Mens erger je niet</h2>
+        <button class="modal-close" id="modalClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="rule-block">
+          <div class="rule-icon">🎯</div>
+          <div>
+            <div class="rule-title">Doel</div>
+            <div class="rule-text">Breng als eerste je vier pionnen rond het bord en in je eigen kleurlaan.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">6️⃣</div>
+          <div>
+            <div class="rule-title">Uit het huis</div>
+            <div class="rule-text">Met een 6 zet je een pion op je startvak; dat moet als het kan. Daarna moet die pion eerst van het startvak af. Een 6 geeft altijd een extra worp. Kun je met 1 tot en met 5 niets, dan mag je drie keer gooien.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">💥</div>
+          <div>
+            <div class="rule-title">Slaan</div>
+            <div class="rule-text">Kom je op een vakje met een pion van een ander, dan gaat die terug naar huis. Op je eigen pion kun je niet landen.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🏁</div>
+          <div>
+            <div class="rule-title">Kleurlaan</div>
+            <div class="rule-text">Gooi je verder dan het laatste vakje, dan tel je terug. Een pion in de kleurlaan mag alleen nog vooruit.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">⚡</div>
+          <div>
+            <div class="rule-title">Extreem</div>
+            <div class="rule-text">Drie keer achter elkaar een 6? Dan gaan al je pionnen terug naar huis.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🤖</div>
+          <div>
+            <div class="rule-title">Claude</div>
+            <div class="rule-text">Claude kan lege plekken vullen. Hij slaat graag, brengt bedreigde pionnen in veiligheid en blijft uit de buurt van tegenstanders.</div>
+          </div>
+        </div>
+        <div class="rule-block">
+          <div class="rule-icon">🏆</div>
+          <div>
+            <div class="rule-title">Ranglijst</div>
+            <div class="rule-text">Alleen potjes waarin de app dobbelt tellen mee. Kies je "volledige volgorde", dan spelen de anderen na de winnaar door om plek 2, 3 en 4.</div>
+          </div>
+        </div>
+      </div>
+      <button class="modal-btn-start" id="modalBtnStart">Begrepen — spelen maar <span style="font-style:normal">→</span></button>
+    </div>
+  </div>
+
+  <!-- Statistieken modal -->
+  <div class="modal-overlay" id="statsOverlay">
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="statsTitle">
+      <div class="modal-header">
+        <div class="modal-eyebrow">/ Wie is de baas? /</div>
+        <h2 class="modal-title" id="statsTitle">Statistieken</h2>
+        <button class="modal-close" id="statsClose" aria-label="Sluiten">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="mode-toggle stats-filter" id="statsFilter">
+          <button class="active" data-filter="all"><span class="dot"></span>Alles</button>
+          <button data-filter="duo"><span class="dot"></span>Met z'n tweeën</button>
+          <button data-filter="groep"><span class="dot"></span>3 of 4 spelers</button>
+        </div>
+        <div class="stats-section">
+          <div class="stats-heading">Ranglijst <small id="rankSummary"></small></div>
+          <p class="stats-note">Gerangschikt op Elo-rating. Iedereen begint op 1000, en winnen van een sterkere tegenstander levert meer op. Elke tegenstander die je achter je laat, levert punten op; een gedeelde plek telt als half. Na 3 potjes tel je volwaardig mee.</p>
+          <ol class="rank-list" id="rankList"></ol>
+        </div>
+        <div class="stats-section">
+          <div class="stats-heading">Gespeelde potjes <small id="gamesSummary"></small></div>
+          <ul class="game-list" id="gameList"></ul>
+          <button class="btn btn-ghost stats-more" id="gamesMore" style="display:none;">Toon alle potjes</button>
+        </div>
+      </div>
+      <div class="stats-actions">
+        <div class="stats-source" id="statsSource"></div>
+        <button class="btn btn-ghost" id="btnRefresh">Vernieuwen</button>
+        <div class="stats-status" id="statsStatus" role="status"></div>
+      </div>
     </div>
   </div>
 
   <div class="hero">
-    <h1><span class="slash">/</span>Mens erger je niet</h1>
-    <p>De klassieker, in Next Standard-kleuren. 2 t/m 4 spelers aan één scherm.</p>
+    <div class="hero-eyebrow">/ Pauzespel /</div>
+    <h1><span class="slash">/</span>Mens erger<br>je niet<span class="slash">/</span></h1>
+    <p class="hero-sub">De klassieker met pionnen, zessen en net dat ene beetje pech. Met 2 tot 4 collega's aan één scherm, Claude vult desnoods de lege plekken.</p>
   </div>
 
-  <!-- SETUP -->
-  <div class="card setup" id="setup">
-    <div class="label">Speelwijze</div>
-    <div class="seg" id="modeSeg">
-      <button data-mode="dice" class="active">🎲 Met dobbelsteen</button>
-      <button data-mode="manual">✋ Zelf dobbelen</button>
-    </div>
-    <div class="mode-note" id="modeNote">De app dobbelt én bewaakt de regels. Klik op een oplichtende pion om te zetten.</div>
+  <div id="setup" class="setup">
 
-    <div class="label">Aantal spelers</div>
-    <div class="seg" id="seg">
-      <button data-n="2">2</button>
-      <button data-n="3">3</button>
-      <button data-n="4" class="active">4</button>
-    </div>
-
-    <div class="label">Spelers</div>
-    <div class="players-cfg" id="playersCfg"></div>
-
-    <div class="toggle-row" id="extremeToggle">
-      <div class="sw"></div>
+    <div class="resume" id="resumeBox" hidden>
       <div>
-        <div class="ttl">Extreme mode <span class="badge-x">3× ZES</span></div>
-        <div class="sub">Gooi je drie keer 6 achter elkaar, dan gaan ál je pionnen terug naar het huis — ook degene die al binnen zijn.</div>
+        <div class="resume-title">Potje nog bezig</div>
+        <div class="resume-text" id="resumeText"></div>
+      </div>
+      <div class="resume-actions">
+        <button class="btn" id="btnResume">Verder spelen</button>
+        <button class="btn btn-ghost" id="btnDiscard">Weggooien</button>
       </div>
     </div>
 
-    <button class="start-btn" id="startBtn">Let's make it work →</button>
-    <div class="start-hint">Meer Next Standard, minder ergernis.</div>
+    <div class="field">
+      <label>/ Aantal spelers /</label>
+      <div class="mode-toggle count-toggle" id="countToggle">
+        <button data-n="2"><span class="dot"></span>2 spelers</button>
+        <button data-n="3"><span class="dot"></span>3 spelers</button>
+        <button class="active" data-n="4"><span class="dot"></span>4 spelers</button>
+      </div>
+    </div>
+
+    <div class="seat-grid">
+      <div class="field" id="seat1">
+        <label for="p1select" class="seat-label"><span class="seat-dot" id="seatDot1"></span><span id="seatLabel1">/ Speler 1 /</span></label>
+        <select id="p1select"></select>
+        <input id="p1name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 1" hidden>
+      </div>
+      <div class="field" id="seat2">
+        <label for="p2select" class="seat-label"><span class="seat-dot" id="seatDot2"></span><span id="seatLabel2">/ Speler 2 /</span></label>
+        <select id="p2select"></select>
+        <input id="p2name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 2" hidden>
+      </div>
+      <div class="field" id="seat3">
+        <label for="p3select" class="seat-label"><span class="seat-dot" id="seatDot3"></span><span id="seatLabel3">/ Speler 3 /</span></label>
+        <select id="p3select"></select>
+        <input id="p3name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 3" hidden>
+      </div>
+      <div class="field" id="seat4">
+        <label for="p4select" class="seat-label"><span class="seat-dot" id="seatDot4"></span><span id="seatLabel4">/ Speler 4 /</span></label>
+        <select id="p4select"></select>
+        <input id="p4name" class="player-new" type="text" maxlength="14" placeholder="Typ een naam" autocomplete="off" aria-label="Naam speler 4" hidden>
+      </div>
+    </div>
+
+    <div class="setup-error" id="setupError" role="alert"></div>
+
+    <div class="field" id="placesField">
+      <label>/ Uitslag /</label>
+      <div class="mode-toggle" id="placesToggle">
+        <button class="active" data-places="volgorde"><span class="dot"></span>Volledige volgorde</button>
+        <button data-places="winnaar"><span class="dot"></span>Alleen de winnaar</button>
+      </div>
+      <div class="field-note" id="placesNote"></div>
+    </div>
+
+    <div class="field">
+      <label>/ Dobbelen /</label>
+      <div class="mode-toggle" id="diceToggle">
+        <button class="active" data-dice="app"><span class="dot"></span>De app dobbelt</button>
+        <button data-dice="zelf"><span class="dot"></span>Zelf dobbelen</button>
+      </div>
+      <div class="field-note" id="diceNote"></div>
+    </div>
+
+    <div class="field" id="extremeField">
+      <label>/ Variant /</label>
+      <div class="mode-toggle" id="extremeToggle">
+        <button class="active" data-extreme="0"><span class="dot"></span>Normaal</button>
+        <button data-extreme="1"><span class="dot"></span>Extreem</button>
+      </div>
+      <div class="field-note">Extreem: wie drie keer achter elkaar een 6 gooit, moet met al zijn pionnen terug naar huis.</div>
+    </div>
+
+    <button class="btn-start" id="btnStart">
+      Let's make it work <span class="arrow">→</span>
+    </button>
   </div>
 
-  <!-- GAME -->
-  <div id="game">
-    <div class="turn-bar" id="turnBar">
-      <div class="who">
-        <div class="tdot" id="turnDot"></div>
-        <div>
-          <div class="tname" id="turnName">—</div>
-          <div class="tmsg" id="turnMsg"></div>
-        </div>
+  <div id="game" class="game">
+    <div class="seats-bar" id="seatsBar"></div>
+
+    <div class="play-panel" id="playPanel">
+      <div class="die empty" id="die" aria-hidden="true"></div>
+      <div class="play-text">
+        <div class="play-who" id="playWho">—</div>
+        <div class="play-msg" id="playMsg" role="status"></div>
       </div>
-      <div class="die-wrap" id="dieWrap">
-        <div class="die" id="die"></div>
-        <button class="roll-btn" id="rollBtn">Dobbel</button>
+      <button class="btn-roll" id="btnRoll">Dobbel</button>
+      <button class="btn-roll" id="btnManualNext" hidden>Volgende speler</button>
+    </div>
+
+    <div class="board-wrap">
+      <svg class="mejn-board" id="board" viewBox="0 0 520 520" role="img" aria-label="Speelbord"></svg>
+    </div>
+
+    <div class="winner" id="winner">
+      <div class="winner-label">/ Alle pionnen binnen /</div>
+      <div class="winner-name" id="winnerName">—</div>
+      <ol class="winner-places" id="winnerPlaces"></ol>
+      <div class="winner-score" id="winnerScore"></div>
+      <div class="winner-record" id="winnerRecord"></div>
+      <div class="winner-tag">Make it work.</div>
+      <div class="winner-actions">
+        <button class="btn-next" id="btnAgain">Nog een potje <span style="font-style:normal">→</span></button>
+        <button class="winner-stats-btn" id="winnerStatsBtn">Bekijk statistieken</button>
       </div>
-      <button class="roll-btn" id="manualNext" style="display:none">Volgende speler →</button>
     </div>
 
-    <div class="card board-card" style="margin-top:14px">
-      <svg id="board" viewBox="0 0 520 520" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="controls">
+      <div class="controls-left">
+        <button class="btn" id="btnRestart">Potje opnieuw</button>
+        <button class="btn btn-ghost" id="btnNew">Andere setup</button>
+      </div>
+      <div class="rules-hint" id="rulesHint"></div>
     </div>
+  </div>
 
-    <div class="score-row" id="scoreRow" style="margin-top:14px"></div>
-
-    <div class="game-footer" style="margin-top:16px">
-      <div class="values"><span>Commitment</span><span>Lef</span><span>Uniek</span><span>Bruisend</span></div>
-      <button class="ghost-btn" id="btnReset">Opnieuw</button>
+  <div class="footer">
+    <div class="vals">
+      <span>Commitment</span>
+      <span>Lef</span>
+      <span>Uniek</span>
+      <span>Bruisend</span>
     </div>
+    <div>© Mens erger je niet · Next Standard editie</div>
   </div>
 
 </div>
 
-<!-- HELP -->
-<div class="overlay" id="helpOverlay">
-  <div class="modal">
-    <h2><span class="slash">/</span>Spelregels</h2>
-    <div class="lead">Breng al je pionnen vanuit het huis over het bord naar de finish. Wie als eerste alle vier binnen heeft, wint.</div>
-    <div class="rule"><div class="n">1</div><div>Heb je <b>geen pion op het bord</b>, dan gooi je <b>één keer</b>. Gooi je een 6, dan komt er een pion in het spel.</div></div>
-    <div class="rule"><div class="n">2</div><div>Gooi je een <b>6</b>, dan komt er een nieuwe pion op het bord — daarna mag je <b>nog een keer gooien</b> en moet je díe nieuwe pion zetten (tenzij het je laatste pion uit het huis was).</div></div>
-    <div class="rule"><div class="n">3</div><div>Bij elke <b>6</b> mag je sowieso <b>nog een keer</b> gooien.</div></div>
-    <div class="rule"><div class="n">4</div><div>Land je op een vakje met een tegenstander, dan gaat die pion <b>terug naar af</b>. Slaan mag, maar hoeft niet.</div></div>
-    <div class="rule"><div class="n">5</div><div>In je eigen kleurlaan moet je <b>precies op een vrij eindvak</b> uitkomen. Lukt dat niet, dan <b>tel je terug</b> — achteruit het bord op.</div></div>
-    <div class="x-note">⚡ Extreme mode: drie keer 6 achter elkaar = ál je pionnen terug naar het huis, óók de pionnen die al binnen zijn.</div>
-    <div class="x-note" style="color:var(--blue);background:var(--p-blue-soft);margin-top:10px">✋ Zelf dobbelen: jij rolt met een echte dobbelsteen. Tik je pion aan en de geldige vakjes lichten op — met het aantal ogen dat je ervoor nodig hebt (1 t/m 6). Een pion uit het huis kan alleen naar het startvak (▶). De app bewaakt de regels; op een tegenstander landen stuurt die vanzelf naar huis. Beurt doorgeven doe je met "Volgende speler".</div>
-    <button class="modal-close" id="helpClose">Begrepen</button>
-  </div>
-</div>
 
-<!-- WINNER -->
-<div class="overlay" id="winOverlay">
-  <div class="modal win-card">
-    <div class="win-trophy">🏆</div>
-    <h2><span class="slash">/</span>Gewonnen!</h2>
-    <div class="win-name" id="winName">—</div>
-    <div class="win-sub" id="winSub">Alle vier de pionnen binnen.</div>
-    <div class="win-btns">
-      <button id="winAgain" class="primary">Nog een potje</button>
-      <button id="winSetup">Naar instellingen</button>
-    </div>
-  </div>
-</div>
-
+<script src="speelhal.js?v=2026-10-16"></script>
 <script>
-(function(){
-  const $=id=>document.getElementById(id);
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = Speelhal.esc;
 
-  const RING=[[4,4],[4,3],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[6,2],[6,3],[6,4],[7,4],[8,4],[9,4],[10,4],[10,5],[10,6],[9,6],[8,6],[7,6],[6,6],[6,7],[6,8],[6,9],[6,10],[5,10],[4,10],[4,9],[4,8],[4,7],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[3,4]];
+  // ---------- spelregels (los van de weergave) ----------
+  // Ring van 40 vakjes. Een pion heeft d = 0..39 op de ring (gerekend vanaf het eigen startvak)
+  // en d = 40..43 in de eigen kleurlaan. state: 'base' (in het huis), 'track' of 'home'.
+  const MEJN = (() => {
+    const RING_LEN = 40, LANE_END = 43;
 
-  const DEFS={
-    blue:    {key:'blue',    label:'Blauw',    start:6,  home:[[5,1],[5,2],[5,3],[5,4]], base:[[8,1],[9,1],[8,2],[9,2]], color:'#1F4FA0', soft:'#D6E0F2', dark:'#16336B'},
-    mint:    {key:'mint',    label:'Mint',     start:16, home:[[9,5],[8,5],[7,5],[6,5]], base:[[8,8],[9,8],[8,9],[9,9]], color:'#15B49A', soft:'#CDEFE8', dark:'#0C6E5E'},
-    bordeaux:{key:'bordeaux',label:'Bordeaux', start:26, home:[[5,9],[5,8],[5,7],[5,6]], base:[[1,8],[2,8],[1,9],[2,9]], color:'#8C2238', soft:'#EBD2D8', dark:'#5C0F22'},
-    oker:    {key:'oker',    label:'Oker',     start:36, home:[[1,5],[2,5],[3,5],[4,5]], base:[[1,1],[2,1],[1,2],[2,2]], color:'#C9962B', soft:'#F1E4C2', dark:'#85610F'},
+    // S = { players: [{ start, pawns: [{ state, d }] }] }
+    function ringOwner(S, ringIdx) {
+      for (let pi = 0; pi < S.players.length; pi++) {
+        const p = S.players[pi];
+        for (let k = 0; k < 4; k++) {
+          const pw = p.pawns[k];
+          if (pw.state === 'track' && (p.start + pw.d) % RING_LEN === ringIdx) return { pi, k };
+        }
+      }
+      return null;
+    }
+
+    // Waar komt pion k van speler pi uit met worp r? null = kan niet.
+    function target(S, pi, k, r) {
+      const p = S.players[pi], pw = p.pawns[k];
+      if (pw.state === 'base') {
+        if (r !== 6) return null;
+        const occ = ringOwner(S, p.start);
+        if (occ && occ.pi === pi) return null;
+        return { d: 0, capture: occ };
+      }
+      const raw = pw.d + r;
+      const td = raw <= LANE_END ? raw : 2 * LANE_END - raw;   // voorbij het laatste vakje: terugtellen
+      if (td < 0) return null;
+      if (td < RING_LEN) {
+        if (pw.state === 'home') return null;                   // terug de ring op kan niet
+        const occ = ringOwner(S, (p.start + td) % RING_LEN);
+        if (occ && occ.pi === pi) return null;
+        return { d: td, capture: occ };
+      }
+      for (let j = 0; j < 4; j++) {
+        if (j !== k && p.pawns[j].state === 'home' && p.pawns[j].d === td) return null;
+      }
+      if (pw.state === 'home' && td <= pw.d) return null;   // in de kleurlaan alleen vooruit
+      return { d: td, capture: null };
+    }
+
+    // Pionnen die met worp r mogen. Regels: met een 6 en pionnen in huis moet je er een uitzetten;
+    // staat je verse pion nog op het startvak terwijl er pionnen in huis zijn, dan moet die eerst weg.
+    function movable(S, pi, r) {
+      const p = S.players[pi];
+      const ok = [0, 1, 2, 3].filter(k => target(S, pi, k, r));
+      if (r === 6) {
+        const outs = ok.filter(k => p.pawns[k].state === 'base');
+        if (outs.length) return [outs[0]];
+      }
+      const inBase = p.pawns.some(pw => pw.state === 'base');
+      if (inBase) {
+        const onStart = ok.find(k => p.pawns[k].state === 'track' && p.pawns[k].d === 0);
+        if (onStart !== undefined) return [onStart];
+      }
+      return ok;
+    }
+
+    function apply(S, pi, k, t) {
+      if (t.capture) {
+        const c = S.players[t.capture.pi].pawns[t.capture.k];
+        c.state = 'base'; c.d = 0;
+      }
+      const pw = S.players[pi].pawns[k];
+      pw.d = t.d;
+      pw.state = t.d >= RING_LEN ? 'home' : 'track';
+    }
+
+    const finished = (p) => p.pawns.every(pw => pw.state === 'home');
+
+    // Drie keer gooien mag als je met 1 t/m 5 niets kunt: alles in huis of klem in de kleurlaan.
+    function threeTries(S, pi) {
+      for (let r = 1; r <= 5; r++) if (movable(S, pi, r).length) return false;
+      return true;
+    }
+
+    const progress = (p) => p.pawns.reduce((a, pw) => a + (pw.state === 'base' ? 0 : pw.d + 1), 0);
+
+    // Claude kiest een pion. Afwegingen: binnenkomen, slaan (vooral een ver gevorderde pion),
+    // niet in het bereik van een tegenstander gaan staan, en een bedreigde pion in veiligheid brengen.
+    function danger(S, pi, ringIdx) {
+      let risk = 0;
+      for (let qi = 0; qi < S.players.length; qi++) {
+        if (qi === pi || S.players[qi].done) continue;
+        const q = S.players[qi];
+        for (const pw of q.pawns) {
+          if (pw.state !== 'track') continue;
+          const pos = (q.start + pw.d) % RING_LEN;
+          const dist = (ringIdx - pos + RING_LEN) % RING_LEN;
+          if (dist >= 1 && dist <= 6 && pw.d + dist < RING_LEN) risk += dist === 6 ? 1.2 : 1;
+        }
+        // een pion in huis kan het startvak van die speler bereiken
+        if (ringIdx === q.start && q.pawns.some(pw => pw.state === 'base')) risk += 1;
+      }
+      return risk;
+    }
+
+    function aiChoose(S, pi, r, list) {
+      if (list.length === 1) return list[0];
+      const p = S.players[pi];
+      let best = list[0], bestScore = -Infinity;
+      for (const k of list) {
+        const pw = p.pawns[k];
+        const t = target(S, pi, k, r);
+        let score = 0;
+        if (pw.state === 'base') score += 50;
+        if (t.capture) {
+          const victim = S.players[t.capture.pi].pawns[t.capture.k];
+          score += 60 + victim.d;
+        }
+        if (t.d >= RING_LEN && pw.state !== 'home') score += 70 + (t.d - RING_LEN) * 4;
+        else if (pw.state === 'home') score += (t.d - pw.d) * 3;
+        if (pw.state === 'track') score += danger(S, pi, (p.start + pw.d) % RING_LEN) * 25;
+        if (t.d < RING_LEN) score -= danger(S, pi, (p.start + t.d) % RING_LEN) * 28;
+        score += (pw.state === 'track' ? pw.d : 0) * 0.3;
+        score += Math.random() * 3;
+        if (score > bestScore) { bestScore = score; best = k; }
+      }
+      return best;
+    }
+
+    return { RING_LEN, LANE_END, ringOwner, target, movable, apply, finished, threeTries, progress, aiChoose };
+  })();
+
+  // ---------- uitleg modal ----------
+  const overlay = $('modalOverlay');
+  $('btnUitleg').addEventListener('click', () => overlay.classList.add('open'));
+  $('modalClose').addEventListener('click', () => overlay.classList.remove('open'));
+  $('modalBtnStart').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+
+  // ---------- bord en kleuren ----------
+  const RING = [[4,4],[4,3],[4,2],[4,1],[4,0],[5,0],[6,0],[6,1],[6,2],[6,3],[6,4],[7,4],[8,4],[9,4],[10,4],[10,5],[10,6],[9,6],[8,6],[7,6],[6,6],[6,7],[6,8],[6,9],[6,10],[5,10],[4,10],[4,9],[4,8],[4,7],[4,6],[3,6],[2,6],[1,6],[0,6],[0,5],[0,4],[1,4],[2,4],[3,4]];
+  const DEFS = {
+    cyaan:    { label: 'Cyaan',    start: 6,  home: [[5,1],[5,2],[5,3],[5,4]], base: [[8,1],[9,1],[8,2],[9,2]], color: '#00DCEB', dark: '#0097A7', soft: '#CCFBFF' },
+    navy:     { label: 'Navy',     start: 16, home: [[9,5],[8,5],[7,5],[6,5]], base: [[8,8],[9,8],[8,9],[9,9]], color: '#2B3766', dark: '#13192B', soft: '#D4D9EC' },
+    bordeaux: { label: 'Bordeaux', start: 26, home: [[5,9],[5,8],[5,7],[5,6]], base: [[1,8],[2,8],[1,9],[2,9]], color: '#9A2740', dark: '#5C0F22', soft: '#F0D6DC' },
+    oker:     { label: 'Oker',     start: 36, home: [[1,5],[2,5],[3,5],[4,5]], base: [[1,1],[2,1],[1,2],[2,2]], color: '#D9A441', dark: '#8F6512', soft: '#F6E8C8' }
   };
-  const ORDER={2:['blue','bordeaux'],3:['blue','mint','bordeaux'],4:['blue','mint','bordeaux','oker']};
+  const ORDER = { 2: ['cyaan', 'bordeaux'], 3: ['cyaan', 'navy', 'bordeaux'], 4: ['cyaan', 'navy', 'bordeaux', 'oker'] };
+  const AI = '__claude__';
+  const CELL = 44, PAD = 18, SVGNS = 'http://www.w3.org/2000/svg';
+  const xy = (c, r) => [PAD + c * CELL + CELL / 2, PAD + r * CELL + CELL / 2];
+  const el = (tag, attrs) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const CELL=44, PAD=18, SVGNS='http://www.w3.org/2000/svg';
-  const xy=(c,r)=>[PAD+c*CELL+CELL/2, PAD+r*CELL+CELL/2];
-  const el=(tag,attrs)=>{const e=document.createElementNS(SVGNS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;};
+  // ---------- setup ----------
+  let cfg = { count: 4, places: 'volgorde', dice: 'app', extreme: false, values: [] };
+  const toggle = (id, attr, val) => $(id).querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset[attr] === String(val)));
 
-  let cfg={count:4, names:{}, extreme:false, mode:'dice'};
-  let G=null;
-
-  /* ---------- SETUP UI ---------- */
-  function renderPlayersCfg(){
-    const wrap=$('playersCfg'); wrap.innerHTML='';
-    ORDER[cfg.count].forEach((key,i)=>{
-      const d=DEFS[key];
-      const row=document.createElement('div'); row.className='pl-row';
-      const def=cfg.names[key]||('Speler '+(i+1));
-      row.innerHTML=`<div class="pl-dot" style="background:${d.color}"></div>
-        <span class="pl-tag">${d.label}</span>
-        <input type="text" maxlength="16" value="${def}" data-key="${key}" placeholder="Speler ${i+1}">`;
-      wrap.appendChild(row);
-    });
-    wrap.querySelectorAll('input').forEach(inp=>{inp.addEventListener('input',e=>{cfg.names[e.target.dataset.key]=e.target.value;});});
-  }
-  $('seg').addEventListener('click',e=>{
-    const b=e.target.closest('button'); if(!b)return;
-    cfg.count=+b.dataset.n;
-    [...$('seg').children].forEach(x=>x.classList.toggle('active',x===b));
-    renderPlayersCfg();
-  });
-  $('modeSeg').addEventListener('click',e=>{
-    const b=e.target.closest('button'); if(!b)return;
-    cfg.mode=b.dataset.mode;
-    [...$('modeSeg').children].forEach(x=>x.classList.toggle('active',x===b));
-    $('modeNote').textContent = cfg.mode==='dice'
-      ? 'De app dobbelt én bewaakt de regels. Klik op een oplichtende pion om te zetten.'
-      : 'Jij rolt met je eigen dobbelsteen. Tik een pion aan; de geldige vakjes lichten op met het aantal ogen dat je nodig hebt.';
-    $('extremeToggle').style.display = cfg.mode==='dice' ? 'flex' : 'none';
-  });
-  $('extremeToggle').addEventListener('click',()=>{cfg.extreme=!cfg.extreme;$('extremeToggle').classList.toggle('on',cfg.extreme);});
-  renderPlayersCfg();
-
-  /* ---------- HELP ---------- */
-  $('btnHelp').addEventListener('click',()=>$('helpOverlay').classList.add('show'));
-  $('helpClose').addEventListener('click',()=>$('helpOverlay').classList.remove('show'));
-  $('helpOverlay').addEventListener('click',e=>{if(e.target===$('helpOverlay'))$('helpOverlay').classList.remove('show');});
-
-  /* ---------- START / RESET ---------- */
-  $('startBtn').addEventListener('click',startGame);
-  $('btnReset').addEventListener('click',backToSetup);
-  $('winSetup').addEventListener('click',()=>{$('winOverlay').classList.remove('show');backToSetup();});
-  $('winAgain').addEventListener('click',()=>{$('winOverlay').classList.remove('show');startGame();});
-
-  function backToSetup(){
-    $('game').style.display='none';
-    $('setup').style.display='block';
-    document.querySelector('.hero').style.display='block';
-  }
-
-  function startGame(){
-    const keys=ORDER[cfg.count];
-    const players=keys.map((key,i)=>{
-      const d=DEFS[key];
-      const name=(cfg.names[key]&&cfg.names[key].trim())||('Speler '+(i+1));
-      const pawns=[0,1,2,3].map(idx=>({id:key+idx, pkey:key, idx, state:'base', d:0}));
-      return {key,name,def:d,pawns};
-    });
-    G={players, cur:0, phase:'roll', roll:0, sixStreak:0, mustNew:null, movable:[], busy:false, manual:(cfg.mode==='manual'), sel:null};
-    $('setup').style.display='none';
-    document.querySelector('.hero').style.display='none';
-    $('game').style.display='block';
-    $('dieWrap').style.display = G.manual?'none':'flex';
-    $('manualNext').style.display = G.manual?'inline-block':'none';
-    buildBoard(); renderScore(); renderPawns();
-    updateTurnBar(G.manual?'Rol je eigen dobbelsteen en verzet een pion.':'Klik op Dobbel om te beginnen.');
-    setDie(0);
-  }
-
-  /* ---------- helpers ---------- */
-  const cp=()=>G.players[G.cur];
-  const allPawns=()=>G.players.flatMap(p=>p.pawns);
-  const playerOf=pkey=>G.players.find(p=>p.key===pkey);
-
-  function pawnAtRing(ringIdx){
-    for(const p of allPawns()){
-      if(p.state==='track' && p.d<=39 && (DEFS[p.pkey].start+p.d)%40===ringIdx) return p;
+  function renderSetup() {
+    const keys = ORDER[cfg.count];
+    for (let i = 1; i <= 4; i++) {
+      const key = keys[i - 1];
+      $(`seat${i}`).hidden = !key;
+      if (key) {
+        $(`seatDot${i}`).style.background = DEFS[key].color;
+        $(`seatLabel${i}`).textContent = `/ Speler ${i}, ${DEFS[key].label.toLowerCase()} /`;
+      }
     }
-    return null;
+    toggle('countToggle', 'n', cfg.count);
+    toggle('placesToggle', 'places', cfg.places);
+    toggle('diceToggle', 'dice', cfg.dice);
+    toggle('extremeToggle', 'extreme', cfg.extreme ? 1 : 0);
+    $('placesField').hidden = cfg.count === 2;
+    $('placesNote').textContent = cfg.places === 'volgorde'
+      ? 'Na de winnaar spelen de anderen door om plek 2, 3 en 4. Iedere plek telt mee.'
+      : 'Het potje stopt zodra de eerste binnen is. De rest deelt plek 2.';
+    $('diceNote').innerHTML = cfg.dice === 'app'
+      ? 'De app dobbelt en bewaakt de regels. Deze potjes tellen mee voor de ranglijst.'
+      : 'Je gooit met een echte dobbelsteen en tikt de zetten zelf aan. <strong>Telt niet mee voor de ranglijst</strong>, en Claude kan dan niet meedoen.';
+    $('extremeField').hidden = cfg.dice !== 'app';
+    $('setupError').textContent = '';
   }
-  function homeOccupant(pkey,d){
-    for(const p of playerOf(pkey).pawns){ if(p.state==='home' && p.d===d) return p; }
-    return null;
+  $('countToggle').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { cfg.count = +b.dataset.n; renderSetup(); } });
+  $('placesToggle').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { cfg.places = b.dataset.places; renderSetup(); } });
+  $('diceToggle').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { cfg.dice = b.dataset.dice; renderSetup(); } });
+  $('extremeToggle').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { cfg.extreme = b.dataset.extreme === '1'; renderSetup(); } });
+
+  $('btnStart').addEventListener('click', () => {
+    const values = Array.from({ length: cfg.count }, (_, i) => hall.picker.chosen(i + 1));
+    let err = hall.picker.validateMany(values);
+    if (!err && values.every(v => v === AI)) err = 'Kies minstens één speler; Claude kan niet alleen spelen.';
+    if (!err && cfg.dice === 'zelf' && values.includes(AI)) err = 'Claude kan alleen meedoen als de app dobbelt.';
+    if (err) { $('setupError').textContent = err; return; }
+    $('setupError').textContent = '';
+    cfg.values = values;
+    hall.picker.adopt(values);
+    hall.last.set({ players: values, count: cfg.count, places: cfg.places, dice: cfg.dice, extreme: cfg.extreme });
+    startGame();
+  });
+
+  // ---------- spelstatus ----------
+  let G = null;
+  let gen = 0;   // verhoogd bij elk nieuw potje: oude timers vervallen
+  const later = (fn, ms) => { const my = gen; setTimeout(() => { if (my === gen) fn(); }, reduceMotion ? Math.min(ms, 150) : ms); };
+
+  const seatName = (i) => G.seats[i].name;
+  const isAI = (i) => G.seats[i].ai;
+  const player = (i) => G.S.players[i];
+  const winnerOnly = () => cfg.count === 2 || cfg.places === 'winnaar';
+
+  function makeSeats(values) {
+    const keys = ORDER[values.length];
+    const aiCount = values.filter(v => v === AI).length;
+    return values.map((v, i) => ({
+      key: keys[i],
+      ai: v === AI,
+      name: v === AI ? (aiCount > 1 ? `Claude · ${DEFS[keys[i]].label}` : 'Claude') : v
+    }));
   }
-  // resultaat van een zet, of null als onmogelijk
-  function computeTarget(pawn,r){
-    const def=DEFS[pawn.pkey];
-    if(pawn.state==='base'){
-      if(r!==6) return null;
-      const occ=pawnAtRing(def.start);
-      if(occ){ if(occ.pkey===pawn.pkey) return null; return {d:0,capture:occ}; }
-      return {d:0,capture:null};
-    }
-    let newD=pawn.d+r, td;
-    if(newD<=43) td=newD; else td=86-newD;          // na vakje 4 tel je terug (bounce)
-    if(td<0) return null;
-    if(td<=39){
-      const occ=pawnAtRing((def.start+td)%40);
-      if(occ){ if(occ.pkey===pawn.pkey) return null; return {d:td,capture:occ}; }
-      return {d:td,capture:null};
+
+  function startGame(saved) {
+    gen++;
+    document.querySelector('.app').classList.add('playing');
+    $('setup').style.display = 'none';
+    $('game').classList.add('active');
+    $('winner').classList.remove('active');
+    hall.resetRecord();
+    if (saved) {
+      G = saved;
     } else {
-      const own=homeOccupant(pawn.pkey,td);          // bezet eindstraat-vakje = niet beschikbaar
-      if(own && own!==pawn) return null;
-      return {d:td,capture:null};
+      const seats = makeSeats(cfg.values);
+      G = {
+        seats,
+        S: { players: seats.map(s => ({ start: DEFS[s.key].start, done: false, pawns: [0, 1, 2, 3].map(() => ({ state: 'base', d: 0 })) })) },
+        cur: Math.floor(Math.random() * seats.length),
+        phase: 'roll', roll: 0, sixes: 0, tries: 3, movable: [],
+        places: seats.map(() => null), nextPlace: 1,
+        manual: cfg.dice === 'zelf', sel: null, opening: true
+      };
     }
-  }
-  function computeMovable(r){
-    const me=cp();
-    let list=me.pawns.filter(p=>computeTarget(p,r));
-    if(r===6){ const outs=list.filter(p=>p.state==='base'); if(outs.length>0){ G.mustNew=null; return [outs[0]]; } }
-    if(G.mustNew && r!==6){ const m=me.pawns.find(p=>p.id===G.mustNew); if(m && computeTarget(m,r)) return [m]; }
-    return list;
-  }
-  function hasWon(player){ return player.pawns.every(p=>p.state==='home' && p.d>=40); }
-
-  /* ---------- DICE ---------- */
-  const FACES={1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
-  function setDie(v){
-    const die=$('die'); die.innerHTML='';
-    for(let i=0;i<9;i++){const s=document.createElement('span');die.appendChild(s);}
-    if(v>=1){FACES[v].forEach(i=>die.children[i].classList.add('on'));}
-  }
-  $('rollBtn').addEventListener('click',rollDice);
-  function rollDice(){
-    if(G.manual||G.phase!=='roll'||G.busy) return;
-    G.busy=true; $('rollBtn').disabled=true;
-    const die=$('die'); die.classList.add('rolling');
-    let ticks=0;
-    const iv=setInterval(()=>{ setDie(1+Math.floor(Math.random()*6)); if(++ticks>8){clearInterval(iv);finishRoll();} },70);
-    function finishRoll(){
-      die.classList.remove('rolling');
-      const r=1+Math.floor(Math.random()*6);
-      setDie(r); G.roll=r;
-      if(r===6) G.sixStreak++;
-      if(cfg.extreme && r===6 && G.sixStreak>=3){
-        cp().pawns.forEach(p=>{p.state='base';p.d=0;});
-        renderPawns(); renderScore();
-        updateTurnBar('Drie keer 6! Alle pionnen terug naar het huis. ⚡');
-        G.busy=true; setTimeout(passTurn,1300); return;
-      }
-      const moves=computeMovable(r);
-      if(moves.length===0){
-        updateTurnBar(r===6?'Een 6, maar geen zet mogelijk.':'Geen zet mogelijk met een '+r+'.');
-        G.mustNew=null; setTimeout(passTurn,1100); return;
-      }
-      G.movable=moves.map(p=>p.id); G.phase='move'; G.busy=false; renderPawns();
-      if(moves.length===1){
-        updateTurnBar('Pion wordt automatisch gezet…'); G.busy=true;
-        setTimeout(()=>{ G.busy=false; doMove(moves[0]); },520);
-      } else updateTurnBar('Je gooide een '+r+'. Kies een pion.');
+    $('btnRoll').hidden = G.manual;
+    $('btnManualNext').hidden = !G.manual;
+    $('rulesHint').innerHTML = G.manual
+      ? '<span class="slash">/</span> Zelf dobbelen: telt niet mee voor de ranglijst <span class="slash">/</span>'
+      : '<span class="slash">/</span> Met een 6 mag je nog een keer <span class="slash">/</span>';
+    buildBoard();
+    setDie(G.roll || 0);
+    if (saved) {
+      if (G.phase === 'move') G.movable = MEJN.movable(G.S, G.cur, G.roll);
+      render(G.manual ? 'Gooi je eigen dobbelsteen en zet een pion.' : resumeMessage());
+      if (G.phase === 'move' && isAI(G.cur)) later(() => doMove(MEJN.aiChoose(G.S, G.cur, G.roll, G.movable)), 700);
+      else if (G.phase === 'roll' && isAI(G.cur)) later(rollDice, 700);
+    } else {
+      G.tries = MEJN.threeTries(G.S, G.cur) ? 3 : 1;
+      render(G.manual ? `${seatName(G.cur)} begint. Gooi je eigen dobbelsteen en zet een pion.`
+        : `${seatName(G.cur)} mag beginnen. Je hebt drie pogingen om een 6 te gooien.`);
+      saveProgress();
+      if (!G.manual && isAI(G.cur)) later(rollDice, 900);
     }
   }
 
-  /* ---------- ANIMATIE ---------- */
-  // de vakjes die de pion fysiek langsgaat (bounce na vakje 4)
-  function pathDs(startD,r){ let pos=startD,dir=1,seq=[]; for(let i=0;i<r;i++){ if(dir===1&&pos===43)dir=-1; pos+=dir; seq.push(pos);} return seq; }
-  function dToXY(pkey,d){ const def=DEFS[pkey]; if(d<=39){const c=RING[(def.start+d)%40];return xy(c[0],c[1]);} const c=def.home[d-40];return xy(c[0],c[1]); }
-  // vloeiende hip van vakje naar vakje via CSS-transform (schaalt mee met het bord)
-  function tweenT(grp,from,to,dur,hop,cb){
-    const t0=performance.now();
-    (function frame(now){
-      let p=Math.min(1,(now-t0)/dur);
-      const e=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
-      const x=from[0]+(to[0]-from[0])*e, y=from[1]+(to[1]-from[1])*e;
-      const lift=Math.sin(p*Math.PI)*hop;
-      grp.style.transform='translate('+x+'px,'+(y-lift)+'px)';
-      if(p<1) requestAnimationFrame(frame); else cb();
-    })(performance.now());
-  }
-  function animateMove(pawn,seq,opts,cb){
-    const grp=document.getElementById('pg-'+pawn.id); if(!grp||!seq||!seq.length){cb();return;}
-    grp.parentNode.appendChild(grp);
-    const start=pawnXY(pawn);
-    const deltas=seq.map(d=>{const c=dToXY(pawn.pkey,d);return [c[0]-start[0],c[1]-start[1]];});
-    let i=0,prev=[0,0];
-    (function next(){ if(i>=deltas.length){cb();return;} tweenT(grp,prev,deltas[i],opts.stepDur,opts.hop,()=>{prev=deltas[i];i++;next();}); })();
-  }
-  function animateCapture(captured,cb){
-    const grp=document.getElementById('pg-'+captured.id); if(!grp){cb();return;}
-    grp.parentNode.appendChild(grp);
-    const def=DEFS[captured.pkey];
-    const slot=Math.min(playerOf(captured.pkey).pawns.filter(p=>p.state==='base').length,3);
-    const dest=xy(def.base[slot][0],def.base[slot][1]);
-    const start=pawnXY(captured);
-    tweenT(grp,[0,0],[dest[0]-start[0],dest[1]-start[1]],340,16,cb);
+  function resumeMessage() {
+    if (G.phase === 'move') return `Je gooide een ${G.roll}. Kies een pion.`;
+    return 'Klik op Dobbel.';
   }
 
-  /* ---------- ZET (dobbelsteen-modus) ---------- */
-  function doMove(pawn){
-    if(G.manual||G.phase!=='move'||G.busy) return;
-    if(!G.movable.includes(pawn.id)) return;
-    const t=computeTarget(pawn,G.roll); if(!t) return;
-    G.busy=true; $('rollBtn').disabled=true;
-    const wasBase=(pawn.state==='base');
-    const seq = wasBase ? [0] : pathDs(pawn.d,G.roll);
-    const opts = wasBase ? {stepDur:300,hop:13} : {stepDur:170,hop:12};
-    G.movable=[]; renderPawns();
-    animateMove(pawn,seq,opts,()=>{
-      if(t.capture){ animateCapture(t.capture,()=>{ t.capture.state='base'; t.capture.d=0; commit(); }); }
-      else commit();
+  // ---------- weergave ----------
+  function render(msg) {
+    renderSeats();
+    renderPawns();
+    const me = G.seats[G.cur];
+    const d = DEFS[me.key];
+    const panel = $('playPanel');
+    panel.style.setProperty('--seat', d.color);
+    panel.style.setProperty('--seat-dark', d.dark);
+    $('playWho').textContent = G.phase === 'over' ? 'Potje voorbij' : me.name;
+    if (msg !== undefined) $('playMsg').textContent = msg;
+    const myTurn = !G.manual && G.phase === 'roll' && !isAI(G.cur);
+    $('btnRoll').disabled = !myTurn;
+    $('btnRoll').textContent = G.tries > 1 && G.phase === 'roll' && !isAI(G.cur) ? `Dobbel (${G.tries}×)` : 'Dobbel';
+    $('btnManualNext').disabled = G.phase === 'over' || G.phase === 'busy';
+  }
+
+  function renderSeats() {
+    const bar = $('seatsBar');
+    bar.style.setProperty('--n', G.seats.length);
+    bar.innerHTML = G.seats.map((s, i) => {
+      const p = player(i), d = DEFS[s.key];
+      const inLane = p.pawns.filter(pw => pw.state === 'home').length;
+      const pips = p.pawns.map((pw, k) => `<i class="${k < inLane ? 'in' : ''}"></i>`).join('');
+      const place = G.places[i] ? `<span class="place-badge">${G.places[i]}e</span>` : '';
+      const turn = G.phase !== 'over' && i === G.cur && !p.done;
+      return `<div class="seat-card${turn ? ' turn' : ''}${p.done ? ' done' : ''}" style="--seat:${d.color}">
+        <div class="seat-name">${esc(s.name)}</div>
+        <div class="seat-meta"><span class="seat-pips" aria-label="${inLane} van 4 binnen">${pips}</span>${inLane}/4 binnen${place}</div>
+      </div>`;
+    }).join('');
+  }
+
+  const FACES = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
+  function setDie(v) {
+    const die = $('die');
+    die.innerHTML = Array.from({ length: 9 }, (_, i) => `<span class="${v && FACES[v].includes(i) ? 'on' : ''}"></span>`).join('');
+    die.classList.toggle('empty', !v);
+  }
+
+  function buildBoard() {
+    const svg = $('board');
+    svg.innerHTML = '';
+    svg.appendChild(el('rect', { x: PAD + 4 * CELL, y: PAD, width: 3 * CELL, height: 11 * CELL, rx: 14, fill: '#fff', stroke: 'rgba(19,25,43,.08)' }));
+    svg.appendChild(el('rect', { x: PAD, y: PAD + 4 * CELL, width: 11 * CELL, height: 3 * CELL, rx: 14, fill: '#fff', stroke: 'rgba(19,25,43,.08)' }));
+    G.seats.forEach(s => {
+      const d = DEFS[s.key];
+      const cs = d.base.map(b => b[0]), rs = d.base.map(b => b[1]);
+      const pad = CELL * 0.4;
+      svg.appendChild(el('rect', {
+        x: PAD + Math.min(...cs) * CELL - pad, y: PAD + Math.min(...rs) * CELL - pad,
+        width: 2 * CELL + pad * 2, height: 2 * CELL + pad * 2, rx: 15, fill: d.soft, stroke: d.color, 'stroke-width': 1.5
+      }));
+      d.base.forEach(([c, r]) => { const [px, py] = xy(c, r); svg.appendChild(el('circle', { cx: px, cy: py, r: 13, fill: '#fff', stroke: d.color, 'stroke-width': 2 })); });
     });
-    function commit(){
-      const me=cp();
-      pawn.d=t.d; pawn.state=(t.d>=40)?'home':'track';
-      renderPawns(); renderScore();
-      let msg='';
-      if(wasBase) msg=me.name+' brengt een pion in het spel.';
-      else if(t.d>=40) msg=me.name+' zet een pion in de kleurlaan.';
-      else msg=me.name+' zet een pion '+G.roll+' vooruit.';
-      if(t.capture){ msg+=' '+playerOf(t.capture.pkey).name+' wordt geslagen!'; }
-      if(wasBase){ const baseLeft=me.pawns.filter(p=>p.state==='base').length; G.mustNew=baseLeft>0?pawn.id:null; }
-      else G.mustNew=null;
-      if(hasWon(me)){ updateTurnBar(msg); setTimeout(()=>showWin(me),500); return; }
-      const wasSix=(G.roll===6);
-      updateTurnBar(msg+(wasSix?' Gooi nog een keer!':''));
-      setTimeout(()=>{ if(wasSix){G.phase='roll';G.busy=false;$('rollBtn').disabled=false;renderPawns();} else passTurn(); },360);
-    }
-  }
-  function passTurn(){
-    G.sixStreak=0; G.mustNew=null; G.roll=0; G.movable=[];
-    G.cur=(G.cur+1)%G.players.length; G.phase='roll'; G.busy=false;
-    setDie(0); renderPawns(); renderScore();
-    updateTurnBar('Aan de beurt — klik op Dobbel.');
-    $('rollBtn').disabled=false;
+    RING.forEach(([c, r], idx) => {
+      const [px, py] = xy(c, r);
+      const owner = G.seats.find(s => DEFS[s.key].start === idx);
+      const d = owner && DEFS[owner.key];
+      svg.appendChild(el('circle', { cx: px, cy: py, r: 16, fill: d ? d.soft : '#F1F3F9', stroke: d ? d.color : 'rgba(19,25,43,.14)', 'stroke-width': d ? 2.5 : 1.4 }));
+    });
+    G.seats.forEach(s => {
+      const d = DEFS[s.key];
+      d.home.forEach(([c, r]) => { const [px, py] = xy(c, r); svg.appendChild(el('circle', { cx: px, cy: py, r: 15, fill: d.color, opacity: .3, stroke: d.color, 'stroke-width': 1.5 })); });
+    });
+    const [cx, cy] = xy(5, 5);
+    svg.appendChild(el('rect', { x: cx - 22, y: cy - 22, width: 44, height: 44, rx: 11, fill: '#13192B', transform: `rotate(45 ${cx} ${cy})` }));
+    const t = el('text', { x: cx, y: cy + 1, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#00F098', 'font-family': 'Montserrat, sans-serif', 'font-weight': '900', 'font-style': 'italic', 'font-size': '20' });
+    t.textContent = 'N';
+    svg.appendChild(t);
+    svg.appendChild(el('g', { id: 'pawnLayer' }));
   }
 
-  /* ---------- ZELF DOBBELEN (manual) ---------- */
-  $('manualNext').addEventListener('click',()=>{
-    if(!G||G.busy) return;
-    G.sel=null; G.cur=(G.cur+1)%G.players.length;
-    renderPawns(); renderScore(); updateTurnBar();
-  });
-  function selectManual(pawn){
-    if(G.busy) return;
-    G.sel = (G.sel===pawn.id) ? null : pawn.id;
+  function pawnXY(pi, k) {
+    const s = G.seats[pi], d = DEFS[s.key], pw = player(pi).pawns[k];
+    if (pw.state === 'base') {
+      const slot = player(pi).pawns.filter((x, j) => x.state === 'base' && j < k).length;
+      return xy(...d.base[slot]);
+    }
+    if (pw.d < 40) return xy(...RING[(d.start + pw.d) % 40]);
+    return xy(...d.home[pw.d - 40]);
+  }
+  const dToXY = (pi, dd) => { const d = DEFS[G.seats[pi].key]; return dd < 40 ? xy(...RING[(d.start + dd) % 40]) : xy(...d.home[dd - 40]); };
+
+  function renderPawns() {
+    const g = $('pawnLayer');
+    if (!g) return;
+    g.innerHTML = '';
+    const human = !G.manual && G.phase === 'move' && !isAI(G.cur);
+    G.seats.forEach((s, pi) => {
+      const d = DEFS[s.key];
+      player(pi).pawns.forEach((pw, k) => {
+        let [px, py] = pawnXY(pi, k);
+        const can = human && pi === G.cur && G.movable.includes(k);
+        const selectable = G.manual && G.phase !== 'over' && G.phase !== 'busy' && pi === G.cur;
+        const selected = G.manual && G.sel === k && pi === G.cur;
+        if (selected) py -= 4;
+        if (can || selected) {
+          const halo = el('circle', { cx: px, cy: py, r: 18, fill: 'none', stroke: can ? '#00C47D' : d.color, 'stroke-width': 3, opacity: .7 });
+          if (!reduceMotion) {
+            halo.appendChild(el('animate', { attributeName: 'r', values: '17;21;17', dur: '1.1s', repeatCount: 'indefinite' }));
+            halo.appendChild(el('animate', { attributeName: 'opacity', values: '.6;.2;.6', dur: '1.1s', repeatCount: 'indefinite' }));
+          }
+          g.appendChild(halo);
+        }
+        const grp = el('g', { id: `pg-${pi}-${k}`, class: 'pawn' + (can || selectable ? ' can' : '') });
+        grp.appendChild(el('circle', { cx: px, cy: py + 1.5, r: 12, fill: 'rgba(0,0,0,.18)' }));
+        grp.appendChild(el('circle', { cx: px, cy: py, r: 12, fill: d.color, stroke: d.dark, 'stroke-width': 2, class: 'pawn-body' }));
+        grp.appendChild(el('circle', { cx: px, cy: py - 3, r: 5, fill: 'rgba(255,255,255,.45)' }));
+        if (can || selectable) grp.appendChild(el('circle', { cx: px, cy: py, r: 21, fill: 'transparent' }));   // groter tikvlak
+        if (can || selectable) {
+          grp.setAttribute('tabindex', '0');
+          grp.setAttribute('role', 'button');
+          grp.setAttribute('aria-label', `Pion ${k + 1} van ${s.name}`);
+          const act = () => can ? doMove(k) : selectManual(k);
+          grp.addEventListener('click', act);
+          grp.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(); } });
+        }
+        g.appendChild(grp);
+      });
+    });
+    if (G.manual && G.sel !== null) renderManualTargets();
+  }
+
+  // ---------- animatie ----------
+  function pathDs(startD, r) {
+    let pos = startD, dir = 1;
+    const seq = [];
+    for (let i = 0; i < r; i++) { if (dir === 1 && pos === MEJN.LANE_END) dir = -1; pos += dir; seq.push(pos); }
+    return seq;
+  }
+  function tween(grp, from, to, dur, hop, cb) {
+    if (reduceMotion) { grp.style.transform = `translate(${to[0]}px,${to[1]}px)`; cb(); return; }
+    const t0 = performance.now();
+    (function frame(now) {
+      const p = Math.min(1, (now - t0) / dur);
+      const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      const x = from[0] + (to[0] - from[0]) * e, y = from[1] + (to[1] - from[1]) * e;
+      grp.style.transform = `translate(${x}px,${y - Math.sin(p * Math.PI) * hop}px)`;
+      if (p < 1) requestAnimationFrame(frame); else cb();
+    })(t0);
+  }
+  function animateMove(pi, k, seq, opts, cb) {
+    const grp = $(`pg-${pi}-${k}`);
+    if (!grp || !seq.length) { cb(); return; }
+    grp.parentNode.appendChild(grp);
+    const start = pawnXY(pi, k);
+    const deltas = seq.map(dd => { const c = dToXY(pi, dd); return [c[0] - start[0], c[1] - start[1]]; });
+    let i = 0, prev = [0, 0];
+    (function next() {
+      if (i >= deltas.length) { cb(); return; }
+      tween(grp, prev, deltas[i], opts.stepDur, opts.hop, () => { prev = deltas[i]; i++; next(); });
+    })();
+  }
+  function animateCapture(cap, cb) {
+    const grp = $(`pg-${cap.pi}-${cap.k}`);
+    if (!grp) { cb(); return; }
+    grp.parentNode.appendChild(grp);
+    const d = DEFS[G.seats[cap.pi].key];
+    const slot = Math.min(player(cap.pi).pawns.filter(pw => pw.state === 'base').length, 3);
+    const dest = xy(...d.base[slot]);
+    const start = pawnXY(cap.pi, cap.k);
+    tween(grp, [0, 0], [dest[0] - start[0], dest[1] - start[1]], 340, 16, cb);
+  }
+
+  // ---------- dobbelen ----------
+  const rnd6 = () => {
+    if (window.crypto && crypto.getRandomValues) {
+      const a = new Uint8Array(1);
+      do { crypto.getRandomValues(a); } while (a[0] >= 252);
+      return 1 + (a[0] % 6);
+    }
+    return 1 + Math.floor(Math.random() * 6);
+  };
+
+  $('btnRoll').addEventListener('click', () => { if (!isAI(G.cur)) rollDice(); });
+
+  function rollDice() {
+    if (!G || G.manual || G.phase !== 'roll') return;
+    G.phase = 'busy';
+    render();
+    const die = $('die');
+    die.classList.add('rolling');
+    let ticks = 0;
+    const my = gen;
+    const iv = setInterval(() => {
+      if (my !== gen) { clearInterval(iv); return; }
+      setDie(rnd6());
+      if (++ticks > (reduceMotion ? 1 : 7)) {
+        clearInterval(iv);
+        die.classList.remove('rolling');
+        afterRoll(rnd6());
+      }
+    }, 70);
+  }
+
+  function afterRoll(r) {
+    G.opening = false;
+    G.roll = r;
+    setDie(r);
+    const me = seatName(G.cur);
+    if (r === 6) G.sixes++;
+    if (cfg.extreme && r === 6 && G.sixes >= 3) {
+      player(G.cur).pawns.forEach(pw => { pw.state = 'base'; pw.d = 0; });
+      G.phase = 'busy';
+      render(`Drie keer 6! Alle pionnen van ${me} gaan terug naar huis. ⚡`);
+      later(passTurn, 1500);
+      return;
+    }
+    const list = MEJN.movable(G.S, G.cur, r);
+    if (!list.length) {
+      G.tries--;
+      if (r === 6 || G.tries > 0) {
+        G.phase = 'roll';
+        const left = Math.max(G.tries, 1);
+        render(r === 6 ? `Een 6, maar geen zet mogelijk. ${me} mag nog een keer.`
+          : `Geen 6. Nog ${left} ${left === 1 ? 'poging' : 'pogingen'}.`);
+        saveProgress();
+        if (isAI(G.cur)) later(rollDice, 700);
+        return;
+      }
+      G.phase = 'busy';
+      render(`Geen zet mogelijk met een ${r}.`);
+      later(passTurn, 1100);
+      return;
+    }
+    G.phase = 'move';
+    G.movable = list;
+    saveProgress();
+    if (isAI(G.cur)) {
+      render(`${me} gooit een ${r} en denkt na…`);
+      later(() => doMove(MEJN.aiChoose(G.S, G.cur, r, list)), 750);
+    } else if (list.length === 1) {
+      render(`Je gooide een ${r}. Er kan maar één pion, die gaat vanzelf.`);
+      later(() => doMove(list[0]), 600);
+    } else {
+      render(`Je gooide een ${r}. Kies een pion.`);
+      const first = document.querySelector('#pawnLayer .pawn.can');
+      if (first && document.activeElement === $('btnRoll')) first.focus();
+    }
+  }
+
+  // ---------- zetten ----------
+  function moveText(pi, wasBase, t, r) {
+    let msg = wasBase ? `${seatName(pi)} zet een pion op het bord.`
+      : t.d >= 40 ? `${seatName(pi)} zet een pion in de kleurlaan.` : `${seatName(pi)} zet een pion ${r} vooruit.`;
+    if (t.capture) msg += ` ${seatName(t.capture.pi)} wordt geslagen!`;
+    return msg;
+  }
+
+  function doMove(k) {
+    if (!G || G.phase !== 'move' || !G.movable.includes(k)) return;
+    const pi = G.cur, r = G.roll;
+    const t = MEJN.target(G.S, pi, k, r);
+    if (!t) return;
+    G.phase = 'busy';
+    G.movable = [];
+    render();
+    const pw = player(pi).pawns[k];
+    const wasBase = pw.state === 'base';
+    const seq = wasBase ? [0] : pathDs(pw.d, r);
+    const opts = wasBase ? { stepDur: 300, hop: 13 } : { stepDur: 165, hop: 12 };
+    const my = gen;
+    animateMove(pi, k, seq, opts, () => {
+      if (my !== gen) return;
+      const commit = () => {
+        if (my !== gen) return;
+        MEJN.apply(G.S, pi, k, t);
+        const msg = moveText(pi, wasBase, t, r);
+        if (MEJN.finished(player(pi)) && !player(pi).done) {
+          if (finishSeat(pi)) return;
+          render(`${msg} ${seatName(pi)} is binnen als ${G.places[pi]}e!`);
+          later(passTurn, 1200);
+          return;
+        }
+        if (r === 6) {
+          G.phase = 'roll';
+          G.tries = 1;
+          render(`${msg} Een 6: nog een keer gooien.`);
+          saveProgress();
+          if (isAI(pi)) later(rollDice, 800);
+          return;
+        }
+        render(msg);
+        later(passTurn, 450);
+      };
+      if (t.capture) animateCapture(t.capture, commit); else commit();
+    });
+  }
+
+  function passTurn() {
+    if (!G || G.phase === 'over') return;
+    const n = G.seats.length;
+    let next = G.cur;
+    for (let i = 1; i <= n; i++) {
+      const c = (G.cur + i) % n;
+      if (!player(c).done) { next = c; break; }
+    }
+    G.cur = next;
+    G.sixes = 0;
+    G.roll = 0;
+    G.movable = [];
+    G.sel = null;
+    G.phase = 'roll';
+    G.tries = G.manual ? 1 : (MEJN.threeTries(G.S, G.cur) ? 3 : 1);
+    setDie(0);
+    render(G.manual ? 'Gooi je eigen dobbelsteen en zet een pion.'
+      : G.tries > 1 ? 'Je mag drie keer gooien om een 6 te halen.' : 'Klik op Dobbel.');
+    saveProgress();
+    if (!G.manual && isAI(G.cur)) later(rollDice, 750);
+    else if (!G.manual && document.activeElement && document.activeElement.closest && document.activeElement.closest('#pawnLayer')) $('btnRoll').focus();
+  }
+
+  // Een speler is binnen. Geeft true terug als het potje daarmee klaar is.
+  function finishSeat(pi) {
+    player(pi).done = true;
+    G.places[pi] = G.nextPlace++;
+    const left = G.seats.map((_, i) => i).filter(i => !player(i).done);
+    if (winnerOnly()) {
+      left.forEach(i => { G.places[i] = 2; });
+    } else if (left.length === 1) {
+      G.places[left[0]] = G.nextPlace++;
+    } else if (left.every(isAI)) {
+      // Alleen Claude speelt nog: de volgorde tussen Claudes telt niet, dus meteen afronden.
+      left.sort((a, b) => MEJN.progress(player(b)) - MEJN.progress(player(a)))
+        .forEach(i => { G.places[i] = G.nextPlace++; });
+    } else {
+      return false;
+    }
+    finishGame();
+    return true;
+  }
+
+  function finishGame() {
+    G.phase = 'over';
+    clearProgress();
+    render('');
+    const order = G.seats.map((_, i) => i).sort((a, b) => G.places[a] - G.places[b]);
+    $('winnerName').textContent = `${seatName(order[0])} wint`;
+    $('winnerPlaces').innerHTML = order.map(i =>
+      `<li><span class="pl">${G.places[i]}.</span><span class="seat-dot" style="background:${DEFS[G.seats[i].key].color}"></span>${esc(seatName(i))}</li>`).join('');
+    $('winnerScore').textContent = G.manual ? 'Zelf gedobbeld: dit potje telt niet mee voor de ranglijst.' : '';
+    $('winner').classList.add('active');
+    if (!G.manual) {
+      hall.record({
+        id: hall.uuid(), t: Date.now(), variant: variantOf(),
+        players: G.seats.map(s => s.ai ? 'Claude' : s.name),
+        places: G.places.slice(),
+        ai: G.seats.map(s => s.ai)
+      });
+    }
+    setTimeout(() => $('winner').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' }), 100);
+  }
+
+  const variantOf = () => `${G.seats.length}p-${winnerOnly() ? 'winnaar' : 'volgorde'}` + (cfg.extreme ? '-extreem' : '');
+
+  // ---------- zelf dobbelen ----------
+  function selectManual(k) {
+    if (!G || G.phase === 'busy' || G.phase === 'over') return;
+    G.sel = G.sel === k ? null : k;
     renderPawns();
   }
-  function manualTargets(pawn){
-    if(pawn.state==='base'){
-      const t=computeTarget(pawn,6);                 // uit het huis mag alleen naar het startvak
-      return t ? [{ds:[6],d:t.d,capture:t.capture,fromBase:true}] : [];
+  function manualTargets(k) {
+    const pw = player(G.cur).pawns[k];
+    if (pw.state === 'base') {
+      const t = MEJN.target(G.S, G.cur, k, 6);
+      return t ? [{ ds: [6], ...t, fromBase: true }] : [];
     }
-    const map=new Map();
-    for(let r=1;r<=6;r++){                            // maximaal 6 vakjes vooruit
-      const t=computeTarget(pawn,r);
-      if(!t) continue;
-      if(map.has(t.d)) map.get(t.d).ds.push(r);       // meerdere worpen naar hetzelfde vakje (bv. 3/5)
-      else map.set(t.d,{ds:[r],d:t.d,capture:t.capture,fromBase:false});
+    const map = new Map();
+    for (let r = 1; r <= 6; r++) {
+      const t = MEJN.target(G.S, G.cur, k, r);
+      if (!t) continue;
+      if (map.has(t.d)) map.get(t.d).ds.push(r); else map.set(t.d, { ds: [r], ...t, fromBase: false });
     }
     return [...map.values()];
   }
-  function renderManualTargets(){
-    const g=$('pawnLayer');
-    const sel=allPawns().find(p=>p.id===G.sel); if(!sel) return;
-    const def=DEFS[sel.pkey];
-    manualTargets(sel).forEach(tg=>{
-      const c = tg.d<=39 ? RING[(def.start+tg.d)%40] : def.home[tg.d-40];
-      const [px,py]=xy(c[0],c[1]);
+  function renderManualTargets() {
+    const g = $('pawnLayer');
+    const d = DEFS[G.seats[G.cur].key];
+    manualTargets(G.sel).forEach(tg => {
+      const [px, py] = dToXY(G.cur, tg.d);
       const label = tg.fromBase ? '▶' : tg.ds.join('/');
-      const rad = label.length>1 ? 13 : 11;
-      const col = tg.capture ? '#CC3344' : def.color;
-      g.appendChild(el('circle',{cx:px,cy:py,r:rad,fill:col,opacity:.92,stroke:'#fff','stroke-width':1.5}));
-      const num=el('text',{x:px,y:py+1,'text-anchor':'middle','dominant-baseline':'central',fill:'#fff','font-family':'Bricolage Grotesque, sans-serif','font-weight':'800','font-size':label.length>1?'9':'11'});
-      num.textContent=label; g.appendChild(num);
-      const hit=el('circle',{cx:px,cy:py,r:18,fill:'transparent',style:'cursor:pointer'});
-      hit.addEventListener('click',()=>manualMove(sel,tg));
+      const col = tg.capture ? '#C62F4B' : d.color;
+      g.appendChild(el('circle', { cx: px, cy: py, r: label.length > 1 ? 13 : 11, fill: col, opacity: .92, stroke: '#fff', 'stroke-width': 1.5 }));
+      const num = el('text', { x: px, y: py + 1, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#fff', 'font-family': 'Montserrat, sans-serif', 'font-weight': '800', 'font-size': label.length > 1 ? '9' : '11' });
+      num.textContent = label;
+      g.appendChild(num);
+      const hit = el('circle', { cx: px, cy: py, r: 18, fill: 'transparent', style: 'cursor:pointer', tabindex: '0', role: 'button', 'aria-label': `Zet ${label}` });
+      const go = () => manualMove(G.sel, tg);
+      hit.addEventListener('click', go);
+      hit.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
       g.appendChild(hit);
     });
   }
-  function manualMove(pawn,tg){
-    if(G.busy) return;
-    G.busy=true; G.sel=null;
-    const steps=tg.ds[0];                              // aantal stappen om dit vakje te bereiken
-    const wasBase=(pawn.state==='base');
-    const seq = wasBase ? [0] : pathDs(pawn.d,steps);
-    const opts = wasBase ? {stepDur:300,hop:13} : {stepDur:170,hop:12};
-    renderPawns();
-    animateMove(pawn,seq,opts,()=>{
-      if(tg.capture){ animateCapture(tg.capture,()=>{ tg.capture.state='base'; tg.capture.d=0; commit(); }); }
-      else commit();
-    });
-    function commit(){
-      pawn.d=tg.d; pawn.state=(tg.d>=40)?'home':'track';
-      renderPawns(); renderScore();
-      const owner=playerOf(pawn.pkey);
-      let msg = wasBase ? owner.name+' brengt een pion in het spel.'
-              : (tg.d>=40 ? owner.name+' zet een pion in de kleurlaan.' : owner.name+' zet een pion vooruit.');
-      if(tg.capture) msg+=' '+playerOf(tg.capture.pkey).name+' wordt geslagen!';
-      if(hasWon(owner)){ updateTurnBar(msg); G.busy=false; setTimeout(()=>showWin(owner),300); return; }
-      G.busy=false;
-      updateTurnBar(msg+' Bij een 6 mag je nog eens — anders: volgende speler.');
-    }
-  }
-
-  /* ---------- WINNER ---------- */
-  function showWin(player){
-    $('winName').textContent=player.name;
-    $('winName').style.color=player.def.color;
-    $('winSub').textContent='Alle vier de pionnen veilig binnen. /Make it work/';
-    $('winOverlay').classList.add('show');
-    G.phase='over';
-  }
-
-  /* ---------- TURN BAR ---------- */
-  function updateTurnBar(msg){
-    const me=cp();
-    $('turnDot').style.background=me.def.color;
-    $('turnName').textContent=me.name;
-    $('turnName').style.color=me.def.color;
-    $('turnBar').style.borderLeftColor=me.def.color;
-    if(msg===undefined) msg = G.manual ? 'Rol je eigen dobbelsteen en verzet een pion.' : '';
-    $('turnMsg').textContent=msg||'';
-  }
-
-  /* ---------- SCOREBOARD ---------- */
-  function renderScore(){
-    const row=$('scoreRow'); row.innerHTML='';
-    G.players.forEach((p,i)=>{
-      const inHome = p.pawns.filter(x=>x.state==='home').length;
-      const chip=document.createElement('div');
-      chip.className='score-chip'+(i===G.cur?' active':'');
-      chip.innerHTML=`<div class="sdot" style="background:${p.def.color}"></div><div class="sname">${p.name}</div><div class="scount">${inHome}/4</div>`;
-      row.appendChild(chip);
+  function manualMove(k, tg) {
+    if (!G || G.phase === 'busy' || G.phase === 'over') return;
+    const pi = G.cur;
+    const pw = player(pi).pawns[k];
+    const wasBase = pw.state === 'base';
+    G.phase = 'busy';
+    G.sel = null;
+    render();
+    const seq = wasBase ? [0] : pathDs(pw.d, tg.ds[0]);
+    const my = gen;
+    animateMove(pi, k, seq, wasBase ? { stepDur: 300, hop: 13 } : { stepDur: 165, hop: 12 }, () => {
+      if (my !== gen) return;
+      const commit = () => {
+        if (my !== gen) return;
+        MEJN.apply(G.S, pi, k, tg);
+        const msg = moveText(pi, wasBase, tg, tg.ds[0]);
+        G.phase = 'roll';
+        if (MEJN.finished(player(pi)) && !player(pi).done) {
+          if (finishSeat(pi)) return;
+          render(`${msg} ${seatName(pi)} is binnen als ${G.places[pi]}e!`);
+          later(passTurn, 1200);
+          return;
+        }
+        render(`${msg} Bij een 6 mag je nog eens, anders: Volgende speler.`);
+        saveProgress();
+      };
+      if (tg.capture) animateCapture(tg.capture, commit); else commit();
     });
   }
+  $('btnManualNext').addEventListener('click', () => { if (G && G.manual && G.phase === 'roll') passTurn(); });
 
-  /* ---------- BOARD (statisch) ---------- */
-  function buildBoard(){
-    const svg=$('board'); svg.innerHTML='';
-    const armR=14;
-    svg.appendChild(el('rect',{x:PAD+4*CELL,y:PAD,width:3*CELL,height:11*CELL,rx:armR,fill:'#fff',stroke:'rgba(17,38,59,.07)'}));
-    svg.appendChild(el('rect',{x:PAD,y:PAD+4*CELL,width:11*CELL,height:3*CELL,rx:armR,fill:'#fff',stroke:'rgba(17,38,59,.07)'}));
-    G.players.forEach(p=>{
-      const cs=p.def.base.map(b=>b[0]), rs=p.def.base.map(b=>b[1]);
-      const minC=Math.min(...cs),maxC=Math.max(...cs),minR=Math.min(...rs),maxR=Math.max(...rs);
-      const pad=CELL*0.40;
-      const x=PAD+minC*CELL-pad, y=PAD+minR*CELL-pad;
-      const w=(maxC-minC+1)*CELL+pad*2, h=(maxR-minR+1)*CELL+pad*2;
-      svg.appendChild(el('rect',{x,y,width:w,height:h,rx:15,fill:p.def.soft,stroke:p.def.color,'stroke-width':1.5,opacity:.95}));
-      p.def.base.forEach(([c,r])=>{const [px,py]=xy(c,r);svg.appendChild(el('circle',{cx:px,cy:py,r:13,fill:'#fff',stroke:p.def.color,'stroke-width':2,opacity:.9}));});
-    });
-    RING.forEach(([c,r],idx)=>{
-      const [px,py]=xy(c,r);
-      const owner=G.players.find(pl=>pl.def.start===idx);
-      svg.appendChild(el('circle',{cx:px,cy:py,r:16,fill:owner?owner.def.soft:'#F4F7F9',stroke:owner?owner.def.color:'rgba(17,38,59,.12)','stroke-width':owner?2.5:1.4}));
-    });
-    G.players.forEach(p=>{p.def.home.forEach(([c,r])=>{const [px,py]=xy(c,r);svg.appendChild(el('circle',{cx:px,cy:py,r:15,fill:p.def.color,opacity:.32,stroke:p.def.color,'stroke-width':1.5}));});});
-    const [cx,cy]=xy(5,5);
-    svg.appendChild(el('rect',{x:cx-22,y:cy-22,width:44,height:44,rx:11,fill:'#11263B',transform:`rotate(45 ${cx} ${cy})`}));
-    const t=el('text',{x:cx,y:cy+1,'text-anchor':'middle','dominant-baseline':'central',fill:'#15B49A','font-family':'Bricolage Grotesque, sans-serif','font-weight':'800','font-size':'20'});
-    t.textContent='N'; svg.appendChild(t);
-    svg.appendChild(el('g',{id:'pawnLayer'}));
+  // ---------- knoppen ----------
+  $('btnAgain').addEventListener('click', () => startGame());
+  $('btnRestart').addEventListener('click', () => {
+    if (G && G.phase !== 'over' && !G.opening && !confirm('Dit potje opnieuw beginnen? Het telt dan niet mee.')) return;
+    startGame();
+  });
+  $('btnNew').addEventListener('click', () => {
+    gen++;
+    document.querySelector('.app').classList.remove('playing');
+    $('game').classList.remove('active');
+    $('setup').style.display = 'flex';
+    $('winner').classList.remove('active');
+    refreshResume();
+  });
+
+  // ---------- lopend potje bewaren ----------
+  const PROGRESS_KEY = 'ns-mejn:progress:v1';
+  const PROGRESS_MAX_AGE = 24 * 60 * 60 * 1000;
+
+  function saveProgress() {
+    if (!G || G.phase === 'over' || G.phase === 'busy') return;
+    try {
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify({
+        t: Date.now(), cfg: { ...cfg },
+        G: { seats: G.seats, S: G.S, cur: G.cur, phase: G.phase, roll: G.roll, sixes: G.sixes, tries: G.tries,
+          places: G.places, nextPlace: G.nextPlace, manual: G.manual, opening: G.opening }
+      }));
+    } catch (e) { /* opslag niet beschikbaar: dan maar zonder hervatten */ }
   }
-
-  function pawnXY(pawn){
-    const def=DEFS[pawn.pkey];
-    if(pawn.state==='base'){
-      const baseList=playerOf(pawn.pkey).pawns.filter(p=>p.state==='base');
-      const slot=baseList.indexOf(pawn); const c=def.base[slot<0?pawn.idx:slot]; return xy(c[0],c[1]);
-    }
-    if(pawn.d<=39){ const c=RING[(def.start+pawn.d)%40]; return xy(c[0],c[1]); }
-    const c=def.home[pawn.d-40]; return xy(c[0],c[1]);
+  function clearProgress() {
+    try { localStorage.removeItem(PROGRESS_KEY); } catch (e) { /* niets te doen */ }
   }
-
-  function renderPawns(){
-    const g=$('pawnLayer'); if(!g)return; g.innerHTML='';
-    const curPlayer=cp();
-    allPawns().forEach(pawn=>{
-      const def=DEFS[pawn.pkey];
-      let [px,py]=pawnXY(pawn);
-      const movable = !G.manual && G.phase==='move' && G.movable.includes(pawn.id);
-      const selectable = G.manual && curPlayer.pawns.includes(pawn);
-      const selected = G.manual && G.sel===pawn.id;
-      if(selected) py-=4;
-      if(movable||selected){
-        const halo=el('circle',{cx:px,cy:py,r:18,fill:'none',stroke:def.color,'stroke-width':2.5,opacity:.55});
-        halo.appendChild(el('animate',{attributeName:'r',values:'17;21;17',dur:'1.1s',repeatCount:'indefinite'}));
-        halo.appendChild(el('animate',{attributeName:'opacity',values:'.6;.2;.6',dur:'1.1s',repeatCount:'indefinite'}));
-        g.appendChild(halo);
+  function loadProgress() {
+    try {
+      const p = JSON.parse(localStorage.getItem(PROGRESS_KEY));
+      if (!p || !p.cfg || !p.G || Date.now() - p.t > PROGRESS_MAX_AGE) return null;
+      const g = p.G, n = g.seats && g.seats.length;
+      if (![2, 3, 4].includes(n) || !g.S || !Array.isArray(g.S.players) || g.S.players.length !== n) return null;
+      if (!g.seats.every((s, i) => s.key === ORDER[n][i] && typeof s.name === 'string' && s.name)) return null;
+      if (!Number.isInteger(g.cur) || g.cur < 0 || g.cur >= n || !['roll', 'move'].includes(g.phase)) return null;
+      if (g.phase === 'move' && !(g.roll >= 1 && g.roll <= 6)) return null;
+      const ring = new Set();
+      for (let i = 0; i < n; i++) {
+        const pl = g.S.players[i];
+        if (pl.start !== DEFS[g.seats[i].key].start || !Array.isArray(pl.pawns) || pl.pawns.length !== 4) return null;
+        const lane = new Set();
+        for (const pw of pl.pawns) {
+          if (pw.state === 'base') { if (pw.d !== 0) return null; }
+          else if (pw.state === 'track') {
+            if (!(Number.isInteger(pw.d) && pw.d >= 0 && pw.d < 40)) return null;
+            const sq = (pl.start + pw.d) % 40;
+            if (ring.has(sq)) return null;
+            ring.add(sq);
+          } else if (pw.state === 'home') {
+            if (!(Number.isInteger(pw.d) && pw.d >= 40 && pw.d <= 43) || lane.has(pw.d)) return null;
+            lane.add(pw.d);
+          } else return null;
+        }
+        if (pl.done !== MEJN.finished(pl)) return null;
       }
-      const grp=el('g',{id:'pg-'+pawn.id,class:'pawn'});
-      grp.appendChild(el('circle',{cx:px,cy:py+(selected?3:1.5),r:12,fill:'rgba(0,0,0,.18)'}));
-      grp.appendChild(el('circle',{cx:px,cy:py,r:12,fill:def.color,stroke:def.dark,'stroke-width':2}));
-      grp.appendChild(el('circle',{cx:px,cy:py-3,r:5,fill:'rgba(255,255,255,.45)'}));
-      if(movable){ grp.style.cursor='pointer'; grp.addEventListener('click',()=>doMove(pawn)); }
-      else if(selectable){ grp.style.cursor='pointer'; grp.addEventListener('click',()=>selectManual(pawn)); }
-      g.appendChild(grp);
-    });
-    if(G.manual && G.sel) renderManualTargets();
+      if (g.S.players[g.cur].done) return null;
+      return p;
+    } catch (e) {
+      return null;
+    }
   }
+  function refreshResume() {
+    const p = loadProgress();
+    $('resumeBox').hidden = !p;
+    if (!p) return;
+    const names = p.G.seats.map(s => s.name).join(', ');
+    $('resumeText').textContent = `${names}` + (p.G.manual ? ', zelf dobbelen' : '');
+  }
+  $('btnResume').addEventListener('click', () => {
+    const p = loadProgress();
+    if (!p) { refreshResume(); return; }
+    Object.assign(cfg, p.cfg);
+    startGame({ ...p.G, movable: [], sel: null });
+  });
+  $('btnDiscard').addEventListener('click', () => { clearProgress(); refreshResume(); });
 
+  // ---------- centrale ranglijst (gedeelde code in speelhal.js) ----------
+  const GAME_ID = 'mens-erger-je-niet';
+  const hall = Speelhal.create({
+    prefix: 'ns-mejn', version: 'v1', resultName: 'results',
+    table: 'multi_results', query: `game=eq.${GAME_ID}`,
+    multi: true, slots: 4,
+    pickerExtra: [{ value: AI, label: '🤖 Claude (computer)' }],
+    toRow: (e) => ({
+      id: e.id, game: GAME_ID, variant: e.variant, played_at: new Date(e.t).toISOString(),
+      players: e.players, places: e.places, ai: e.ai
+    }),
+    fromRow: (r) => ({
+      id: r.id, t: Date.parse(r.played_at), variant: r.variant || '',
+      players: r.players || [], places: r.places || [], ai: r.ai || []
+    }),
+    units: { one: 'potje', many: 'potjes', this: 'Dit potje' },
+    filters: {
+      all: () => true,
+      duo: (e) => e.players.length === 2,
+      groep: (e) => e.players.length > 2
+    },
+    emptyText: (f) => f === 'duo'
+      ? 'Nog geen potjes met z\'n tweeën. Speel er een uit en het verschijnt hier.'
+      : f === 'groep'
+        ? 'Nog geen potjes met 3 of 4 spelers. Speel er een uit en het verschijnt hier.'
+        : 'Nog geen potjes gespeeld. Speel een potje uit en het verschijnt hier.',
+    itemMeta: (e) => `${e.players.length} spelers` +
+      (/winnaar/.test(e.variant) && e.players.length > 2 ? ', alleen winnaar' : '') +
+      (/extreem/.test(e.variant) ? ', extreem' : '')
+  });
+
+  // ---------- start ----------
+  (function init() {
+    const last = hall.last.get();
+    if ([2, 3, 4].includes(last.count)) cfg.count = last.count;
+    if (['volgorde', 'winnaar'].includes(last.places)) cfg.places = last.places;
+    if (['app', 'zelf'].includes(last.dice)) cfg.dice = last.dice;
+    cfg.extreme = !!last.extreme;
+    hall.init(last);
+    renderSetup();
+    refreshResume();
+  })();
 })();
 </script>
 </body>
