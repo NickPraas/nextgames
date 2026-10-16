@@ -79,6 +79,11 @@
       emptyText(filter)    tekst als er (in dit filter) nog niets gespeeld is
       itemMeta(e)          tweede regel bij een uitslag in de lijst (HTML, zelf escapen)
       reserved             { names: ['claude'], message: '...' } (optioneel)
+      slots                aantal spelerskeuzes p1select..pNselect (optioneel; standaard 2)
+      pickerExtra          extra keuzes bovenaan elk lijstje, bv. [{ value: '__claude__', label: 'Claude' }]
+      multi                true voor potjes met 2 tot 4 spelers en een eindvolgorde. Een uitslag is dan
+                           { id, t, players: [...], places: [1, 2, ...], ai: [false, true, ...], ... }.
+                           Elo telt elk paar spelers als een onderling duel; twee keer Claude telt niet.
   */
   function create(opts) {
     const k = (name) => `${opts.prefix}:${name}:${opts.version}`;
@@ -94,8 +99,17 @@
     const labelOf = opts.labelOf || ((e, side) => side === 1 ? e.p1 : e.p2);
     const weightOf = opts.weightOf || (() => 1);
     const reserved = opts.reserved || { names: ['claude'], message: 'De naam Claude is gereserveerd. Kies een andere naam.' };
-    const isValid = (e) => e && typeof e.id === 'string' && typeof e.p1 === 'string' && typeof e.p2 === 'string' &&
-      Number.isFinite(e.s1) && Number.isFinite(e.s2) && Number.isFinite(e.t);
+    const MULTI = !!opts.multi;
+    const SLOTS = Array.from({ length: opts.slots || 2 }, (_, i) => i + 1);
+    const extras = opts.pickerExtra || [];
+    const isExtra = (v) => extras.some(x => x.value === v);
+    const AI_LABEL = opts.aiLabel || 'Claude';
+    const isValid = MULTI
+      ? (e) => e && typeof e.id === 'string' && Number.isFinite(e.t) && Array.isArray(e.players) &&
+          Array.isArray(e.places) && e.players.length >= 2 && e.players.length === e.places.length
+      : (e) => e && typeof e.id === 'string' && typeof e.p1 === 'string' && typeof e.p2 === 'string' &&
+          Number.isFinite(e.s1) && Number.isFinite(e.s2) && Number.isFinite(e.t);
+    const labelAt = (e, i) => (e.ai && e.ai[i]) ? AI_LABEL : e.players[i];
 
     // ---------- opslag van uitslagen ----------
     function insertResult(e) {
@@ -223,19 +237,20 @@
     const picker = {
       render() {
         playerNames = sortedNames(knownPlayers.concat([...sessionNames.values()]));
-        [1, 2].forEach(n => {
+        SLOTS.forEach(n => {
           const sel = $(`p${n}select`);
           if (!sel) return;
           const keep = sel.value;
           sel.innerHTML = '<option value="">Kies een speler</option>' +
+            extras.map(x => `<option value="${esc(x.value)}">${esc(x.label)}</option>`).join('') +
             playerNames.map(x => `<option value="${esc(x)}">${esc(x)}</option>`).join('') +
             `<option value="${NEW}">+ Andere naam typen</option>`;
-          if (keep === NEW || playerNames.includes(keep)) sel.value = keep;
+          if (keep === NEW || isExtra(keep) || playerNames.includes(keep)) sel.value = keep;
         });
       },
       select(n, name) {
         const sel = $(`p${n}select`), inp = $(`p${n}name`);
-        if (sel && name && playerNames.includes(name)) {
+        if (sel && name && (playerNames.includes(name) || isExtra(name))) {
           sel.value = name;
           inp.hidden = true;
           inp.value = '';
@@ -243,7 +258,7 @@
       },
       chosen(n) {
         const sel = $(`p${n}select`);
-        if (sel.value !== NEW) return sel.value;
+        if (sel.value !== NEW) return sel.value;   // ook een extra keuze, bv. '__claude__'
         const typed = cleanName($(`p${n}name`).value);
         return playerNames.find(x => keyOf(x) === keyOf(typed)) || typed;
       },
@@ -258,9 +273,24 @@
         if (reserved.names.includes(keyOf(p1)) || (!solo && reserved.names.includes(keyOf(p2)))) return reserved.message;
         return '';
       },
+      // Voor meer dan twee spelers. values: gekozen waarde per plek (naam of extra keuze).
+      validateMany(values) {
+        const typing = (n) => $(`p${n}select`).value === NEW;
+        const seen = new Set();
+        for (let i = 0; i < values.length; i++) {
+          const v = values[i];
+          if (isExtra(v)) continue;
+          if (!v) return typing(i + 1) ? `Typ een naam voor speler ${i + 1}.` : `Kies speler ${i + 1}, of typ een andere naam.`;
+          if (reserved.names.includes(keyOf(v))) return reserved.message;
+          if (seen.has(keyOf(v))) return `${v} staat er twee keer in. Kies verschillende spelers.`;
+          seen.add(keyOf(v));
+        }
+        return '';
+      },
       // Getypte namen direct in de lijst zetten; ze worden centraal opgeslagen na een afgeronde uitslag.
       adopt(names) {
         names.forEach(n => {
+          if (!n || isExtra(n)) return;
           if (!playerNames.some(x => keyOf(x) === keyOf(n))) sessionNames.set(keyOf(n), n);
         });
         picker.render();
@@ -272,7 +302,7 @@
       }
     };
 
-    [1, 2].forEach(n => {
+    SLOTS.forEach(n => {
       const sel = $(`p${n}select`), inp = $(`p${n}name`);
       if (!sel) return;
       sel.addEventListener('change', () => {
@@ -295,6 +325,7 @@
     const kFactor = (p) => p.played < 10 ? 40 : 24;
 
     function computeStats(list) {
+      if (MULTI) return computeStatsMulti(list);
       const map = new Map();
       const get = (name) => {
         const kk = keyOf(name);
@@ -316,6 +347,53 @@
         if (sa === 1) { a.won++; b.lost++; }
         else if (sa === 0) { b.won++; a.lost++; }
         else { a.tied++; b.tied++; }
+      });
+      const byRating = (x, y) => y.rating - x.rating || y.played - x.played || x.name.localeCompare(y.name, 'nl');
+      const all = [...map.values()];
+      return all.filter(p => p.played >= PROVISIONAL).sort(byRating)
+        .concat(all.filter(p => p.played < PROVISIONAL).sort(byRating));
+    }
+
+    // Meer spelers: elk paar is een duel (hogere plek wint, gelijke plek is half). De K-factor
+    // wordt verdeeld over het aantal tegenstanders, zodat een potje met vier niet vier keer zo zwaar telt.
+    function computeStatsMulti(list) {
+      const map = new Map();
+      const get = (name) => {
+        const kk = keyOf(name);
+        if (!map.has(kk)) map.set(kk, { name, played: 0, won: 0, lost: 0, tied: 0, firsts: 0, placeSum: 0, rating: ELO_START, delta: 0 });
+        const p = map.get(kk);
+        p.name = name;
+        return p;
+      };
+      list.slice().sort((a, b) => a.t - b.t).forEach(e => {
+        const seats = e.players.map((_, i) => ({ p: get(labelAt(e, i)), place: e.places[i], ai: !!(e.ai && e.ai[i]) }));
+        const n = seats.length;
+        const delta = new Map();
+        for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+          const A = seats[i], B = seats[j];
+          if (A.p === B.p) continue;            // Claude tegen Claude telt niet
+          const sa = A.place < B.place ? 1 : A.place > B.place ? 0 : 0.5;
+          const ea = 1 / (1 + Math.pow(10, (B.p.rating - A.p.rating) / 400));
+          const w = weightOf(e) / (n - 1);
+          delta.set(A.p, (delta.get(A.p) || 0) + kFactor(A.p) * w * (sa - ea));
+          delta.set(B.p, (delta.get(B.p) || 0) + kFactor(B.p) * w * ((1 - sa) - (1 - ea)));
+        }
+        const counted = new Set();
+        seats.forEach(st => {
+          if (counted.has(st.p)) {
+            if (st.place < st.p._best) st.p._best = st.place;
+            return;
+          }
+          counted.add(st.p);
+          st.p._best = st.place;
+        });
+        counted.forEach(p => {
+          const d = delta.get(p) || 0;
+          p.rating += d; p.delta = d;
+          p.played++;
+          p.placeSum += p._best;
+          if (p._best === 1) { p.firsts++; p.won++; }
+        });
       });
       const byRating = (x, y) => y.rating - x.rating || y.played - x.played || x.name.localeCompare(y.name, 'nl');
       const all = [...map.values()];
@@ -352,7 +430,8 @@
       const res = await addResult(e);
 
       // Nieuwe namen pas na een afgeronde uitslag opslaan, zo blijven tikfouten uit de lijst.
-      for (const n of [e.p1, e.p2]) {
+      const humans = MULTI ? e.players.filter((_, i) => !(e.ai && e.ai[i])) : [e.p1, e.p2];
+      for (const n of humans) {
         const kk = keyOf(n);
         if (sessionNames.has(kk)) {
           await addPlayer(n);
@@ -371,6 +450,16 @@
         rec.textContent = `${units.this} kon niet worden opgeslagen.`;
       } else if (!all) {
         rec.textContent = 'Opgeslagen in de ranglijst.';
+      } else if (MULTI) {
+        const stats = computeStats(all);
+        const names = [...new Set(e.players.map((_, i) => labelAt(e, i)))];
+        const fmt = (name) => {
+          const p = stats.find(x => keyOf(x.name) === keyOf(name));
+          if (!p) return name;
+          const d = Math.round(p.delta);
+          return `${name} ${Math.round(p.rating)} (${d >= 0 ? '+' : '−'}${Math.abs(d)})`;
+        };
+        rec.textContent = `Opgeslagen in de ranglijst.\nRating: ${names.map(fmt).join(', ')}`;
       } else {
         const n1 = labelOf(e, 1), n2 = labelOf(e, 2);
         const h = headToHead(all, n1, n2);
@@ -453,7 +542,9 @@
           <div class="rank-pos">${provisional ? '' : pos}</div>
           <div>
             <div class="rank-name">${esc(p.name)}</div>
-            <div class="rank-meta">${p.played} ${p.played === 1 ? units.one : units.many}: ${parts.join(', ')}</div>
+            <div class="rank-meta">${p.played} ${p.played === 1 ? units.one : units.many}: ${MULTI
+            ? `${p.firsts}× eerste, gemiddeld plek ${(p.placeSum / p.played).toFixed(1).replace('.', ',')}`
+            : parts.join(', ')}</div>
           </div>
           <div class="rank-wins"><span class="num">${Math.round(p.rating)}</span><span class="lbl" title="Verschil door de laatste uitslag">${delta}</span></div>
         </li>`;
@@ -468,6 +559,19 @@
       const sorted = list.slice().sort((a, b) => b.t - a.t);
       const shown = showAll ? sorted : sorted.slice(0, LIST_PAGE);
       gameList.innerHTML = shown.map(e => {
+        if (MULTI) {
+          const order = e.players.map((_, i) => i).sort((a, b) => e.places[a] - e.places[b]);
+          const line = order.map(i => {
+            const nm = esc(labelAt(e, i));
+            return `${e.places[i]}. ${e.places[i] === 1 ? `<strong>${nm}</strong>` : nm}`;
+          }).join(' · ');
+          return `<li class="game-row">
+          <div>
+            <div class="game-match">${line}</div>
+            <div class="game-meta">${esc(fmtDate.format(new Date(e.t)))}, ${opts.itemMeta(e)}${e.pending ? ', wacht op verzending' : ''}</div>
+          </div>
+        </li>`;
+        }
         const n1 = e.s1 > e.s2 ? `<strong>${esc(e.p1)}</strong>` : esc(e.p1);
         const n2 = e.s2 > e.s1 ? `<strong>${esc(e.p2)}</strong>` : esc(e.p2);
         const meta = opts.itemMeta(e) + (e.pending ? ', wacht op verzending' : '');
@@ -516,13 +620,14 @@
 
     // ---------- start ----------
     function init(lastChoice) {
-      picker.render();
-      picker.select(1, lastChoice.p1);
-      picker.select(2, lastChoice.p2);
-      picker.load().then(() => {
-        if (!$('p1select').value) picker.select(1, lastChoice.p1);
-        if ($('p2select') && !$('p2select').value) picker.select(2, lastChoice.p2);
+      const vals = Array.isArray(lastChoice.players) ? lastChoice.players : [lastChoice.p1, lastChoice.p2];
+      const restore = () => SLOTS.forEach((n, i) => {
+        const sel = $(`p${n}select`);
+        if (sel && !sel.value) picker.select(n, vals[i]);
       });
+      picker.render();
+      restore();
+      picker.load().then(restore);
       flushPending().catch(() => {});
     }
 
