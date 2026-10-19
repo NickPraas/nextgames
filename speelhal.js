@@ -474,7 +474,8 @@
           const d = Math.round(p.delta);
           return `${name} ${Math.round(p.rating)} (${d >= 0 ? '+' : '−'}${Math.abs(d)})`;
         };
-        rec.textContent = `${line1}\nRating: ${fmt(n1)}, ${fmt(n2)}`;
+        const parts = [fmt(n1), fmt(n2)].filter(Boolean);
+        rec.textContent = parts.length ? `${line1}\nRating: ${parts.join(', ')}` : line1;
       }
     }
 
@@ -592,21 +593,46 @@
       }
     }
 
-    const statsOverlay = $('statsOverlay');
-    function openStats() {
-      showAll = false;
-      $('statsStatus').textContent = '';
-      statsOverlay.classList.add('open');
-      loadStats();
+    // De ranglijst is een eigen scherm op dezelfde pagina (#ranglijst), zodat een lopend
+    // potje gewoon doorloopt en de terugknop van de browser terug naar het spel gaat.
+    const HASH = '#ranglijst';
+    let pushedHash = false;
+    function syncView() {
+      const on = location.hash === HASH;
+      const was = document.body.classList.contains('stats-open');
+      document.body.classList.toggle('stats-open', on);
+      if (on && !was) {
+        showAll = false;
+        $('statsStatus').textContent = '';
+        window.scrollTo(0, 0);
+        loadStats();
+        const back = $('statsClose');
+        if (back) back.focus({ preventScroll: true });
+      } else if (!on && was) {
+        window.scrollTo(0, 0);
+      }
     }
-    function closeStats() { statsOverlay.classList.remove('open'); }
+    function openStats() {
+      if (location.hash === HASH) { syncView(); return; }
+      pushedHash = true;
+      location.hash = HASH;
+    }
+    function closeStats() {
+      if (location.hash !== HASH) return;
+      if (pushedHash) { pushedHash = false; history.back(); return; }
+      history.replaceState(null, '', location.pathname + location.search);
+      syncView();
+    }
+    window.addEventListener('hashchange', syncView);
 
     $('btnStats').addEventListener('click', openStats);
     $('winnerStatsBtn').addEventListener('click', openStats);
     $('statsClose').addEventListener('click', closeStats);
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape' && document.body.classList.contains('stats-open') &&
+          !document.querySelector('.modal-overlay.open')) closeStats();
+    });
     $('btnRefresh').addEventListener('click', () => { $('statsStatus').textContent = ''; loadStats(); });
-    statsOverlay.addEventListener('click', (ev) => { if (ev.target === statsOverlay) closeStats(); });
-    document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeStats(); });
     $('statsFilter').addEventListener('click', (ev) => {
       const btn = ev.target.closest('button');
       if (!btn) return;
@@ -629,9 +655,10 @@
       restore();
       picker.load().then(restore);
       flushPending().catch(() => {});
+      syncView();   // direct openen bij een link naar spel.html#ranglijst
     }
 
-    return { picker, last, record, resetRecord, openStats, init, uuid, esc, keyOf };
+    return { picker, last, record, resetRecord, openStats, closeStats, init, uuid, esc, keyOf };
   }
 
   window.Speelhal = { create, REMOTE, esc, keyOf, uuid };
