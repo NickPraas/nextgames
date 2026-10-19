@@ -3,165 +3,214 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0B1424">
 <title>Speelhal — Next Standard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="speelhal.css?v=2026-10-19">
 <style>
-  body { display: block; padding: 0; background: var(--paper-2); }
-  .hub-hero { padding: 40px 64px 88px; display: flex; flex-direction: column; gap: 112px; }
-  .hub-hero-top { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-  .hub-kicker { font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.68); }
-  .hub-intro { max-width: 1040px; display: flex; flex-direction: column; gap: 28px; }
-  .hub-hero .eyebrow { color: var(--accent); }
+  html, body { background: var(--ink); }
+  body { display: block; padding: 0; color: #fff; }
+  .hub { min-height: 100vh; min-height: 100dvh; padding: 36px 64px 48px; display: flex; }
+  .hub-inner { width: 100%; max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; }
+
+  .hub-top { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .hub-kicker { font-size: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(255,255,255,0.72); }
+
+  .hub-hero { margin-top: clamp(28px, 5vh, 64px); display: flex; align-items: flex-start; justify-content: space-between; gap: 32px 64px; }
+  .hub-intro { max-width: 860px; display: flex; flex-direction: column; gap: 22px; }
+  .hub-hero .eyebrow { color: rgba(255,255,255,0.9); }
   .hub-title {
     font-family: var(--font-display); font-weight: 800; color: #fff;
-    font-size: clamp(48px, 7vw, 96px); line-height: 0.96; letter-spacing: -0.035em; text-wrap: balance;
+    font-size: clamp(44px, 5.2vw, 80px); line-height: 0.98; letter-spacing: -0.035em; text-wrap: balance;
   }
   .hub-title span { color: var(--accent); }
-  .hub-lead { max-width: 680px; font-size: 20px; line-height: 1.5; color: rgba(255,255,255,0.86); }
+  .hub-lead { max-width: 620px; font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.86); }
 
-  .hub-main { padding: 64px; display: flex; flex-direction: column; gap: 32px; max-width: 1440px; margin: 0 auto; }
-  .hub-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; }
-  .hub-head h2 { font-family: var(--font-display); font-weight: 800; font-size: 44px; letter-spacing: -0.02em; }
-  .hub-head h2::after { content: '.'; color: var(--accent-strong); }
-  .hub-head span { font-size: 15px; font-weight: 500; color: var(--muted); }
-
-  .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 24px; }
-  .hub-card {
-    background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 32px; display: flex; flex-direction: column; gap: 14px;
-    transition: box-shadow .2s, transform .2s;
+  /* ranglijst als losse verwijzing */
+  .hub-rank {
+    width: 320px; flex: none;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--line-on-dark); border-radius: var(--radius);
+    padding: 20px 24px; display: flex; flex-direction: column; gap: 8px;
   }
-  .hub-card:hover { box-shadow: 0 24px 60px -36px rgba(11,20,36,0.35); transform: translateY(-2px); }
-  .hub-num { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); }
-  .hub-card h3 { font-family: var(--font-display); font-weight: 800; font-size: 30px; line-height: 1.05; letter-spacing: -0.015em; }
-  .hub-card h3::after { content: '.'; color: var(--accent-strong); }
-  .hub-card p { font-size: 16px; line-height: 1.5; color: var(--ink-soft); }
-  .hub-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: auto; padding-top: 10px; }
-  .hub-tags span { font-size: 13px; font-weight: 600; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; }
-  .hub-play {
-    align-self: flex-start; margin-top: 8px; background: var(--ink); color: #fff; text-decoration: none;
-    font-weight: 700; font-size: 15px; padding: 13px 22px; border-radius: var(--radius-sm);
-    display: inline-flex; gap: 10px; align-items: center; transition: background .15s;
-  }
-  .hub-play span { color: var(--accent); transition: transform .18s; }
-  .hub-play:hover { background: var(--ink-2); }
-  .hub-play:hover span { transform: translateX(4px); }
-  /* hele kaart klikbaar via de knop */
-  .hub-card { position: relative; }
-  .hub-card .hub-play::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
-
-  .hub-rank { background: var(--ink); color: #fff; border-color: var(--ink); }
-  .hub-rank:hover { transform: none; box-shadow: none; }
-  .hub-rank .hub-num { color: var(--accent); }
-  .hub-rank h3::after { content: '?'; color: var(--accent); }
-  .hub-rank p { color: rgba(255,255,255,0.78); }
-  .hub-rank ul { list-style: none; display: flex; flex-direction: column; margin-top: auto; border-top: 1px solid var(--line-on-dark); }
-  .hub-rank li a {
-    display: flex; justify-content: space-between; align-items: center; gap: 12px;
-    padding: 12px 2px; border-bottom: 1px solid var(--line-on-dark);
+  .hub-rank-label { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .hub-rank h2 { font-family: var(--font-display); font-weight: 800; font-size: 26px; letter-spacing: -0.015em; line-height: 1.1; }
+  .hub-rank h2 span { color: var(--accent); }
+  .hub-rank ul { list-style: none; margin-top: 6px; border-top: 1px solid var(--line-on-dark); }
+  .hub-rank li + li { border-top: 1px solid var(--line-on-dark); }
+  .hub-rank a {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0;
     color: #fff; text-decoration: none; font-weight: 700; font-size: 15px;
   }
-  .hub-rank li a span { color: var(--accent); transition: transform .18s; }
-  .hub-rank li a:hover { color: var(--accent); }
-  .hub-rank li a:hover span { transform: translateX(4px); }
+  .hub-rank a span { color: var(--accent); transition: transform .18s; }
+  .hub-rank a:hover { color: var(--accent); }
+  .hub-rank a:hover span { transform: translateX(4px); }
 
-  .hub-foot { padding: 28px 64px 40px; max-width: 1440px; margin: 0 auto; }
+  /* spellen */
+  .hub-games { margin-top: auto; padding-top: 40px; display: flex; flex-direction: column; gap: 14px; }
+  .hub-games-head { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 24px; flex-wrap: wrap; }
+  .hub-games-head h2 { font-family: var(--font-display); font-weight: 800; font-size: 24px; letter-spacing: -0.015em; }
+  .hub-games-head h2::after { content: '.'; color: var(--accent); }
+  .hub-games-head span { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.72); }
 
-  @media (max-width: 640px) {
-    .hub-hero { padding: 24px 16px 56px; gap: 64px; }
-    .hub-hero .ns-logo { width: 104px; height: 26px; }
+  .hub-grid { list-style: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
+  .hub-card {
+    height: 100%; background: var(--paper); color: var(--ink); text-decoration: none;
+    border-radius: var(--radius); padding: 18px; display: flex; flex-direction: column; gap: 10px;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .hub-card:hover { transform: translateY(-4px); box-shadow: 0 24px 48px -24px rgba(0,0,0,0.6); }
+  .hub-card:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .hub-icon { height: 76px; border-radius: 14px; background: var(--paper-2); display: grid; place-items: center; }
+  .hub-icon svg { width: 80px; height: 60px; display: block; }
+  .hub-num { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-ink); }
+  .hub-name { font-family: var(--font-display); font-size: 22px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.1; }
+  .hub-name::after { content: '.'; color: var(--accent-strong); }
+  .hub-desc { font-size: 14px; line-height: 1.45; color: var(--ink-soft); }
+  .hub-go { margin-top: auto; display: flex; align-items: center; justify-content: space-between; font-size: 15px; font-weight: 700; }
+  .hub-go i {
+    font-style: normal; width: 36px; height: 36px; border-radius: 10px; background: var(--ink); color: var(--accent);
+    display: grid; place-items: center; transition: transform .18s;
+  }
+  .hub-card:hover .hub-go i { transform: translateX(3px); }
+
+  /* lage schermen (laptops): alles compacter zodat het op één scherm blijft */
+  @media (min-width: 641px) and (max-height: 860px) {
+    .hub { padding-top: 26px; padding-bottom: 30px; }
+    .hub-hero { margin-top: 26px; }
+    .hub-intro { gap: 16px; }
+    .hub-title { font-size: clamp(44px, 4.6vw, 64px); }
     .hub-lead { font-size: 17px; }
-    .hub-main { padding: 40px 16px; gap: 24px; }
-    .hub-head h2 { font-size: 34px; }
-    .hub-card { padding: 24px; }
-    .hub-card h3 { font-size: 26px; }
-    .hub-foot { padding: 24px 16px 32px; }
+    .hub-rank { padding: 16px 22px; gap: 4px; }
+    .hub-rank h2 { font-size: 22px; }
+    .hub-rank a { padding: 6px 0; font-size: 14px; }
+    .hub-games { padding-top: 24px; gap: 12px; }
+    .hub-card { padding: 16px; gap: 8px; }
+    .hub-icon { height: 60px; }
+    .hub-icon svg { width: 64px; height: 48px; }
+    .hub-name { font-size: 20px; }
+  }
+  @media (min-width: 641px) and (max-height: 740px) {
+    .hub-icon { height: 48px; }
+    .hub-icon svg { width: 52px; height: 39px; }
+    .hub-desc { font-size: 13px; }
+    .hub-go i { width: 32px; height: 32px; }
+  }
+
+  /* tussenmaten */
+  @media (max-width: 1180px) {
+    .hub { padding: 32px 40px 40px; }
+    .hub-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .hub-hero { flex-direction: column; }
+    .hub-rank { width: 100%; max-width: 560px; }
+  }
+
+  /* telefoon: donkere achtergrond loopt door, kaarten compact onder elkaar */
+  @media (max-width: 640px) {
+    .hub { padding: 22px 16px 32px; background-size: 170% auto; background-position: left top; }
+    .hub-top .ns-logo { width: 104px; height: 26px; }
+    .hub-kicker { font-size: 12px; }
+    .hub-hero { margin-top: 36px; gap: 28px; }
+    .hub-intro { gap: 16px; }
+    .hub-title { font-size: clamp(38px, 11vw, 48px); }
+    .hub-lead { font-size: 16px; }
+    .hub-games { margin-top: 36px; padding-top: 0; }
+    .hub-grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .hub-card {
+      display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; grid-template-rows: auto auto auto;
+      column-gap: 14px; row-gap: 2px; align-items: center; padding: 14px;
+    }
+    .hub-icon { grid-row: 1 / span 3; height: 64px; border-radius: 12px; }
+    .hub-icon svg { width: 52px; height: 40px; }
+    .hub-num { grid-column: 2; font-size: 11px; }
+    .hub-name { grid-column: 2; font-size: 19px; }
+    .hub-desc { grid-column: 2; font-size: 13px; }
+    .hub-go { grid-column: 3; grid-row: 1 / span 3; margin: 0; }
+    .hub-go b { display: none; }
+    .hub-rank { padding: 18px 20px; }
+    /* op de telefoon eerst de spellen, daarna de ranglijst */
+    .hub-hero { display: contents; }
+    .hub-intro { margin-top: 36px; order: 1; }
+    .hub-games { order: 2; }
+    .hub-rank { order: 3; margin-top: 28px; max-width: none; }
   }
 </style>
 </head>
 <body>
-<header class="hub-hero gloed">
-  <div class="hub-hero-top">
-    <span class="hub-kicker">Speelhal · Pauzespellen</span>
-    <span class="ns-logo on-dark" role="img" aria-label="Next Standard"></span>
-  </div>
-  <div class="hub-intro">
-    <div class="eyebrow">Voor in de pauze</div>
-    <h1 class="hub-title">Pauze, maar dan op z'n <span>Next Standard.</span></h1>
-    <p class="hub-lead">Vijf spellen voor tussendoor. Speel tegen een collega of tegen Claude, en kijk wie er bovenaan de ranglijst staat.</p>
-  </div>
-</header>
+<div class="hub gloed">
+  <div class="hub-inner">
+    <header class="hub-top">
+      <span class="hub-kicker">Speelhal · Pauzespellen</span>
+      <span class="ns-logo on-dark" role="img" aria-label="Next Standard"></span>
+    </header>
 
-<main class="hub-main">
-  <div class="hub-head">
-    <h2>Kies een spel</h2>
-    <span>Alle potjes tellen mee voor de ranglijst</span>
-  </div>
+    <section class="hub-hero">
+      <div class="hub-intro">
+        <div class="eyebrow">Voor in de pauze</div>
+        <h1 class="hub-title">Pauze, maar dan op z'n <span>Next Standard.</span></h1>
+        <p class="hub-lead">Vijf spellen voor tussendoor. Speel tegen een collega of tegen Claude, en kijk wie er bovenaan de ranglijst staat.</p>
+      </div>
 
-  <div class="hub-grid">
-    <article class="hub-card">
-      <div class="hub-num">01 · Bordspel</div>
-      <h3>Mens erger je niet</h3>
-      <p>De klassieker met pionnen, zessen en net dat ene beetje pech. Met 2 tot 4 collega's aan één scherm, Claude vult lege plekken.</p>
-      <div class="hub-tags"><span>2 tot 4 spelers</span><span>Claude vult aan</span></div>
-      <a class="hub-play" href="mensergerjeniet.html">Spelen <span>→</span></a>
-    </article>
+      <nav class="hub-rank" aria-label="Ranglijsten">
+        <div class="hub-rank-label">Ranglijst</div>
+        <h2>Wie is de baas<span>?</span></h2>
+        <ul>
+          <li><a href="mensergerjeniet.html#ranglijst">Mens erger je niet <span>→</span></a></li>
+          <li><a href="kamertjeverhuren.html#ranglijst">Kamertje verhuren <span>→</span></a></li>
+          <li><a href="vieropeenrij.html#ranglijst">Vier op een rij <span>→</span></a></li>
+          <li><a href="boterkaaseieren.html#ranglijst">Boter, kaas en eieren <span>→</span></a></li>
+          <li><a href="backgammon.html#ranglijst">Backgammon <span>→</span></a></li>
+        </ul>
+      </nav>
+    </section>
 
-    <article class="hub-card">
-      <div class="hub-num">02 · Puzzelspel</div>
-      <h3>Kamertje verhuren</h3>
-      <p>Trek lijntjes, claim vakjes en pas op voor de dubbele kruis. Tegen een collega of tegen Claude.</p>
-      <div class="hub-tags"><span>2 spelers</span><span>Tegen Claude</span></div>
-      <a class="hub-play" href="kamertjeverhuren.html">Spelen <span>→</span></a>
-    </article>
-
-    <article class="hub-card">
-      <div class="hub-num">03 · Strategie</div>
-      <h3>Vier op een rij</h3>
-      <p>Laat schijven zakken en maak als eerste vier op een rij. Tegen een collega of tegen Claude op drie niveaus.</p>
-      <div class="hub-tags"><span>2 spelers</span><span>Tegen Claude</span></div>
-      <a class="hub-play" href="vieropeenrij.html">Spelen <span>→</span></a>
-    </article>
-
-    <article class="hub-card">
-      <div class="hub-num">04 · Klassieker</div>
-      <h3>Boter, kaas en eieren</h3>
-      <p>Klassiek of verdwijnend, in een reeks tegen een collega. Wie wint de reeks?</p>
-      <div class="hub-tags"><span>2 spelers</span><span>Reeksen</span></div>
-      <a class="hub-play" href="boterkaaseieren.html">Spelen <span>→</span></a>
-    </article>
-
-    <article class="hub-card">
-      <div class="hub-num">05 · Bordspel</div>
-      <h3>Backgammon</h3>
-      <p>Dobbelen, slaan en als eerste thuis zijn. Een los potje of een match tot 3, 5 of 7 punten.</p>
-      <div class="hub-tags"><span>2 spelers</span><span>Matches</span></div>
-      <a class="hub-play" href="backgammon.html">Spelen <span>→</span></a>
-    </article>
-
-    <article class="hub-card hub-rank">
-      <div class="hub-num">Ranglijst</div>
-      <h3>Wie is de baas</h3>
-      <p>Elk spel houdt een eigen Elo-ranglijst bij, met dezelfde collega's. Winnen van een sterkere tegenstander levert meer op.</p>
-      <ul>
-        <li><a href="mensergerjeniet.html#ranglijst">Mens erger je niet <span>→</span></a></li>
-        <li><a href="kamertjeverhuren.html#ranglijst">Kamertje verhuren <span>→</span></a></li>
-        <li><a href="vieropeenrij.html#ranglijst">Vier op een rij <span>→</span></a></li>
-        <li><a href="boterkaaseieren.html#ranglijst">Boter, kaas en eieren <span>→</span></a></li>
-        <li><a href="backgammon.html#ranglijst">Backgammon <span>→</span></a></li>
+    <section class="hub-games" aria-labelledby="gamesTitle">
+      <div class="hub-games-head">
+        <h2 id="gamesTitle">Kies een spel</h2>
+        <span>Alle potjes tellen mee voor de ranglijst</span>
+      </div>
+      <ul class="hub-grid">
+        <li><a class="hub-card" href="mensergerjeniet.html">
+          <div class="hub-icon"><svg viewBox="0 0 96 72" aria-hidden="true"><circle cx="48" cy="12" r="9" fill="#22E3A2"/><circle cx="74" cy="36" r="9" fill="#10B5D6"/><circle cx="48" cy="60" r="9" fill="#0B1424"/><circle cx="22" cy="36" r="9" fill="#D9A23A"/><rect x="42" y="30" width="12" height="12" rx="2" transform="rotate(45 48 36)" fill="none" stroke="#0B1424" stroke-width="3"/></svg></div>
+          <div class="hub-num">01 · Bordspel</div>
+          <div class="hub-name">Mens erger je niet</div>
+          <div class="hub-desc">2 tot 4 spelers, Claude vult lege plekken.</div>
+          <div class="hub-go"><b>Spelen</b><i aria-hidden="true">→</i></div>
+        </a></li>
+        <li><a class="hub-card" href="kamertjeverhuren.html">
+          <div class="hub-icon"><svg viewBox="0 0 96 72" aria-hidden="true"><rect x="30" y="18" width="36" height="36" fill="#22E3A2"/><path d="M30 54V18h36" fill="none" stroke="#0B1424" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><g fill="#0B1424"><circle cx="30" cy="18" r="4.5"/><circle cx="66" cy="18" r="4.5"/><circle cx="30" cy="54" r="4.5"/><circle cx="66" cy="54" r="4.5"/></g></svg></div>
+          <div class="hub-num">02 · Puzzelspel</div>
+          <div class="hub-name">Kamertje verhuren</div>
+          <div class="hub-desc">Trek lijntjes en claim vakjes. Ook tegen Claude.</div>
+          <div class="hub-go"><b>Spelen</b><i aria-hidden="true">→</i></div>
+        </a></li>
+        <li><a class="hub-card" href="vieropeenrij.html">
+          <div class="hub-icon"><svg viewBox="0 0 96 72" aria-hidden="true"><g fill="#22E3A2"><circle cx="22" cy="58" r="8"/><circle cx="39" cy="44" r="8"/><circle cx="56" cy="30" r="8"/><circle cx="73" cy="16" r="8"/></g><circle cx="73" cy="58" r="8" fill="none" stroke="#0B1424" stroke-width="3"/></svg></div>
+          <div class="hub-num">03 · Strategie</div>
+          <div class="hub-name">Vier op een rij</div>
+          <div class="hub-desc">Als eerste vier op een rij. Claude op drie niveaus.</div>
+          <div class="hub-go"><b>Spelen</b><i aria-hidden="true">→</i></div>
+        </a></li>
+        <li><a class="hub-card" href="boterkaaseieren.html">
+          <div class="hub-icon"><svg viewBox="0 0 96 72" aria-hidden="true"><path d="M18 22l24 28M42 22L18 50" stroke="#0B1424" stroke-width="5" stroke-linecap="round"/><circle cx="66" cy="36" r="14" fill="none" stroke="#22E3A2" stroke-width="5"/></svg></div>
+          <div class="hub-num">04 · Klassieker</div>
+          <div class="hub-name">Boter, kaas en eieren</div>
+          <div class="hub-desc">Klassiek of verdwijnend, in een reeks.</div>
+          <div class="hub-go"><b>Spelen</b><i aria-hidden="true">→</i></div>
+        </a></li>
+        <li><a class="hub-card" href="backgammon.html">
+          <div class="hub-icon"><svg viewBox="0 0 96 72" aria-hidden="true"><path d="M14 10h26L27 52z" fill="#0B1424"/><path d="M42 62h26L55 20z" fill="none" stroke="#0B1424" stroke-width="3.5" stroke-linejoin="round"/><circle cx="78" cy="20" r="9" fill="#22E3A2"/></svg></div>
+          <div class="hub-num">05 · Bordspel</div>
+          <div class="hub-name">Backgammon</div>
+          <div class="hub-desc">Dobbelen en slaan, een potje of een match.</div>
+          <div class="hub-go"><b>Spelen</b><i aria-hidden="true">→</i></div>
+        </a></li>
       </ul>
-    </article>
+    </section>
   </div>
-</main>
-
-<div class="hub-foot">
-  <footer class="footer">
-    <div class="vals"><span>Commitment</span><span>Lef</span><span>Uniek</span><span>Bruisend</span></div>
-    <div class="claim">Make it work</div>
-  </footer>
 </div>
 </body>
 </html>
