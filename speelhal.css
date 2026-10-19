@@ -112,7 +112,9 @@ button, input, select { font-family: inherit; }
 /* ---------- opbouw: intro + setup ---------- */
 .view-main { display: flex; flex-direction: column; gap: 40px; }
 .setup-wrap { display: flex; flex-wrap: wrap; gap: 40px 64px; align-items: flex-start; }
-.intro { flex: 1 1 340px; max-width: 460px; display: flex; flex-direction: column; gap: 22px; }
+.intro { flex: 0 1 440px; min-width: 0; display: flex; flex-direction: column; gap: 22px; container-type: inline-size; }
+/* titel schaalt mee met de kolom, zodat ook lange woorden (Backgammon) binnen de kolom blijven */
+.intro .page-title { font-size: clamp(36px, 13cqi, 64px); overflow-wrap: break-word; }
 .app.playing .setup-wrap { display: none; }
 
 /* resume */
@@ -437,6 +439,9 @@ body.stats-open .view-main { display: none; }
   .topbar-actions .ns-logo { display: none; }
   .crumbs .crumb-sep, .crumbs .crumb-current { display: none; }
   .setup { padding: 22px; }
+  .size-chip { padding: 12px; }
+  .size-chip strong { font-size: 16px; }
+  .mode-toggle button { padding: 12px 6px; font-size: 14px; gap: 6px; }
   .player-row { grid-template-columns: minmax(0, 1fr); }
   .board-wrap { padding: 12px; border-radius: 18px; }
   .player-card { padding: 14px 16px; grid-template-columns: minmax(0, 1fr); }
