@@ -1,1 +1,41 @@
-[]
+[
+  {
+    "id": "7be38673-4fe6-48a7-8f6f-d5ed1c04c0e5",
+    "played_at": "2026-10-16T12:03:30.077+00:00",
+    "mode": "ai",
+    "board_w": 6,
+    "board_h": 5,
+    "p1": "Niek",
+    "p2": "Claude",
+    "s1": 9,
+    "s2": 11,
+    "created_at": "2026-10-16T12:03:29.812984+00:00",
+    "ai_level": "normaal"
+  },
+  {
+    "id": "4df89648-c821-4f05-a420-674804751efc",
+    "played_at": "2026-10-16T12:05:29.369+00:00",
+    "mode": "ai",
+    "board_w": 6,
+    "board_h": 5,
+    "p1": "Niek",
+    "p2": "Claude",
+    "s1": 8,
+    "s2": 12,
+    "created_at": "2026-10-16T12:05:29.014355+00:00",
+    "ai_level": "normaal"
+  },
+  {
+    "id": "a7ad872b-cb2d-4f7f-a9b9-506b69fe368a",
+    "played_at": "2026-10-16T12:07:38.524+00:00",
+    "mode": "ai",
+    "board_w": 6,
+    "board_h": 5,
+    "p1": "Niek",
+    "p2": "Claude",
+    "s1": 5,
+    "s2": 15,
+    "created_at": "2026-10-16T12:07:38.032892+00:00",
+    "ai_level": "normaal"
+  }
+]
