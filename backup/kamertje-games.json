@@ -37,5 +37,18 @@
     "s2": 15,
     "created_at": "2026-10-16T12:07:38.032892+00:00",
     "ai_level": "normaal"
+  },
+  {
+    "id": "fa18b6ae-07cd-4cf2-b6f5-139823f82d03",
+    "played_at": "2026-10-19T17:01:34.851+00:00",
+    "mode": "ai",
+    "board_w": 6,
+    "board_h": 5,
+    "p1": "Nick",
+    "p2": "Claude",
+    "s1": 12,
+    "s2": 8,
+    "created_at": "2026-10-19T17:01:35.227659+00:00",
+    "ai_level": "normaal"
   }
 ]
